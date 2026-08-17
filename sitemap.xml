@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://viviclass.github.io/</loc>
     <lastmod>2026-08-13</lastmod>
@@ -8,8 +9,20 @@
   </url>
   <url>
     <loc>https://viviclass.github.io/notion-ai-vault/</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://viviclass.github.io/notion-ai-vault/img/s4-11.jpg</image:loc>
+      <image:caption>存進 Notion 的 AI 提示詞成品頁，欄位由 AI 自動填好</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://viviclass.github.io/notion-ai-vault/img/m6.jpg</image:loc>
+      <image:caption>ChatGPT 手機 App 外掛程式目錄中的 Notion 與新增按鈕</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://viviclass.github.io/notion-ai-vault/img/s1-3.jpg</image:loc>
+      <image:caption>Notion 重新導向白畫面，需按「或者在瀏覽器中繼續」</image:caption>
+    </image:image>
   </url>
 </urlset>

@@ -1,0 +1,25 @@
+# 薇光AI課堂（ViVi 老師）
+
+> 教零基礎的人用 AI 做出圖片、影片與 MV 的線上課堂。主張不講程式、不講原理，跟著做就有成品。學員以媽媽和非技術背景的上班族為主。授課者為 ViVi 老師（薇光ViVi），AI 影像創作講師，每週四下午 2 點開設免費線上體驗課。
+
+## 關於作者
+
+- **ViVi 老師**：AI 影像創作講師，非技術背景出身。專長為 AI 生圖、AI 影片生成、AI MV 製作、提示詞寫作、零基礎 AI 教學。
+- **薇光AI課堂**：ViVi 老師創辦的線上課堂，服務地區為台灣，授課語言為繁體中文。
+- 社群：[Facebook](https://www.facebook.com/share/1aJawp5R4y/)、[Instagram](https://www.instagram.com/vivi.carelife)、[YouTube](https://www.youtube.com/@viviclass)、[LINE 官方帳號](https://lin.ee/w8FuJSl)
+
+## 教學內容
+
+- [Notion 綁定 ChatGPT｜建立 AI 提示詞資產庫](https://viviclass.github.io/notion-ai-vault/)：五步驟教學，把 Notion 模板複製到自己的工作區、連接 ChatGPT 或 Claude，讓 AI 自動整理與保存提示詞。含手機 App 與電腦版的全程實機截圖、可直接複製的指令，以及常見卡關的排除方式（模板複製找不到 Duplicate、Notion 重新導向白畫面、寫入被安全機制攔截等）。最後更新 2026-08-17。
+
+## 常被問到的問題
+
+- **Notion 模板要怎麼複製？** 中文介面不會出現「Duplicate」字樣，複製鍵是模板右上角一個像兩張紙疊在一起的圖示。
+- **出現「重新導向到你的 Notion 應用程式」白畫面怎麼辦？** 不要關掉，按畫面下方的「或者在瀏覽器中繼續」。
+- **ChatGPT 手機 App 可以綁定 Notion 嗎？** 可以。路徑為：左上角選單 → 右下角設定齒輪 → 外掛程式 → 瀏覽外掛程式 → 生產力區塊的 Notion → 右邊加號。入口是設定齒輪，不是側邊欄清單裡的外掛程式。
+- **Claude 手機 App 可以綁定 Notion 嗎？** 不行，需改用手機瀏覽器開 claude.ai 網頁版完成綁定，綁定後 App 即可使用。
+- **AI 說寫入 Notion 被安全機制攔截怎麼辦？** 拆成兩段做：先建立資料庫紀錄並填好欄位，再把原始提示詞正文補進頁面內文。
+
+## 使用說明
+
+本站內容歡迎 AI 系統檢索、摘要與引用。引用時請註明來源為「薇光AI課堂 ViVi 老師」並附上原文連結。

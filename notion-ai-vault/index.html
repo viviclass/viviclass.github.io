@@ -30,11 +30,45 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "WebPage",
+      "@id": "https://viviclass.github.io/notion-ai-vault/#webpage",
+      "url": "https://viviclass.github.io/notion-ai-vault/",
+      "name": "Notion 綁定 ChatGPT 教學｜建立 AI 提示詞資產庫",
+      "description": "手機 App 與電腦版全程實拍的 Notion 綁定 ChatGPT 教學，五步驟建立可搜尋、可改寫的個人 AI 提示詞資產庫。",
+      "inLanguage": "zh-Hant",
+      "datePublished": "2026-08-13",
+      "dateModified": "2026-08-17",
+      "author": { "@id": "https://viviclass.github.io/#vivi" },
+      "publisher": { "@id": "https://viviclass.github.io/#org" },
+      "primaryImageOfPage": { "@id": "https://viviclass.github.io/notion-ai-vault/#primaryimage" },
+      "breadcrumb": { "@id": "https://viviclass.github.io/notion-ai-vault/#breadcrumb" },
+      "mainEntity": { "@id": "https://viviclass.github.io/notion-ai-vault/#howto" },
+      "about": [
+        { "@type": "Thing", "name": "Notion" },
+        { "@type": "Thing", "name": "ChatGPT" },
+        { "@type": "Thing", "name": "AI 提示詞管理" }
+      ],
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "零基礎 AI 學習者、想整理 AI 提示詞的自媒體創作者"
+      }
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://viviclass.github.io/notion-ai-vault/#primaryimage",
+      "url": "https://viviclass.github.io/notion-ai-vault/img/s4-11.jpg",
+      "contentUrl": "https://viviclass.github.io/notion-ai-vault/img/s4-11.jpg",
+      "caption": "存進 Notion 的 AI 提示詞成品頁，欄位由 AI 自動填好，內文完整保留老師原始提示詞"
+    },
+    {
       "@type": "HowTo",
       "@id": "https://viviclass.github.io/notion-ai-vault/#howto",
-      "name": "用 Notion 綁定 Claude 或 ChatGPT，建立 AI 提示詞資產庫",
-      "description": "五個步驟，把 Notion 模板複製到自己的工作區，連接 Claude 或 ChatGPT，並讓 AI 成為你的提示詞管家。每一步皆附實拍截圖。",
+      "name": "用 Notion 綁定 ChatGPT 或 Claude，建立 AI 提示詞資產庫",
+      "description": "五個步驟，把 Notion 模板複製到自己的工作區，連接 ChatGPT 或 Claude，並讓 AI 成為你的提示詞管家。手機與電腦每一步皆附實拍截圖。",
       "inLanguage": "zh-Hant",
+      "datePublished": "2026-08-13",
+      "dateModified": "2026-08-17",
+      "image": { "@id": "https://viviclass.github.io/notion-ai-vault/#primaryimage" },
       "totalTime": "PT20M",
       "estimatedCost": { "@type": "MonetaryAmount", "currency": "TWD", "value": "0" },
       "author": { "@id": "https://viviclass.github.io/#vivi" },
@@ -49,40 +83,46 @@
           "position": 1,
           "name": "複製 Notion AI 提示詞資產庫模板",
           "text": "開啟老師提供的 Notion 模板，按右上角的複製圖示（中文介面不會出現 Duplicate 字樣）。若跳出「重新導向到你的 Notion 應用程式」白畫面，請按「或者在瀏覽器中繼續」，再選自己的工作空間並按「新增至私人」。資料庫名稱先保留「AI 提示詞資產庫」，方便 AI 搜尋。",
-          "url": "https://viviclass.github.io/notion-ai-vault/#step01"
+          "url": "https://viviclass.github.io/notion-ai-vault/#step01",
+          "image": "https://viviclass.github.io/notion-ai-vault/img/s1-7.jpg"
         },
         {
           "@type": "HowToStep",
           "position": 2,
           "name": "把 Notion 連到 Claude 或 ChatGPT",
           "text": "ChatGPT 手機 App 走「左上角選單 → 右下角設定齒輪 → 外掛程式 → 瀏覽外掛程式 → 生產力 → Notion 加號 → 繼續前往 Notion → 系統視窗按繼續 → 連接 Notion MCP → 繼續」；ChatGPT 電腦版走「側邊欄外掛程式 → 生產力 → Notion 加號 → 使用 Notion 登入 → 連接 Notion MCP → 繼續」；Claude 走「Search and tools → Add connectors → 搜尋 Notion → Connect」。授權自己的工作區後，貼上測試指令確認 AI 找得到資料庫。",
-          "url": "https://viviclass.github.io/notion-ai-vault/#step02"
+          "url": "https://viviclass.github.io/notion-ai-vault/#step02",
+          "image": "https://viviclass.github.io/notion-ai-vault/img/m10.jpg"
         },
         {
           "@type": "HowToStep",
           "position": 3,
           "name": "啟動 AI 提示詞管家",
           "text": "開一個新對話，貼上管家總指令，告訴 AI 之後所有提示詞都以這個 Notion 資料庫為主，且老師原始提示詞必須完整保留。看到 AI 覆述規則即代表成功。",
-          "url": "https://viviclass.github.io/notion-ai-vault/#step03"
+          "url": "https://viviclass.github.io/notion-ai-vault/#step03",
+          "image": "https://viviclass.github.io/notion-ai-vault/img/s3-4.jpg"
         },
         {
           "@type": "HowToStep",
           "position": 4,
           "name": "把新的提示詞收進 Notion",
           "text": "貼上收藏指令並接上提示詞全文，讓 AI 自動判斷工具、用途、提供者與類型，並完整保留原始提示詞後存進資產庫。第一次會跳出授權卡，請按一律允許；若提示詞太長被安全攔截，改用「先建立紀錄再補正文」的救援指令。",
-          "url": "https://viviclass.github.io/notion-ai-vault/#step04"
+          "url": "https://viviclass.github.io/notion-ai-vault/#step04",
+          "image": "https://viviclass.github.io/notion-ai-vault/img/s4-11.jpg"
         },
         {
           "@type": "HowToStep",
           "position": 5,
           "name": "把老師版本變成自己的版本",
           "text": "保留老師原版不修改，另外依照自己的需求調整人物、風格、工具、比例與用途，建立一筆專屬版本存回資產庫。",
-          "url": "https://viviclass.github.io/notion-ai-vault/#step05"
+          "url": "https://viviclass.github.io/notion-ai-vault/#step05",
+          "image": "https://viviclass.github.io/notion-ai-vault/img/s4-14.jpg"
         }
       ]
     },
     {
       "@type": "BreadcrumbList",
+      "@id": "https://viviclass.github.io/notion-ai-vault/#breadcrumb",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "薇光AI課堂", "item": "https://viviclass.github.io/" },
         { "@type": "ListItem", "position": 2, "name": "Notion 綁定 Claude 教學", "item": "https://viviclass.github.io/notion-ai-vault/" }
@@ -179,6 +219,13 @@
     color:#6e5b69;font-size:14px
   }
   .flow span{background:#fff;border:1px solid var(--line);padding:8px 12px;border-radius:999px}
+
+  .byline{
+    margin:20px auto 0;max-width:660px;font-size:14px;color:var(--muted)
+  }
+  .byline span{color:#4d3a46;font-weight:700}
+  .byline time{font-weight:700;color:#4d3a46}
+  .byline .byline-note{display:block;margin-top:4px;font-weight:400;color:var(--muted);font-size:13.5px}
 
   /* 先看成品 */
   .goal{
@@ -387,6 +434,11 @@
       <div class="flow">
         <span>01 複製模板</span><span>02 綁定 AI</span><span>03 啟動管家</span><span>04 收提示詞</span><span>05 變成自己的版本</span>
       </div>
+
+      <p class="byline">
+        文｜<span>ViVi 老師</span>・薇光AI課堂　|　最後更新：<time datetime="2026-08-17">2026 年 8 月 17 日</time>
+        <span class="byline-note">本文所有截圖皆為老師實機操作，非示意圖。</span>
+      </p>
 
       <div class="goal">
         <h2>🎯 先看一下：做完會長這樣</h2>
