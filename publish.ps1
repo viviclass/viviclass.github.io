@@ -47,7 +47,7 @@ $ok = $false
 for ($i = 1; $i -le 12; $i++) {
     Start-Sleep -Seconds 10
     try {
-        $code = (Invoke-WebRequest -Uri $url -Method Head -TimeoutSec 15 -ErrorAction Stop).StatusCode
+        $code = (Invoke-WebRequest -Uri $url -Method Head -UseBasicParsing -TimeoutSec 15 -ErrorAction Stop).StatusCode
     } catch {
         $code = 0
     }
