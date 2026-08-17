@@ -6,7 +6,7 @@
 
 <!-- ===== SEO ===== -->
 <title>Notion 綁定 Claude 教學｜建立 AI 提示詞資產庫 — 薇光AI課堂 ViVi 老師</title>
-<meta name="description" content="五個步驟，把 Notion 綁定 Claude 或 ChatGPT，建立你自己的 AI 提示詞資產庫。每一步都有實拍截圖，含可直接複製的測試指令、管家總指令與卡關排除清單，零基礎照著按就完成。薇光AI課堂 ViVi 老師教學懶人包。">
+<meta name="description" content="五個步驟，把 Notion 綁定 ChatGPT 或 Claude，建立你自己的 AI 提示詞資產庫。手機 App 與電腦版每一步都有實拍截圖，含可直接複製的測試指令、管家總指令與卡關排除清單，零基礎照著按就完成。薇光AI課堂 ViVi 老師教學懶人包。">
 <meta name="keywords" content="Notion綁定Claude,Notion連接ChatGPT,AI提示詞資產庫,提示詞管理,Claude連接器,Notion MCP,薇光AI課堂,ViVi老師,三寶媽ViVi,AI教學,零基礎AI">
 <link rel="canonical" href="https://viviclass.github.io/notion-ai-vault/">
 <meta name="robots" content="index,follow,max-image-preview:large">
@@ -55,7 +55,7 @@
           "@type": "HowToStep",
           "position": 2,
           "name": "把 Notion 連到 Claude 或 ChatGPT",
-          "text": "ChatGPT 走「側邊欄外掛程式 → 生產力 → Notion 加號 → 使用 Notion 登入 → 連接 Notion MCP → 繼續」；Claude 走「Search and tools → Add connectors → 搜尋 Notion → Connect」。授權自己的工作區後，貼上測試指令確認 AI 找得到資料庫。",
+          "text": "ChatGPT 手機 App 走「左上角選單 → 右下角設定齒輪 → 外掛程式 → 瀏覽外掛程式 → 生產力 → Notion 加號 → 繼續前往 Notion → 系統視窗按繼續 → 連接 Notion MCP → 繼續」；ChatGPT 電腦版走「側邊欄外掛程式 → 生產力 → Notion 加號 → 使用 Notion 登入 → 連接 Notion MCP → 繼續」；Claude 走「Search and tools → Add connectors → 搜尋 Notion → Connect」。授權自己的工作區後，貼上測試指令確認 AI 找得到資料庫。",
           "url": "https://viviclass.github.io/notion-ai-vault/#step02"
         },
         {
@@ -100,6 +100,11 @@
           "@type": "Question",
           "name": "出現「重新導向到你的 Notion 應用程式」白畫面怎麼辦？",
           "acceptedAnswer": { "@type": "Answer", "text": "不要關掉。按畫面下方那行小小的「或者在瀏覽器中繼續」，就會回到正常流程。這是最多人卡住的一關。" }
+        },
+        {
+          "@type": "Question",
+          "name": "ChatGPT 手機 App 可以綁定 Notion 嗎？",
+          "acceptedAnswer": { "@type": "Answer", "text": "可以，不用開電腦。路徑是：ChatGPT App 左上角選單 → 右下角的設定齒輪 → 外掛程式 → 最下面的「瀏覽外掛程式」→ 滑到生產力區塊 → Notion 右邊的加號。注意入口是設定齒輪，不是側邊欄清單裡的外掛程式。過程中手機系統會跳出「ChatGPT 想要使用 mcp.notion.com 登入」，按繼續即可，這一關電腦版不會出現。" }
         },
         {
           "@type": "Question",
@@ -256,8 +261,16 @@
   figure.shot.good .sn{background:#e2f6ea;color:#38935f}
   figure.shot.good img{border-top-color:#cdebd8}
 
+  /* 直式手機截圖：縮窄置中，不然一張圖佔滿整個螢幕 */
+  figure.shot.phone figcaption{border-bottom:1px solid var(--line)}
+  figure.shot.phone.warn figcaption{border-bottom-color:#f0cba8}
+  figure.shot.phone.good figcaption{border-bottom-color:#cdebd8}
+  figure.shot.phone img{
+    max-width:300px;margin:16px auto;border:1px solid var(--line);border-radius:14px
+  }
+
   /* ===== 分頁：我用哪一個 AI ===== */
-  .tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
   .tab{
     padding:14px 12px;border-radius:16px;border:1px solid #ebb9cf;background:#fff;
     color:#c95086;font-weight:800;font-size:16px;cursor:pointer;transition:.16s ease
@@ -351,6 +364,7 @@
     .lead{font-size:16px}
     .template-box{padding:18px}
     .btn{width:100%}
+    .tabs{grid-template-columns:1fr}
     .goal{padding:20px 18px;border-radius:20px}
     .next-block{padding:22px 18px;border-radius:20px}
     .funnels a{grid-template-columns:34px 1fr;padding:14px}
@@ -367,8 +381,8 @@
       <div class="eyebrow">✨ 薇光 AI 課堂 | Vivi 老師 ✨操作懶人包</div>
       <h1>把老師的提示詞<br>變成妳自己的 AI 資產庫</h1>
       <p class="lead">
-        跟著五個步驟，用 Notion 綁定 Claude 或 ChatGPT，建立 AI 提示詞資產庫。
-        <strong>每一步都有實拍截圖</strong>，妳只要對照著按同一個位置就好。
+        跟著五個步驟，用 Notion 綁定 ChatGPT，建立 AI 提示詞資產庫。
+        <strong>手機、電腦每一步都有實拍截圖</strong>，妳只要對照著按同一個位置就好。
       </p>
       <div class="flow">
         <span>01 複製模板</span><span>02 綁定 AI</span><span>03 啟動管家</span><span>04 收提示詞</span><span>05 變成自己的版本</span>
@@ -414,7 +428,8 @@
           </div>
         </div>
 
-        <div class="shots-head">📸 照著按（實拍）<span class="badge">7 個畫面</span></div>
+        <div class="shots-head">📸 照著按（實拍）<span class="badge">電腦畫面｜7 個畫面</span></div>
+        <p style="margin-top:10px;font-size:14.5px">📱 <strong>用手機的先看這裡：</strong>這一步手機也做得到，按鈕位置一模一樣，只是畫面比較窄。手機建議用<strong>瀏覽器</strong>開模板，不要用 Notion App 開，比較不會卡在第 3 張那個白畫面。</p>
         <div class="shots">
 
           <figure class="shot">
@@ -479,15 +494,143 @@
       <section class="step" id="step02">
         <div class="step-no">NO.02</div>
         <h2>把妳的 Notion 連到 Claude 或 ChatGPT</h2>
-        <p>這一步<strong>不用兩個都做</strong>。妳平常用哪一個，就按下面哪一顆。按了才會出現對應的教學，不會兩邊混在一起。</p>
+        <p>這一步<strong>只做一種就好</strong>。妳是拿手機、還是坐在電腦前？按下面對應的那一顆，按了才會出現那一種的教學，不會混在一起。</p>
 
-        <div class="tabs" role="tablist" aria-label="選擇你要綁定的 AI">
-          <button class="tab" type="button" role="tab" id="tab-gpt" aria-controls="gpt-connect" aria-selected="true">⚫ 我用 ChatGPT</button>
-          <button class="tab" type="button" role="tab" id="tab-claude" aria-controls="claude-connect" aria-selected="false">🟤 我用 Claude</button>
+        <div class="tabs" role="tablist" aria-label="選擇你要綁定的裝置與 AI">
+          <button class="tab" type="button" role="tab" id="tab-phone" aria-controls="phone-connect" aria-selected="true">📱 手機 ChatGPT</button>
+          <button class="tab" type="button" role="tab" id="tab-gpt" aria-controls="gpt-connect" aria-selected="false">💻 電腦 ChatGPT</button>
+          <button class="tab" type="button" role="tab" id="tab-claude" aria-controls="claude-connect" aria-selected="false">🟤 Claude</button>
         </div>
 
-        <!-- ===== ChatGPT ===== -->
-        <div class="panel" id="gpt-connect" role="tabpanel" aria-labelledby="tab-gpt">
+        <!-- ===== ChatGPT 手機版 ===== -->
+        <div class="panel" id="phone-connect" role="tabpanel" aria-labelledby="tab-phone">
+          <div class="connect-guide">
+            <div class="connect-head">
+              <div class="connect-logo gpt-logo">G</div>
+              <div>
+                <h3>ChatGPT 手機 App × Notion｜全程實拍</h3>
+                <p>不用開電腦，手機 App 裡就能綁定完成。下面 10 張是老師手機上一張一張拍的。</p>
+              </div>
+            </div>
+
+            <div class="tip">
+              <strong>手機跟電腦不一樣的地方有兩個，先講：</strong><br>
+              1. 入口不是側邊欄，是<strong>右下角的齒輪 ⚙️</strong>。<br>
+              2. 中間會多跳一個<strong>手機系統的視窗</strong>問「ChatGPT 想要使用 mcp.notion.com 登入」，那是正常的，按「繼續」。
+            </div>
+
+            <div class="shots-head">📸 照著按（實拍）<span class="badge">手機 App｜10 個畫面</span></div>
+            <div class="shots">
+
+              <figure class="shot phone">
+                <figcaption><div class="sn">1</div><div class="cap">
+                  <strong>打開 ChatGPT App</strong>
+                  <span>順便確認一下 Notion App 也有裝、也登入過同一個帳號。</span>
+                </div></figcaption>
+                <img src="img/m1.jpg" alt="手機桌面上的 ChatGPT 與 Notion App 圖示" loading="lazy" decoding="async">
+              </figure>
+
+              <figure class="shot phone">
+                <figcaption><div class="sn">2</div><div class="cap">
+                  <strong>按左上角的「三條線」</strong>
+                  <span>就是畫面最左上那顆圓圓的按鈕，側邊欄會滑出來。</span>
+                </div></figcaption>
+                <img src="img/m2.jpg" alt="ChatGPT 手機版首頁，圈出左上角的選單按鈕" loading="lazy" decoding="async">
+              </figure>
+
+              <figure class="shot phone warn">
+                <figcaption><div class="sn">3</div><div class="cap">
+                  <strong>⚠️ 按<u>右下角的齒輪 ⚙️</u>，不是清單裡的「外掛程式」</strong>
+                  <span>側邊欄裡雖然也有「外掛程式」，但要從齒輪進去才有「新增」的入口。這裡走錯很多人會卡住。</span>
+                </div></figcaption>
+                <img src="img/m3.jpg" alt="ChatGPT 手機版側邊欄，圈出右下角的設定齒輪" loading="lazy" decoding="async">
+              </figure>
+
+              <figure class="shot phone">
+                <figcaption><div class="sn">4</div><div class="cap">
+                  <strong>在設定裡按「外掛程式」</strong>
+                  <span>在「個人化、記憶」下面那一個。</span>
+                </div></figcaption>
+                <img src="img/m4.jpg" alt="ChatGPT 手機版設定頁，圈出外掛程式" loading="lazy" decoding="async">
+              </figure>
+
+              <figure class="shot phone">
+                <figcaption><div class="sn">5</div><div class="cap">
+                  <strong>滑到最下面，按「瀏覽外掛程式」</strong>
+                  <span>上面那排是妳已經有的，Notion 還沒在裡面，要從這裡去加。</span>
+                </div></figcaption>
+                <img src="img/m5.jpg" alt="外掛程式頁面，圈出最下方的瀏覽外掛程式" loading="lazy" decoding="async">
+              </figure>
+
+              <figure class="shot phone">
+                <figcaption><div class="sn">6</div><div class="cap">
+                  <strong>一直往下滑到「生產力」，Notion 那一列按右邊的 ➕</strong>
+                  <span>要滑蠻久的，它在很下面。按的是<strong>右邊的加號</strong>，不是 Notion 這幾個字。</span>
+                </div></figcaption>
+                <img src="img/m6.jpg" alt="外掛程式目錄的生產力區塊，圈出 Notion 右邊的加號" loading="lazy" decoding="async">
+              </figure>
+
+              <figure class="shot phone">
+                <figcaption><div class="sn">7</div><div class="cap">
+                  <strong>按黑色的「繼續前往 Notion」</strong>
+                  <span>上面那段說明不用看完，直接按最下面那顆黑色的。</span>
+                </div></figcaption>
+                <img src="img/m7.jpg" alt="連接 Notion 說明視窗，圈出繼續前往 Notion 按鈕" loading="lazy" decoding="async">
+              </figure>
+
+              <figure class="shot phone warn">
+                <figcaption><div class="sn">8</div><div class="cap">
+                  <strong>⚠️ 手機系統會跳出來問一次 → 按「繼續」</strong>
+                  <span>寫著「ChatGPT 想要使用 mcp.notion.com 登入」。<strong>電腦版不會有這一關</strong>，看到別緊張，這是手機在保護妳。</span>
+                </div></figcaption>
+                <img src="img/m8.jpg" alt="iOS 系統詢問 ChatGPT 是否使用 mcp.notion.com 登入，圈出繼續" loading="lazy" decoding="async">
+              </figure>
+
+              <figure class="shot phone">
+                <figcaption><div class="sn">9</div><div class="cap">
+                  <strong>「連接 Notion MCP」→ 確認工作空間是妳的 → 按藍色「繼續」</strong>
+                  <span>上面網址會顯示 app.notion.com 就對了。工作空間要選<strong>放模板的那一個</strong>。</span>
+                </div></figcaption>
+                <img src="img/m9.jpg" alt="手機上的連接 Notion MCP 授權頁，圈出藍色繼續按鈕" loading="lazy" decoding="async">
+              </figure>
+
+              <figure class="shot phone good">
+                <figcaption><div class="sn">✓</div><div class="cap">
+                  <strong>「已安裝」那排出現 Notion ＝成功</strong>
+                  <span>回到外掛程式畫面，最上面那排小圖示裡多了一個 Notion。<strong>看到它就是綁好了</strong>，接著往下做測試。</span>
+                </div></figcaption>
+                <img src="img/m10.jpg" alt="外掛程式頁面已安裝區塊出現 Notion 圖示" loading="lazy" decoding="async">
+              </figure>
+
+            </div>
+
+            <div class="copy-card">
+              <strong>連線測試指令（手機一樣用這句）</strong>
+              <pre id="gptTestPromptM">請使用 Notion 搜尋我的工作區，找到名稱為「AI 提示詞資產庫」的資料庫。
+
+找到後：
+1. 告訴我你找到的資料庫名稱。
+2. 列出目前有哪些欄位。
+3. 這一步只讀取，不要新增、刪除或修改任何內容。</pre>
+              <button class="small-btn" type="button" data-copy-target="gptTestPromptM">複製測試指令</button>
+            </div>
+
+            <div class="tip">
+              複製完回 ChatGPT <strong>開一個新對話</strong>，長按輸入框選「貼上」，送出。AI 回「找到了」並唸出欄位，第二步就完成了。
+            </div>
+
+            <div class="help-box" style="background:#f8f5f7;border-color:#e7dce2"><strong>🔧 手機卡住了看這裡</strong>
+            <ul>
+              <li><strong>設定裡沒有「外掛程式」：</strong>先去 App Store 把 ChatGPT 更新到最新版，舊版沒有這個功能。</li>
+              <li><strong>按了 ➕ 畫面就跳掉：</strong>從第 3 步的齒輪重來一次，通常是網路斷一下。</li>
+              <li><strong>系統視窗按到「取消」：</strong>沒關係，回外掛程式重按一次 Notion 的 ➕ 就會再問。</li>
+              <li><strong>「已安裝」沒看到 Notion：</strong>把外掛程式頁關掉再打開，或滑一下最上面那排（可以左右滑）。</li>
+            </ul></div>
+          </div>
+        </div>
+
+        <!-- ===== ChatGPT 電腦版 ===== -->
+        <div class="panel" id="gpt-connect" role="tabpanel" aria-labelledby="tab-gpt" hidden>
           <div class="connect-guide">
             <div class="connect-head">
               <div class="connect-logo gpt-logo">G</div>
@@ -896,7 +1039,7 @@
 
     <footer>
       <p class="disclaim">
-        ⚠️ 平台規則常變，各項功能名稱與位置以官網公告為準。截圖為 ChatGPT 電腦版實拍，上課會帶大家看最新版。
+        ⚠️ 平台規則常變，各項功能名稱與位置以官網公告為準。截圖為 ChatGPT 手機 App 與電腦版實拍（iPhone），Android 位置可能略有不同。上課會帶大家看最新版。
       </p>
 
       <div class="next-block">
