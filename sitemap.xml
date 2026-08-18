@@ -25,4 +25,14 @@
       <image:caption>Notion 重新導向白畫面，需按「或者在瀏覽器中繼續」</image:caption>
     </image:image>
   </url>
+  <url>
+    <loc>https://viviclass.github.io/gpts-alternative/</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://viviclass.github.io/gpts-alternative/og-card.jpg</image:loc>
+      <image:caption>GPTs 建不了了？提示詞庫替代方案｜薇光AI課堂</image:caption>
+    </image:image>
+  </url>
 </urlset>
