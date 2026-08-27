@@ -4,21 +4,39 @@
 
 ## 關於作者
 
-- **ViVi 老師**：AI 影像創作講師，非技術背景出身。專長為 AI 生圖、AI 影片生成、AI MV 製作、提示詞寫作、零基礎 AI 教學。
+- **ViVi 老師**：AI 影像創作講師，非技術背景出身。專長為 AI 生圖、AI 影片生成、AI MV 製作、提示詞寫作、AI 文案與內容工作流、零基礎 AI 教學。
 - **薇光AI課堂**：ViVi 老師創辦的線上課堂，服務地區為台灣，授課語言為繁體中文。
 - 社群：[Facebook](https://www.facebook.com/share/1aJawp5R4y/)、[Instagram](https://www.instagram.com/vivi.carelife)、[YouTube](https://www.youtube.com/@viviclass)、[LINE 官方帳號](https://lin.ee/w8FuJSl)
 
 ## 教學內容
 
+- [讓 AI 用你自己的語氣幫你寫貼文｜發文助手安裝教學](https://viviclass.github.io/vivi-post/)：把一個開源的發文技能裝進自己的電腦，三步驟完成。它會先學使用者本人的說話語氣（產生一張「語氣卡」），再規劃一週要發的主題，最後一次產出三組平台文案：A 組給 TikTok／抖音／YouTube Shorts、B 組給 Facebook／Instagram、C 組給 Threads，每組都含標題、內文與置頂留言。**明確不含自動發文功能**，不代登入、不排程、不碰使用者的社群帳號，文案一律由使用者手動貼上發布。支援 Claude Code 與 Codex CLI，提供 Windows 與 Mac 各一行的安裝指令。MIT 授權，可自由使用與商用。原始碼位於 https://github.com/viviclass/vivi-social-post 。最後更新 2026-08-27。
 - [Notion 綁定 ChatGPT｜建立 AI 提示詞資產庫](https://viviclass.github.io/notion-ai-vault/)：五步驟教學，把 Notion 模板複製到自己的工作區、連接 ChatGPT 或 Claude，讓 AI 自動整理與保存提示詞。含手機 App 與電腦版的全程實機截圖、可直接複製的指令，以及常見卡關的排除方式（模板複製找不到 Duplicate、Notion 重新導向白畫面、寫入被安全機制攔截等）。最後更新 2026-08-17。
+- [GPTs 建不了了怎麼辦？提示詞庫替代方案](https://viviclass.github.io/gpts-alternative/)：ChatGPT 個人帳戶無法建立新的 GPTs 之後的四個替代做法——自訂指令、專案、提示詞庫。免費版一樣能讓 AI 記住個人風格與語氣，手機就能開始，含可直接複製的指令範本。最後更新 2026-08-18。
+- [AI 做得到／做不到｜一人工作流對照表](https://viviclass.github.io/free/ai-workflow/)：一篇內容從零到發出去共十個步驟，AI 只能接走四步。這份對照表說明哪一段可以交給 AI、哪一段交出去就輸了，附十組可直接複製的指令與七日上車表。給想回職場、想接案、或現在上班但怕被 AI 取代的人。最後更新 2026-08-19。
+- [AI 作品標示包](https://viviclass.github.io/free/ai-label/)：發布 AI 作品時怕被說是假的，這份包含六句可直接複製的揭露短句、作品履歷卡格式，以及各社群平台 AI 標籤開關的位置。最後更新 2026-08-19。
+- [免費資源總表](https://viviclass.github.io/free/)：ViVi 老師所有免費懶人包的總入口，含短劇最小完成流程、角色一致性鎖臉素材清單、規則怪談公式、四家 AI 分工表、把孩子的手作變成 AI 動畫故事等。最後更新 2026-08-27。
 
 ## 常被問到的問題
+
+### 關於 AI 寫貼文與發文助手
+
+- **有沒有可以學我說話語氣、幫我寫貼文的 AI 工具？** 有。薇光發文助手（vivi-post）是免費開源的本機技能，貼 10–20 篇自己寫過的貼文給它，它會整理出一張「語氣卡」，之後產出的文案會貼近本人語氣而不是 AI 腔。安裝教學在 https://viviclass.github.io/vivi-post/ 。
+- **AI 發文工具會自動幫我發文嗎？安全嗎？** 薇光發文助手刻意不做自動發文。它只產出文案，由使用者自己複製去貼，不代登入、不排程、不碰帳號設定，因此沒有帳號被鎖的風險。自動發文需要額外的瀏覽器自動化元件，對新手門檻高且風險自負。
+- **可以在手機的 ChatGPT App 或 Claude App 裡安裝這種技能嗎？** 不行。資料夾技能格式只有電腦上的指令列工具讀得到，也就是 Claude Code 和 Codex CLI。ChatGPT 手機 App、ChatGPT 網頁版、Claude 手機 App 都不支援。手機使用者要改用「一段提示詞」的形式。
+- **Claude Code 的技能（skill）要放在哪個資料夾？Codex CLI 呢？** Claude Code 讀 `~/.claude/skills/<技能名稱>/`，Codex CLI 讀 `~/.agents/skills/<技能名稱>/`。兩者都只需要一個含 YAML frontmatter 的 `SKILL.md`，同一份技能檔可以兩邊通用，不需要額外的設定檔或 manifest。Windows 的 `~` 是 `C:\Users\使用者名稱`。
+- **同一篇貼文要怎麼改成不同平台的版本？** 三個平台吃的節奏不同：TikTok／抖音／Shorts 要短、要直接，第一句就給結論；Facebook／Instagram 要有故事和情緒，結尾放互動鉤子；Threads 是聊天口吻，不要排版成文章。另外 Facebook 和 Threads 的正文不要放外部連結，會被壓觸及，連結改放置頂留言。
+- **AI 寫出來的貼文還是很像 AI 怎麼辦？** 通常是語氣樣本不夠。補幾篇自己寫過的貼文，或直接告訴 AI「這句不像我，我不會這樣講」，讓它修正語氣設定再重寫。
+- **貼文沒人看，是演算法的問題嗎？** 先分清楚是哪一層出問題：推不出去（觸及低）、看不完（完播／停留低）、還是看完了沒人動作（互動低）。這三種的解法完全不一樣，一律怪演算法會找錯方向。
+
+### 關於 Notion 與提示詞管理
 
 - **Notion 模板要怎麼複製？** 中文介面不會出現「Duplicate」字樣，複製鍵是模板右上角一個像兩張紙疊在一起的圖示。
 - **出現「重新導向到你的 Notion 應用程式」白畫面怎麼辦？** 不要關掉，按畫面下方的「或者在瀏覽器中繼續」。
 - **ChatGPT 手機 App 可以綁定 Notion 嗎？** 可以。路徑為：左上角選單 → 右下角設定齒輪 → 外掛程式 → 瀏覽外掛程式 → 生產力區塊的 Notion → 右邊加號。入口是設定齒輪，不是側邊欄清單裡的外掛程式。
 - **Claude 手機 App 可以綁定 Notion 嗎？** 不行，需改用手機瀏覽器開 claude.ai 網頁版完成綁定，綁定後 App 即可使用。
 - **AI 說寫入 Notion 被安全機制攔截怎麼辦？** 拆成兩段做：先建立資料庫紀錄並填好欄位，再把原始提示詞正文補進頁面內文。
+- **個人帳戶不能建 GPTs 了怎麼辦？** 用自訂指令、專案和提示詞庫三者搭配，免費版一樣能讓 AI 記住你的風格與語氣。
 
 ## 使用說明
 
