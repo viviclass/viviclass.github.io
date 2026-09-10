@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- ===== SEO ===== -->
+<title>ChatGPT 2026 最新升級實戰懶人包｜GPT-6 Astra・圖像2.5・Work模式・貼圖一次搞懂 — 薇光AI課堂</title>
+<meta name="description" content="ChatGPT 2026年9月最新升級一次看懂：GPT-6 Astra 到底在哪裡、圖像2.5 人像一致性怎麼用、Work 模式入口在哪、Google 多帳號怎麼串、語音與貼圖新功能怎麼玩。附方案對照表、五步驟排查「為什麼我看不到」，以及 7 組可直接複製的指令。薇光AI課堂 ViVi 老師整理，查證日 2026-09-10。">
+<meta name="keywords" content="GPT-6 Astra,ChatGPT 2026更新,ChatGPT圖像2.5,ChatGPT人像一致性,ChatGPT Work模式,ChatGPT貼圖,ChatGPT Google帳號,GPT-5.6 Luna,GPT-6 Pro,ChatGPT升級,薇光AI課堂,薇光AI,薇光ViVi,ViVi老師,三寶媽ViVi,零基礎AI">
+<link rel="canonical" href="https://viviclass.github.io/chatgpt-2026/">
+<link rel="alternate" hreflang="zh-Hant" href="https://viviclass.github.io/chatgpt-2026/">
+<link rel="alternate" hreflang="x-default" href="https://viviclass.github.io/chatgpt-2026/">
+<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large">
+<meta name="googlebot" content="index,follow,max-snippet:-1,max-image-preview:large">
+
+<!-- 分享到 FB / LINE 時顯示的卡片 -->
+<meta property="og:type" content="article">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:site_name" content="薇光AI課堂">
+<meta property="og:title" content="ChatGPT 2026 最新升級實戰懶人包">
+<meta property="og:description" content="GPT-6 Astra 到底在哪裡、圖像2.5 人像怎麼鎖住不跑掉、Work 模式怎麼開，附方案對照表與 7 組可直接複製的指令。">
+<meta property="og:url" content="https://viviclass.github.io/chatgpt-2026/">
+<meta property="og:image" content="https://viviclass.github.io/chatgpt-2026/cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ChatGPT 2026 最新升級實戰懶人包｜薇光AI課堂 ViVi 老師">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ChatGPT 2026 最新升級實戰懶人包">
+<meta name="twitter:description" content="GPT-6 Astra 在哪裡、圖像2.5 人像怎麼鎖住、Work 模式怎麼開，7 組指令直接複製。">
+<meta name="twitter:image" content="https://viviclass.github.io/chatgpt-2026/cover.jpg">
+
+<!-- ===== 給 Google 和 AI 讀的結構化資料 ===== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": "https://viviclass.github.io/chatgpt-2026/#article",
+      "headline": "ChatGPT 2026 最新升級實戰懶人包",
+      "url": "https://viviclass.github.io/chatgpt-2026/",
+      "description": "GPT-6 Astra、圖像2.5、Work 模式、Google 帳號串接、語音與貼圖——2026 年 9 月 ChatGPT 最新升級的查證整理與實戰指令。",
+      "inLanguage": "zh-Hant",
+      "datePublished": "2026-09-10",
+      "dateModified": "2026-09-10",
+      "image": "https://viviclass.github.io/chatgpt-2026/cover.jpg",
+      "author": { "@id": "https://viviclass.github.io/#vivi" },
+      "publisher": { "@id": "https://viviclass.github.io/#org" },
+      "breadcrumb": { "@id": "https://viviclass.github.io/chatgpt-2026/#breadcrumb" },
+      "about": [
+        { "@type": "Thing", "name": "GPT-6 Astra" },
+        { "@type": "Thing", "name": "ChatGPT Images 2.5" },
+        { "@type": "Thing", "name": "ChatGPT Work" }
+      ],
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "零基礎 AI 學習者、短影音與自媒體創作者"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://viviclass.github.io/chatgpt-2026/#breadcrumb",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "薇光AI課堂", "item": "https://viviclass.github.io/" },
+        { "@type": "ListItem", "position": 2, "name": "ChatGPT 2026 最新升級實戰懶人包", "item": "https://viviclass.github.io/chatgpt-2026/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://viviclass.github.io/chatgpt-2026/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "為什麼我的 ChatGPT 看不到 GPT-6 Astra？",
+          "acceptedAnswer": { "@type": "Answer", "text": "最常見的原因是你在「一般聊天視窗」找，而 Plus 方案的聊天視窗最高只到 GPT-5.6 Sol，看不到 Astra。Astra 只有兩個入口：一是 Pro／Business／Enterprise 方案的聊天視窗，選項名稱顯示為「GPT-6 Pro」；二是任何付費方案都能用的 ChatGPT Work 或 Codex。Free／Go 方案完全不含 Astra，也無法加購。" }
+        },
+        {
+          "@type": "Question",
+          "name": "GPT-6 Astra 跟 GPT-6 Pro 是同一個東西嗎？",
+          "acceptedAnswer": { "@type": "Answer", "text": "是同一個模型。Astra 是 OpenAI 官方公告用的模型代號，「GPT-6 Pro」則是這個模型出現在聊天視窗選單裡的顯示名稱，兩者指的是同一件事。" }
+        },
+        {
+          "@type": "Question",
+          "name": "Free 和 Go 方案的聊天模型是什麼？",
+          "acceptedAnswer": { "@type": "Answer", "text": "都是 GPT-5.6 Luna，不是 Sol。OpenAI 官方說明文件寫明 Free 和 Go 不含 GPT-5.6 Sol，兩者共用 Luna 作為預設聊天模型。" }
+        },
+        {
+          "@type": "Question",
+          "name": "ChatGPT Work 模式要怎麼打開？",
+          "acceptedAnswer": { "@type": "Answer", "text": "桌機 App：點左上角選單 → ChatGPT → 用上方的切換鈕在 Chat 和 Work 之間切換。手機：從畫面最上方往下拉，選擇 Work。" }
+        },
+        {
+          "@type": "Question",
+          "name": "圖像2.5 跟以前的 ChatGPT 生圖有什麼不同？",
+          "acceptedAnswer": { "@type": "Answer", "text": "OpenAI 於 2026 年 9 月 8 日推出 ChatGPT Images 2.5，生成速度比 2.0 版快最多 50%，光線更自然、細節更細緻，而且在多輪編輯之間更能保留同一個人物或主體的外觀特徵，不容易「換臉」。另外新增了手繪參考（Sketch）、常用版型模板與更精準的局部編輯。所有 ChatGPT、ChatGPT Work、Codex 使用者都能用。" }
+        },
+        {
+          "@type": "Question",
+          "name": "ChatGPT 貼圖功能要怎麼用？",
+          "acceptedAnswer": { "@type": "Answer", "text": "2026 年 8 月 31 日上線，直接跟 ChatGPT 說「幫我做一組貼圖」，或用一張照片、一個想法當起點，就能做出一組貼圖，存下來用在 iMessage 或 WhatsApp 裡。" }
+        },
+        {
+          "@type": "Question",
+          "name": "一個 ChatGPT 對話可以連幾個 Google 帳號？",
+          "acceptedAnswer": { "@type": "Answer", "text": "2026 年 8 月 28 日起，同一個對話可以同時連接多組 Google 帳號的 Gmail、日曆與聯絡人，個人帳號和工作帳號可以一起查，不用切來切去。" }
+        },
+        {
+          "@type": "Question",
+          "name": "Astra／GPT-6 Pro 的用量會另外收費嗎？",
+          "acceptedAnswer": { "@type": "Answer", "text": "不會另外收費，用量算在你原本的訂閱額度裡，額度用完可以另外加購。免費方案則完全不含 Astra 用量，加購也沒有用。" }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<style>
+:root{
+  --paper:#FFFBFC;
+  --blush:#FDF0F4;
+  --rose:#E0356F;
+  --rose-deep:#A81E4F;
+  --line:#F3D3DF;
+  --ink:#2E2229;
+  --ink-soft:#6B5560;
+  --amber-bg:#FFF6E8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  line-height:1.85;
+  font-size:16.5px;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:80px;
+}
+.serif{font-family:"Playfair Display",Georgia,serif;}
+.wrap{max-width:660px;margin:0 auto;padding:0 22px;}
+a{color:var(--rose-deep);}
+
+header.top{padding:26px 0 6px;text-align:left;}
+.brand{font-size:14px;letter-spacing:.08em;color:var(--ink-soft);}
+.brand b{color:var(--rose);font-weight:700;}
+.updated{display:inline-block;margin-top:10px;font-size:13px;color:var(--rose-deep);background:var(--blush);border:1px solid var(--line);border-radius:999px;padding:5px 14px;}
+
+.hero{padding:18px 0 6px;}
+h1{font-size:clamp(26px,6vw,34px);line-height:1.35;font-weight:900;margin:10px 0 14px;letter-spacing:-.01em;}
+h1 em{font-style:normal;color:var(--rose);}
+.lead{font-size:16.5px;color:var(--ink-soft);}
+.lead b{color:var(--ink);}
+
+.promise-row{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 6px;}
+.promise{flex:1 1 45%;background:var(--blush);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:14.5px;font-weight:700;color:var(--rose-deep);text-decoration:none;display:block;}
+.promise:hover{background:#FCE4EC;}
+
+section{padding:34px 0;border-top:1px solid var(--line);}
+section:first-of-type{border-top:none;}
+h2{font-size:21px;font-weight:900;margin-bottom:14px;letter-spacing:-.01em;}
+h2 .num{font-family:"Playfair Display",Georgia,serif;color:var(--rose);font-size:15px;font-weight:700;display:block;margin-bottom:2px;}
+h3{font-size:17.5px;font-weight:700;margin:18px 0 8px;color:var(--ink);}
+p{margin-bottom:12px;}
+ul,ol{padding-left:22px;margin-bottom:14px;}
+li{margin-bottom:8px;}
+
+/* 30秒速覽 */
+.tldr{background:var(--blush);border:1px solid var(--line);border-radius:20px;padding:20px 22px;}
+.tldr h2{color:var(--rose-deep);}
+.tldr ul{padding-left:0;list-style:none;}
+.tldr li{position:relative;padding-left:20px;margin-bottom:12px;font-size:15.5px;}
+.tldr li::before{content:"●";position:absolute;left:0;top:2px;color:var(--rose);font-size:11px;}
+.tldr li b{color:var(--rose-deep);}
+
+/* 大數字章節 */
+.big-num{font-family:"Playfair Display",Georgia,serif;font-size:52px;font-weight:700;color:var(--rose);line-height:1;margin-bottom:6px;}
+.topic-card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:24px 22px;margin-bottom:16px;}
+.fact-tag{display:inline-block;font-size:12.5px;color:var(--rose-deep);background:var(--blush);border-radius:999px;padding:3px 10px;margin-bottom:10px;font-weight:700;}
+
+/* 表格 */
+.tbl-wrap{overflow-x:auto;margin:14px 0;border-radius:16px;border:1px solid var(--line);}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:14.5px;}
+th,td{padding:11px 13px;text-align:left;border-bottom:1px solid var(--line);}
+th{background:var(--blush);color:var(--rose-deep);font-weight:700;white-space:nowrap;}
+tr:last-child td{border-bottom:none;}
+td.yes{color:var(--rose-deep);font-weight:700;}
+td.no{color:var(--ink-soft);}
+
+/* 排查步驟 */
+.steps{list-style:none;padding:0;counter-reset:step;}
+.steps li{counter-increment:step;position:relative;padding:14px 16px 14px 52px;background:var(--paper);border:1px solid var(--line);border-radius:16px;margin-bottom:10px;}
+.steps li::before{content:counter(step);position:absolute;left:14px;top:14px;width:26px;height:26px;border-radius:50%;background:var(--rose);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;}
+
+/* 指令卡 */
+.cmd-card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px;margin-bottom:14px;}
+.cmd-card summary{cursor:pointer;font-weight:700;font-size:15.5px;color:var(--rose-deep);list-style:none;display:flex;align-items:center;gap:8px;}
+.cmd-card summary::-webkit-details-marker{display:none;}
+.cmd-card summary::before{content:"▸";color:var(--rose);transition:transform .15s;}
+.cmd-card[open] summary::before{transform:rotate(90deg);}
+.cmd-card .cmd-desc{font-size:14px;color:var(--ink-soft);margin:6px 0 0 22px;}
+.cmd-card pre{
+  margin-top:12px;background:var(--blush);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+  white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  font-size:13.5px;line-height:1.6;color:var(--ink);
+}
+.copy-btn{margin-top:10px;border:1px solid var(--rose);background:#fff;color:var(--rose-deep);border-radius:12px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:14.5px;}
+.copy-btn:hover{background:var(--blush);}
+
+/* 舊 vs 新 */
+.vs-row{display:flex;gap:10px;margin-bottom:10px;align-items:stretch;}
+.vs-old,.vs-new{flex:1;border-radius:14px;padding:13px 14px;font-size:14px;}
+.vs-old{background:#F5F2F0;color:var(--ink-soft);}
+.vs-new{background:var(--blush);color:var(--rose-deep);font-weight:600;}
+.vs-label{display:block;font-size:11.5px;font-weight:900;letter-spacing:.05em;margin-bottom:4px;opacity:.7;}
+
+/* 小作業 */
+.homework{background:var(--amber-bg);border:1px solid #F0DDB0;border-radius:18px;padding:20px 22px;}
+.homework h3{margin-top:0;}
+
+/* FAQ 可見區塊 */
+.faq-item{border-bottom:1px solid var(--line);padding:14px 0;}
+.faq-item summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:10px;}
+.faq-item summary::-webkit-details-marker{display:none;}
+.faq-item summary::after{content:"+";color:var(--rose);font-size:20px;font-weight:400;flex-shrink:0;}
+.faq-item[open] summary::after{content:"–";}
+.faq-item p{margin-top:10px;color:var(--ink-soft);}
+
+/* 更新紀錄 */
+.changelog li{font-size:14.5px;color:var(--ink-soft);}
+.changelog time{color:var(--rose-deep);font-weight:700;margin-right:6px;}
+
+/* 內部連結 */
+.linklist{list-style:none;padding:0;}
+.linklist li{border:1px solid var(--line);border-radius:14px;padding:13px 16px;margin-bottom:10px;background:var(--paper);}
+.linklist a{font-weight:700;text-decoration:none;}
+.linklist a:hover{text-decoration:underline;}
+.linklist span{display:block;font-size:13.5px;color:var(--ink-soft);margin-top:3px;}
+
+/* 頁尾 */
+footer.site-foot{background:var(--blush);margin-top:24px;padding:36px 0;}
+footer.site-foot h3{font-size:18px;margin-bottom:6px;}
+footer.site-foot ol{padding-left:20px;}
+footer.site-foot li{margin-bottom:10px;}
+footer.site-foot .sig{margin-top:18px;font-weight:900;color:var(--rose-deep);}
+footer.site-foot .sig-name{margin-top:4px;color:var(--ink-soft);font-size:14.5px;}
+
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:#fff;padding:11px 16px;border-radius:999px;
+  opacity:0;pointer-events:none;transition:.22s ease;z-index:99;font-size:14px;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+@media(prefers-reduced-motion:reduce){.toast{transition:none;}}
+
+@media(max-width:520px){
+  .promise{flex:1 1 100%;}
+  .vs-row{flex-direction:column;}
+  .big-num{font-size:44px;}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><b>薇光AI課堂</b>　ViVi 老師</div>
+    <span class="updated">最後更新 2026-09-10</span>
+  </header>
+
+  <div class="hero">
+    <h1>ChatGPT 2026 <em>最新升級</em>實戰懶人包</h1>
+    <p class="lead">留言「升級」的妳，歡迎來到這一頁 💛 這幾週 ChatGPT 一次上了好幾個功能，很多人私訊我「為什麼我沒有 GPT-6」「圖像怎麼跟以前不一樣」。這篇是我一條一條查證過的整理，<b>不是憑印象寫的</b>，每一段都附來源與日期。</p>
+
+    <div class="promise-row">
+      <a class="promise" href="#sec-why">為什麼我看不到 GPT-6？</a>
+      <a class="promise" href="#sec-consistency">人像怎麼鎖住不跑掉？</a>
+      <a class="promise" href="#sec-work">Work 模式在哪裡開？</a>
+      <a class="promise" href="#sec-commands">7 組指令直接複製</a>
+    </div>
+  </div>
+
+  <section class="tldr" aria-label="30秒重點速覽">
+    <h2><span class="num">30 秒</span>重點速覽</h2>
+    <ul>
+      <li>ViVi 老師（薇光AI課堂）查證：OpenAI 於 <b>2026 年 9 月 3 日</b>發表旗艦模型 <b>GPT-6 Astra</b>，強化研究、Coding、電腦操作與多步驟長任務能力。</li>
+      <li>Plus 方案的<b>一般聊天視窗看不到 Astra</b>，聊天視窗最高仍是 GPT-5.6 Sol；Astra 只能透過 ChatGPT Work 或 Codex 使用。</li>
+      <li>聊天視窗中可直接選用 Astra 的方案是 <b>Pro／Business／Enterprise</b>，選項名稱顯示為「<b>GPT-6 Pro</b>」，Plus 不在名單內。</li>
+      <li><b>Free 與 Go 方案</b>的主要聊天模型是 <b>GPT-5.6 Luna</b>，不是 Sol，這是 OpenAI 官方說明文件寫明的。</li>
+      <li>OpenAI 於 <b>2026 年 9 月 8 日</b>推出 <b>ChatGPT Images 2.5</b>，生成速度比 2.0 版快最多 50%，並加強人像與主體在多輪編輯間的一致性。</li>
+      <li><b>ChatGPT 貼圖</b>功能於 2026 年 8 月 31 日上線，可把一張照片或一個想法變成一組貼圖，直接用在 iMessage 或 WhatsApp。</li>
+      <li>2026 年 8 月 28 日起，ChatGPT 可在同一個對話中連接<b>多組 Google 帳號</b>的 Gmail、日曆與聯絡人。</li>
+    </ul>
+  </section>
+
+  <section id="sec-image">
+    <div class="topic-card">
+      <div class="big-num">01</div>
+      <span class="fact-tag">2026-09-08 上線</span>
+      <h2>圖像 2.5：生圖更快、更穩</h2>
+      <p>OpenAI 推出 <b>ChatGPT Images 2.5</b>，生成速度比 2.0 版<b>快最多 50%</b>，光線更自然、材質細節更細緻。多輪編輯（一直請 AI 改這改那）之間也更不容易跑掉。</p>
+      <p>新增三個好用的小功能：</p>
+      <ul>
+        <li><b>手繪參考（Sketch）</b>：自己畫幾筆當構圖參考，AI 照著畫。</li>
+        <li><b>常用版型模板</b>：海報、產品照這類常見格式直接套用。</li>
+        <li><b>局部精準編輯</b>：在圖片上點出想改的地方，AI 只改那一塊，其他不動。</li>
+      </ul>
+      <p>所有 ChatGPT、ChatGPT Work、Codex 使用者都能用，不限方案。</p>
+    </div>
+  </section>
+
+  <section id="sec-consistency">
+    <div class="topic-card">
+      <div class="big-num">02</div>
+      <span class="fact-tag">同一次更新，2026-09-08</span>
+      <h2>人像一致性：同一張臉不再跑掉</h2>
+      <p>這是這次更新裡我最在意的一項，因為<b>短影音創作者最頭痛的就是「換一個場景，人就變了」</b>。圖像 2.5 官方明確加強了「多輪編輯之間的一致性」與「保留參考照片裡的主體細節」，也就是你上傳一張角色參考照後，接下來每一次生圖都能更好地保留同一張臉、同一個髮型與體態。</p>
+      <p>實際做法：先給 AI 一張清楚的正面參考照，並用文字描述固定住外型特徵（臉型、髮色、招牌配件），之後每一次生圖都附上這張參考照，只描述「場景」和「動作」要改變的部分，不要重新描述長相。下面第 6 節有現成的角色卡指令可以直接複製。</p>
+    </div>
+  </section>
+
+  <section id="sec-gpt6">
+    <div class="topic-card">
+      <div class="big-num">03</div>
+      <span class="fact-tag">2026-09-03 上線</span>
+      <h2>GPT-6 Astra：這次最大的更新</h2>
+      <p>OpenAI 的旗艦模型 <b>GPT-6 Astra</b>，主打研究能力、寫程式（Coding）、電腦操作、多步驟長任務，以及文件／試算表／簡報產出。適合拿來處理「一次講完、AI 自己跑很多步驟」的工作，而不是單純聊天。</p>
+      <p>Astra 用量<b>算在你原本的訂閱額度裡</b>，用完可以另外加購；<b>免費方案完全不含</b>，加購也沒有用。Enterprise 方案推出時<b>預設是關閉的</b>，需要工作區管理員手動開啟才看得到。</p>
+      <p>「我到底能不能用？」看下面第 4 節的方案對照表最快。</p>
+    </div>
+  </section>
+
+  <section id="sec-work">
+    <div class="topic-card">
+      <div class="big-num">04</div>
+      <span class="fact-tag">入口＋2026-08-25 更新</span>
+      <h2>Work：讓 AI 自己跑流程</h2>
+      <p><b>怎麼打開：</b>桌機 App 點左上角選單 → ChatGPT → 用上方切換鈕在「Chat」和「Work」之間切換；手機從畫面最上方往下拉，選擇 Work。</p>
+      <p>2026 年 8 月 25 日起，Work 新增了 <b>Webhook 觸發的排程任務</b>，也能在需要登入的網站上完成任務（支援帳號驗證），等於可以請 AI 幫你在特定網站上做完一連串登入後才能做的事。</p>
+      <p class="lead" style="margin-top:10px;">Work／Codex 是目前唯一「任何付費方案都能用 Astra」的入口，這點很多人不知道。</p>
+    </div>
+  </section>
+
+  <section id="sec-google">
+    <div class="topic-card">
+      <div class="big-num">05</div>
+      <span class="fact-tag">2026-08 系列更新</span>
+      <h2>Google 帳號與 Projects</h2>
+      <p><b>2026-08-28　多組 Google 帳號：</b>同一個對話可以同時連接多組 Gmail、Google 日曆與聯絡人，個人帳號和工作帳號能一起查，不用切來切去。</p>
+      <p><b>2026-08-13　Google Drive 進 Library：</b>連接 Google Drive 外掛後，可以直接在 Library 瀏覽你的雲端硬碟檔案與資料夾，包含別人分享給你的項目。</p>
+      <p><b>2026-08-14　Projects 記憶設定可改：</b>符合資格且未共用的專案，可以直接切換「預設記憶」與「僅限本專案記憶」，不用重開一個新專案；共用中的專案則固定維持「僅限本專案記憶」。</p>
+    </div>
+  </section>
+
+  <section id="sec-voice">
+    <div class="topic-card">
+      <div class="big-num">06</div>
+      <span class="fact-tag">2026-08 系列更新</span>
+      <h2>Voice 與貼圖</h2>
+      <p><b>2026-08-07　語音支援檔案與 Projects：</b>語音對話中可以直接上傳檔案並分析內容，也能延續你在某個 Project 裡的資料與指示。</p>
+      <p><b>2026-08-31　語音上鎖定畫面：</b>iPhone 上進行語音對話時，內容會顯示在鎖定畫面，有 Dynamic Island 的機型也會同步顯示。</p>
+      <p><b>2026-08-31　貼圖功能上線：</b>把一張照片或一個想法變成一組貼圖，可以直接請 ChatGPT 做貼圖包，或挑一個貼圖模板，做完存下來用在 iMessage 或 WhatsApp。</p>
+    </div>
+  </section>
+
+  <section id="sec-table">
+    <h2><span class="num">方案對照</span>誰能用什麼</h2>
+    <p>把「我到底能不能用 Astra」濃縮成一張表，直接對自己的方案看那一列就好。</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>方案</th><th>聊天視窗主要模型</th><th>聊天視窗選得到 GPT-6 Pro（Astra）</th><th>Work／Codex 用 Astra</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Free</td><td>GPT-5.6 Luna</td><td class="no">不可</td><td class="no">不可（免費方案不含 Astra）</td></tr>
+          <tr><td>Go</td><td>GPT-5.6 Luna</td><td class="no">不可</td><td class="no">不可</td></tr>
+          <tr><td>Plus</td><td>GPT-5.6 Sol</td><td class="no">不可</td><td class="yes">可（唯一入口）</td></tr>
+          <tr><td>Pro</td><td>GPT-5.6 Sol（全推理等級）</td><td class="yes">可</td><td class="yes">可</td></tr>
+          <tr><td>Business</td><td>GPT-5.6 Sol（全推理等級）</td><td class="yes">可</td><td class="yes">可</td></tr>
+          <tr><td>Enterprise</td><td>GPT-5.6 Sol（全推理等級）</td><td class="yes">可（預設關閉，需管理員開啟）</td><td class="yes">可</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13.5px;color:var(--ink-soft);margin-top:8px;">來源：<a href="https://help.openai.com/en/articles/20001354-gpt-56-in-chatgpt" target="_blank" rel="noopener noreferrer">OpenAI 官方說明中心</a>、<a href="https://openai.com/index/gpt-6-astra/" target="_blank" rel="noopener noreferrer">GPT-6 Astra 官方公告</a>，查證日 2026-09-10。</p>
+  </section>
+
+  <section id="sec-why">
+    <h2><span class="num">排查</span>為什麼老師有我卻沒有</h2>
+    <p>照順序檢查，通常第一或第二步就會找到答案。</p>
+    <ol class="steps">
+      <li><b>先確認你是不是在「一般聊天視窗」找。</b>Plus 方案的聊天視窗本來就看不到 Astra，這是最常見的誤會，不是你的帳號壞了。</li>
+      <li><b>檢查自己的方案。</b>聊天視窗版的「GPT-6 Pro」只有 Pro／Business／Enterprise 才有，Plus 不在名單內，對照上面第 4 節的表格確認一次。</li>
+      <li><b>你是 Enterprise 用戶嗎？</b>Enterprise 推出時預設是關閉的，要請你的工作區管理員手動開啟才會出現。</li>
+      <li><b>確認自己有沒有切到「Work」模式。</b>Plus 用戶能用 Astra 的唯一入口是 Work（或 Codex），不是一般 Chat 畫面。桌機在左上角選單切換，手機從最上方下拉選 Work。</li>
+      <li><b>你是免費方案嗎？</b>Free 完全不含 Astra 用量，也沒有加購選項，這一項沒有例外。</li>
+    </ol>
+  </section>
+
+  <section id="sec-commands">
+    <h2><span class="num">7 組</span>可直接複製的指令</h2>
+    <p>點開展開，按「複製這段」，貼到 ChatGPT 就能用，記得把 <code>[ ]</code> 裡的內容換成你自己的。</p>
+
+    <details class="cmd-card">
+      <summary>指令 1｜把照片修成產品質感圖（圖像2.5）</summary>
+      <p class="cmd-desc">用在賣場照片、封面圖，讓光線和背景更乾淨，但保留主體不變。</p>
+      <pre id="cmd1">請用我上傳的這張照片當參考，重新生成一張更乾淨、光線更自然的版本，保留照片裡主體的外觀與細節不要改變，只調整背景、光線與畫質。輸出成適合社群貼文使用的直式構圖。</pre>
+      <button class="copy-btn" type="button" data-copy="cmd1">⧉ 複製這段</button>
+    </details>
+
+    <details class="cmd-card">
+      <summary>指令 2｜同一張臉，換不同場景（人像一致性）</summary>
+      <p class="cmd-desc">短影音、IG 系列圖最需要的指令，先附上角色參考照再貼這段。</p>
+      <pre id="cmd2">這是我的角色參考照（已附上照片）。接下來每一次生圖都要保持這張臉的五官、髮型與體態完全一致，只更換場景、服裝與動作。這一次請生成：[描述場景，例如：她坐在窗邊喝咖啡，午後陽光灑進來]。</pre>
+      <button class="copy-btn" type="button" data-copy="cmd2">⧉ 複製這段</button>
+    </details>
+
+    <details class="cmd-card">
+      <summary>指令 3｜一週內容排程（GPT-6 Astra 長任務）</summary>
+      <p class="cmd-desc">在 Work 或有 GPT-6 Pro 的方案裡用，適合處理多步驟的規劃任務。</p>
+      <pre id="cmd3">我是短影音創作者，帳號主題是[你的主題]。請幫我規劃接下來 7 天的發文排程，每天一個主題＋一句開場鉤子＋一個 CTA，並依照 TikTok／FB＋IG／Threads 三種平台的語氣分別給我文案重點，最後整理成一張表格。</pre>
+      <button class="copy-btn" type="button" data-copy="cmd3">⧉ 複製這段</button>
+    </details>
+
+    <details class="cmd-card">
+      <summary>指令 4｜讓 AI 自動整理待辦（Work 模式）</summary>
+      <p class="cmd-desc">先切到 Work 模式再貼這段，適合有登入需求的網站任務。</p>
+      <pre id="cmd4">幫我瀏覽 [你常用的網站，例如蝦皮賣家後台]，整理出這週待處理的訂單或留言清單，依照優先順序排好，並用條列式回報給我。</pre>
+      <button class="copy-btn" type="button" data-copy="cmd4">⧉ 複製這段</button>
+    </details>
+
+    <details class="cmd-card">
+      <summary>指令 5｜一次看完信箱與行事曆（Google 串接）</summary>
+      <p class="cmd-desc">先連好你的 Google 帳號（可以連多組），再貼這段。</p>
+      <pre id="cmd5">幫我看我這週個人和工作兩個 Gmail 帳號裡，有沒有需要今天回覆的重要郵件，並對照我的 Google 日曆，提醒我今天還有哪些會議或待辦，整理成一份今日簡報給我。</pre>
+      <button class="copy-btn" type="button" data-copy="cmd5">⧉ 複製這段</button>
+    </details>
+
+    <details class="cmd-card">
+      <summary>指令 6｜短影音角色卡（鎖住同一個角色拍系列）</summary>
+      <p class="cmd-desc">先建好角色卡，之後每次生圖或寫劇本都附上，角色就不會跑掉。</p>
+      <pre id="cmd6">幫我建立一張「角色卡」：角色名稱、外型特徵（臉型、髮型、招牌配件）、個性關鍵字、說話語氣，整理成一段固定描述。之後我每次生圖或寫劇本都會附上這張角色卡，請你確保角色的外型與個性在每一集都保持一致，不要自己加新的設定。</pre>
+      <button class="copy-btn" type="button" data-copy="cmd6">⧉ 複製這段</button>
+    </details>
+
+    <details class="cmd-card">
+      <summary>指令 7｜個人 IP 貼圖包</summary>
+      <p class="cmd-desc">把自己或角色變成一組表情貼圖，存下來當限動或訊息回覆用。</p>
+      <pre id="cmd7">請用我上傳的這張照片，幫我做一組 6 張的表情貼圖，包含：開心、加油、驚訝、比讚、思考、晚安，風格可愛簡約、線條乾淨，適合做成 iMessage 或 LINE 貼圖使用。</pre>
+      <button class="copy-btn" type="button" data-copy="cmd7">⧉ 複製這段</button>
+    </details>
+  </section>
+
+  <section id="sec-old-new">
+    <h2><span class="num">對照</span>舊用法 vs 新用法</h2>
+    <div class="vs-row">
+      <div class="vs-old"><span class="vs-label">以前</span>只能連一個 Google 帳號，個人和工作要切來切去</div>
+      <div class="vs-new"><span class="vs-label">現在</span>同一個對話同時連個人＋工作帳號</div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-old"><span class="vs-label">以前</span>生圖換場景，人常常跟著跑掉</div>
+      <div class="vs-new"><span class="vs-label">現在</span>圖像2.5 多輪編輯更能保持同一張臉</div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-old"><span class="vs-label">以前</span>語音模式看不到你上傳的檔案或專案內容</div>
+      <div class="vs-new"><span class="vs-label">現在</span>語音支援上傳檔案，也能延續 Projects</div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-old"><span class="vs-label">以前</span>要做貼圖得另外找 App</div>
+      <div class="vs-new"><span class="vs-label">現在</span>直接在 ChatGPT 做成貼圖包，傳 iMessage／WhatsApp</div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-old"><span class="vs-label">以前</span>不確定 GPT-6 到底在哪裡</div>
+      <div class="vs-new"><span class="vs-label">現在</span>只在 Work／Codex，或 Pro 以上聊天視窗（顯示為 GPT-6 Pro）</div>
+    </div>
+  </section>
+
+  <section id="sec-homework">
+    <h2><span class="num">先學</span>這三個 + 小作業</h2>
+    <p>功能一次全部學會太多，先掌握對創作者最有用的三個就好：</p>
+    <ol>
+      <li><b>人像一致性</b>——先做一張角色參考照，之後系列圖都用同一張。</li>
+      <li><b>Work 模式怎麼開</b>——先找到切換鈕，之後有需要多步驟任務時才不會找不到。</li>
+      <li><b>貼圖包</b>——最快能立刻做出成品、立刻有感的一個。</li>
+    </ol>
+    <div class="homework">
+      <h3>💛 小作業</h3>
+      <p>上傳一張你自己的照片，貼上第 7 組指令，請 ChatGPT 幫你做一組 6 張表情貼圖，存下來當這週限動或訊息回覆用。做完歡迎截圖分享給我看。</p>
+    </div>
+  </section>
+
+  <section id="sec-changelog">
+    <h2><span class="num">紀錄</span>更新紀錄與來源</h2>
+    <ul class="changelog">
+      <li><time>2026-09-08</time>ChatGPT Images 2.5 上線，速度提升最多 50%、人像與主體多輪編輯更一致。來源：<a href="https://openai.com/index/introducing-chatgpt-images-2-5/" target="_blank" rel="noopener noreferrer">OpenAI 官方公告</a></li>
+      <li><time>2026-09-03</time>GPT-6 Astra 發表，強化研究、Coding、電腦操作與多步驟長任務。來源：<a href="https://openai.com/index/gpt-6-astra/" target="_blank" rel="noopener noreferrer">OpenAI 官方公告</a></li>
+      <li><time>2026-08-31</time>貼圖功能上線；語音對話內容可顯示在 iPhone 鎖定畫面／Dynamic Island。來源：<a href="https://help.openai.com/en/articles/6825453-chatgpt-release-notes" target="_blank" rel="noopener noreferrer">OpenAI 官方 Release Notes</a></li>
+      <li><time>2026-08-28</time>同一對話可連接多組 Google 帳號的 Gmail、日曆與聯絡人。來源：<a href="https://help.openai.com/en/articles/6825453-chatgpt-release-notes" target="_blank" rel="noopener noreferrer">OpenAI 官方 Release Notes</a></li>
+      <li><time>2026-08-25</time>Work 新增 Webhook 排程任務，支援需登入網站的驗證任務。</li>
+      <li><time>2026-08-14</time>Projects 記憶設定可直接切換，不用重開新專案。來源：<a href="https://help.openai.com/en/articles/6825453-chatgpt-release-notes" target="_blank" rel="noopener noreferrer">OpenAI 官方 Release Notes</a></li>
+      <li><time>2026-08-13</time>Google Drive 檔案可直接在 Library 瀏覽。來源：<a href="https://help.openai.com/en/articles/6825453-chatgpt-release-notes" target="_blank" rel="noopener noreferrer">OpenAI 官方 Release Notes</a></li>
+      <li><time>2026-08-07</time>語音模式支援上傳檔案與 Projects。來源：<a href="https://help.openai.com/en/articles/6825453-chatgpt-release-notes" target="_blank" rel="noopener noreferrer">OpenAI 官方 Release Notes</a></li>
+    </ul>
+    <p style="font-size:13px;color:var(--ink-soft);margin-top:10px;">Free／Go／Plus／Pro 的模型對照表來源：<a href="https://help.openai.com/en/articles/20001354-gpt-56-in-chatgpt" target="_blank" rel="noopener noreferrer">OpenAI 官方說明中心「GPT-5.6 in ChatGPT」</a>。全文查證日 2026-09-10，之後如有異動以官方頁面為準。</p>
+  </section>
+
+  <section id="sec-faq">
+    <h2><span class="num">FAQ</span>常見問題</h2>
+
+    <details class="faq-item" open>
+      <summary>為什麼我的 ChatGPT 看不到 GPT-6 Astra？</summary>
+      <p>最常見的原因是你在「一般聊天視窗」找，而 Plus 方案的聊天視窗最高只到 GPT-5.6 Sol，看不到 Astra。Astra 只有兩個入口：Pro／Business／Enterprise 方案的聊天視窗（顯示為「GPT-6 Pro」），或任何付費方案都能用的 ChatGPT Work／Codex。Free／Go 完全不含，也無法加購。</p>
+    </details>
+    <details class="faq-item">
+      <summary>GPT-6 Astra 跟 GPT-6 Pro 是同一個東西嗎？</summary>
+      <p>是同一個模型。Astra 是官方公告用的模型代號，「GPT-6 Pro」是它出現在聊天視窗選單裡的顯示名稱。</p>
+    </details>
+    <details class="faq-item">
+      <summary>Free 和 Go 方案的聊天模型是什麼？</summary>
+      <p>都是 GPT-5.6 Luna，不是 Sol。這是 OpenAI 官方說明文件寫明的。</p>
+    </details>
+    <details class="faq-item">
+      <summary>ChatGPT Work 模式要怎麼打開？</summary>
+      <p>桌機 App 點左上角選單 → ChatGPT → 用上方切換鈕在 Chat 和 Work 之間切換。手機從畫面最上方往下拉，選擇 Work。</p>
+    </details>
+    <details class="faq-item">
+      <summary>圖像2.5 跟以前的生圖有什麼不同？</summary>
+      <p>速度比 2.0 版快最多 50%，光線更自然、細節更細緻，多輪編輯之間更能保留同一個人物或主體的外觀。新增手繪參考、常用版型模板與更精準的局部編輯，所有 ChatGPT、Work、Codex 使用者都能用。</p>
+    </details>
+    <details class="faq-item">
+      <summary>ChatGPT 貼圖功能要怎麼用？</summary>
+      <p>直接跟 ChatGPT 說「幫我做一組貼圖」，或用一張照片、一個想法當起點，就能做出一組貼圖，存下來用在 iMessage 或 WhatsApp。</p>
+    </details>
+    <details class="faq-item">
+      <summary>一個對話可以連幾個 Google 帳號？</summary>
+      <p>2026 年 8 月 28 日起，同一個對話可以同時連接多組 Google 帳號的 Gmail、日曆與聯絡人，個人和工作帳號可以一起查。</p>
+    </details>
+    <details class="faq-item">
+      <summary>Astra／GPT-6 Pro 的用量會另外收費嗎？</summary>
+      <p>不會，用量算在你原本的訂閱額度裡，用完可以加購。免費方案完全不含 Astra，加購也沒有用。</p>
+    </details>
+  </section>
+
+  <section id="sec-links">
+    <h2><span class="num">延伸</span>其他懶人包</h2>
+    <ul class="linklist">
+      <li><a href="/notion-ai-vault/">Notion 綁定 ChatGPT｜建立 AI 提示詞資產庫</a><span>五步驟把提示詞交給 AI 自動整理保存。</span></li>
+      <li><a href="/gpts-alternative/">GPTs 建不了了怎麼辦？提示詞庫替代方案</a><span>自訂指令、專案、提示詞庫三個免費替代做法。</span></li>
+      <li><a href="/vivi-post/">讓 AI 用你自己的語氣幫你寫貼文</a><span>一行指令裝進電腦，產出三平台文案。</span></li>
+      <li><a href="/free/">免費資源總表</a><span>所有懶人包的入口，都在這一頁。</span></li>
+    </ul>
+  </section>
+</div>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <h3>下一步｜想跟著我一步一步把 AI 用起來？</h3>
+    <p>每週四下午 2 點有免費線上課，從零開始帶。</p>
+    <ol>
+      <li><strong>薇光 AI 課堂（免費線上課、主要入口）</strong><br><a href="https://945ai.com/mgm/G0OW18">https://945ai.com/mgm/G0OW18</a></li>
+      <li><strong>945AI 會員註冊（新手 0→1 入口，LINE 登入）</strong><br><a href="https://945ai.com/mgm/eLKqP0">https://945ai.com/mgm/eLKqP0</a></li>
+      <li><strong>ViVi 小群／片場（領更多提示詞）</strong><br><a href="https://reurl.cc/M28ML3">https://reurl.cc/M28ML3</a></li>
+    </ol>
+    <p class="sig">我們不用一開始就很厲害，也是因為開始了，才慢慢變得厲害。</p>
+    <p class="sig-name">—— ViVi 老師｜薇光AI課堂</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var toast = document.getElementById("toast");
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(function () { toast.classList.remove("show"); }, 1700);
+  }
+
+  document.querySelectorAll("[data-copy]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var el = document.getElementById(btn.getAttribute("data-copy"));
+      if (!el) { return; }
+      var text = el.textContent.trim();
+
+      function fallback() {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+        document.body.removeChild(ta);
+        showToast(ok ? "已複製，去 ChatGPT 貼上" : "複製失敗，請手動選取");
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () {
+          showToast("已複製，去 ChatGPT 貼上");
+        }, fallback);
+      } else {
+        fallback();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

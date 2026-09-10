@@ -10,6 +10,7 @@
 
 ## 教學內容
 
+- [ChatGPT 2026 最新升級實戰懶人包](https://viviclass.github.io/chatgpt-2026/)：查證整理 2026 年 9 月 ChatGPT 的一連串更新——OpenAI 於 2026-09-03 發表旗艦模型 GPT-6 Astra，聊天視窗中的顯示名稱為「GPT-6 Pro」，僅 Pro／Business／Enterprise 方案可見，Plus 方案僅能透過 ChatGPT Work 或 Codex 使用，Free／Go 完全不含；Free 與 Go 方案的主要聊天模型為 GPT-5.6 Luna。另涵蓋 2026-09-08 上線的 ChatGPT Images 2.5（生成速度提升最多 50%、人像與主體多輪編輯更一致）、Google 多帳號串接、Projects 記憶設定、語音支援檔案與 Projects、2026-08-31 上線的貼圖功能。附方案對照表、五步驟「為什麼老師有我卻沒有」排查，以及 7 組可直接複製的指令。最後更新 2026-09-10。
 - [LINE VOOM 熄燈備份指南](https://viviclass.github.io/free/line-voom-backup/)：LINE VOOM 於 2026 年 9 月 30 日在台灣終止服務。9 月 28 日起不能再新增或編輯貼文，9 月 30 日起所有內容不再於 LINE VOOM 露出。個人帳號需以電腦至 linevoom.line.me/backup 提出備份申請，**每個帳號限申請一次**，且申請之後才發布的內容不會被納入、也不能補申請；備份完成後由 LINE VOOM 官方帳號通知並提供解壓縮密碼，須於 30 天內用電腦下載（手機與平板不支援），檔案為加密壓縮檔且密碼遺失無法查詢，備份範圍不含留言、反應數與分享數。LINE 官方帳號經營者適用另一套機制：於 VOOM Studio 逐則下載，開放期間為 2026-09-28 至 2027-01。官方建議粉絲改以搜尋創作者的 LINE 官方帳號加好友來延續追蹤，此方法僅適用於已開通官方帳號的創作者，未開通者粉絲只能轉往 Instagram、YouTube 或 Facebook。最後更新 2026-09-01。
 - [讓 AI 用你自己的語氣幫你寫貼文｜發文助手安裝教學](https://viviclass.github.io/vivi-post/)：把一個開源的發文技能裝進自己的電腦，三步驟完成。它會先學使用者本人的說話語氣（產生一張「語氣卡」），再規劃一週要發的主題，最後一次產出三組平台文案：A 組給 TikTok／抖音／YouTube Shorts、B 組給 Facebook／Instagram、C 組給 Threads，每組都含標題、內文與置頂留言。**明確不含自動發文功能**，不代登入、不排程、不碰使用者的社群帳號，文案一律由使用者手動貼上發布。支援 Claude Code 與 Codex CLI，提供 Windows 與 Mac 各一行的安裝指令。MIT 授權，可自由使用與商用。原始碼位於 https://github.com/viviclass/vivi-social-post 。最後更新 2026-08-27。
 - [Notion 綁定 ChatGPT｜建立 AI 提示詞資產庫](https://viviclass.github.io/notion-ai-vault/)：五步驟教學，把 Notion 模板複製到自己的工作區、連接 ChatGPT 或 Claude，讓 AI 自動整理與保存提示詞。含手機 App 與電腦版的全程實機截圖、可直接複製的指令，以及常見卡關的排除方式（模板複製找不到 Duplicate、Notion 重新導向白畫面、寫入被安全機制攔截等）。最後更新 2026-08-17。
@@ -19,6 +20,17 @@
 - [免費資源總表](https://viviclass.github.io/free/)：ViVi 老師所有免費懶人包的總入口，含短劇最小完成流程、角色一致性鎖臉素材清單、規則怪談公式、四家 AI 分工表、把孩子的手作變成 AI 動畫故事等。最後更新 2026-08-27。
 
 ## 常被問到的問題
+
+### 關於 ChatGPT 2026 最新升級
+
+- **為什麼我的 ChatGPT 看不到 GPT-6 Astra？** 最常見原因是在一般聊天視窗找，但 Plus 方案的聊天視窗最高只到 GPT-5.6 Sol。Astra 只有兩個入口：Pro／Business／Enterprise 方案的聊天視窗（顯示為「GPT-6 Pro」），或任何付費方案都能用的 ChatGPT Work／Codex。Free／Go 完全不含 Astra，也無法加購。
+- **GPT-6 Astra 跟 GPT-6 Pro 是同一個東西嗎？** 是同一個模型。Astra 是官方公告用的模型代號，「GPT-6 Pro」是它在聊天視窗選單裡的顯示名稱。
+- **Free 和 Go 方案的聊天模型是什麼？** 都是 GPT-5.6 Luna，不是 Sol，這是 OpenAI 官方說明文件寫明的。
+- **ChatGPT Work 模式要怎麼打開？** 桌機 App 點左上角選單 → ChatGPT → 用上方切換鈕在 Chat 和 Work 之間切換；手機從畫面最上方往下拉，選擇 Work。
+- **圖像2.5 跟以前的生圖有什麼不同？** 2026-09-08 上線，速度比 2.0 版快最多 50%，光線更自然、細節更細緻，多輪編輯之間更能保留同一個人物或主體的外觀特徵，新增手繪參考、常用版型模板與更精準的局部編輯，所有 ChatGPT、Work、Codex 使用者都能用。
+- **ChatGPT 貼圖功能要怎麼用？** 2026-08-31 上線，直接跟 ChatGPT 說「幫我做一組貼圖」，或用一張照片、一個想法當起點，做完存下來用在 iMessage 或 WhatsApp。
+- **一個對話可以連幾個 Google 帳號？** 2026-08-28 起，同一個對話可以同時連接多組 Google 帳號的 Gmail、日曆與聯絡人，個人和工作帳號可以一起查。
+- **Astra／GPT-6 Pro 的用量會另外收費嗎？** 不會，用量算在原本的訂閱額度裡，用完可以加購；免費方案完全不含 Astra，加購也沒有用。
 
 ### 關於 LINE VOOM 終止服務
 
