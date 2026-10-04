@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>GPT × Skill｜把每天重複做的事，變成自己的 AI 技能 — 薇光AI課堂</title>
+<meta name="description" content="完全不會做 Skill 也沒關係。跟著「找、找、拆、包、裝、測、改」七個步驟，把你在 ChatGPT 做過最滿意的一次對話，變成可以重複使用的第一個 Skill。每一步都有可直接複製的指令。薇光AI課堂 ViVi 老師整理。">
+<meta name="keywords" content="GPT Skill,ChatGPT Skill,怎麼做Skill,AI技能,自訂指令,提示詞,SOP,薇光AI課堂,ViVi老師,零基礎AI">
+<link rel="canonical" href="https://viviclass.github.io/gpt-skill/">
+<meta name="robots" content="index,follow,max-image-preview:large">
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:site_name" content="薇光AI課堂">
+<meta property="og:title" content="GPT × Skill｜把每天重複做的事，變成自己的 AI 技能">
+<meta property="og:description" content="找、找、拆、包、裝、測、改，七步做出你的第一個 Skill。每一步都有可直接複製的指令。">
+<meta property="og:url" content="https://viviclass.github.io/gpt-skill/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GPT × Skill｜把每天重複做的事，變成自己的 AI 技能">
+<meta name="twitter:description" content="找、找、拆、包、裝、測、改，七步做出你的第一個 Skill。">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "HowTo",
+      "@id": "https://viviclass.github.io/gpt-skill/#howto",
+      "name": "用 ChatGPT 做出你的第一個 Skill",
+      "description": "把你在 ChatGPT 最滿意的一次成功對話，整理成可以重複使用的 Skill。",
+      "inLanguage": "zh-Hant",
+      "author": { "@id": "https://viviclass.github.io/#vivi" },
+      "publisher": { "@id": "https://viviclass.github.io/#org" },
+      "step": [
+        { "@type": "HowToStep", "name": "找事情", "text": "找一件平常重複性很高、每次流程差不多的事情。" },
+        { "@type": "HowToStep", "name": "找對話", "text": "找到一次自己最滿意、有完整來回修改的 GPT 成功對話。" },
+        { "@type": "HowToStep", "name": "拆流程", "text": "請 GPT 分析這次成功的合作流程，先產出 Skill 規格總覽，人工確認。" },
+        { "@type": "HowToStep", "name": "包 Skill", "text": "確認規格後，請 GPT 打包成完整 Skill、取中文名稱並輸出 MD 檔。" },
+        { "@type": "HowToStep", "name": "裝 Skill", "text": "把 .md 檔匯入 ChatGPT 的 Skills 功能，確認 Skill 出現在清單，之後可用 @技能名稱 在新對話呼叫；沒有該功能時，改為在新對話上傳或貼入 MD。" },
+        { "@type": "HowToStep", "name": "測 Skill", "text": "在裝好 Skill 的新對話，用正常案例與故意缺資料的案例各測一次。" },
+        { "@type": "HowToStep", "name": "改 Skill", "text": "修改 Skill 本體的規則，而不是只改這一次的答案，改完再測一次。" }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "薇光AI課堂", "item": "https://viviclass.github.io/" },
+        { "@type": "ListItem", "position": 2, "name": "GPT × Skill", "item": "https://viviclass.github.io/gpt-skill/" }
+      ]
+    }
+  ]
+}
+</script>
+
+<style>
+  :root{
+    --ink:#000;
+    --paper:#fff;
+    --pink:#D9347B;
+    --muted:#5a5a5a;
+    --line:#e4e4e4;
+    --soft:#f4f4f4;
+    --ice:#eaf4fb;
+    --maxw:640px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --ink:#fff; --paper:#0a0a0a; --muted:#a8a8a8; --line:#2a2a2a; --soft:#161616; --ice:#10202b; }
+  }
+  *{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    font-size:17px; line-height:1.85; letter-spacing:.01em;
+  }
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 20px; }
+  a{ color:var(--pink); }
+  p{ margin:0 0 16px; }
+  ul{ padding-left:20px; margin:0 0 16px; }
+  li{ margin-bottom:8px; }
+
+  /* 頂端固定進度 */
+  .progress{
+    position:sticky; top:0; z-index:20; background:var(--paper);
+    border-bottom:3px solid var(--ink); padding:10px 0 9px;
+  }
+  .progress .label{ font-size:14px; font-weight:800; letter-spacing:.06em; margin-bottom:7px; display:flex; justify-content:space-between; gap:8px; }
+  .progress .label b{ color:var(--pink); }
+  .dots{ display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
+  .dots button{
+    all:unset; cursor:pointer; height:30px; border-radius:6px;
+    background:var(--soft); border:2px solid var(--line); text-align:center;
+    font-size:12px; font-weight:800; line-height:26px; color:var(--muted);
+  }
+  .dots button.done{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  .dots button.now{ background:var(--pink); color:#fff; border-color:var(--pink); }
+  .dots button:focus-visible{ outline:3px solid var(--pink); outline-offset:2px; }
+
+  /* 各頁 */
+  .panel{ display:none; padding:34px 0 120px; animation:fade .25s ease; }
+  .panel.show{ display:block; }
+  @keyframes fade{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:none;} }
+  @media (prefers-reduced-motion:reduce){ .panel{ animation:none; } html{ scroll-behavior:auto; } }
+
+  .eyebrow{
+    display:inline-block; background:var(--pink); color:#fff;
+    font-size:13px; font-weight:700; letter-spacing:.14em;
+    padding:5px 13px; border-radius:3px; margin-bottom:16px;
+  }
+  h1{ font-size:clamp(34px,10vw,52px); line-height:1.15; margin:0 0 10px; font-weight:800; }
+  h1 .x{ color:var(--pink); }
+  h2{ font-size:26px; line-height:1.35; font-weight:800; margin:0 0 10px; }
+  h2::before{ content:""; display:block; width:38px; height:5px; background:var(--pink); margin-bottom:14px; }
+  h3{ font-size:18px; margin:26px 0 8px; font-weight:800; }
+  .sub{ font-size:20px; font-weight:700; margin:0 0 22px; }
+
+  .doNow{
+    background:var(--ink); color:var(--paper); border-radius:10px;
+    padding:14px 18px; margin:0 0 24px; font-weight:700; font-size:18px; line-height:1.6;
+  }
+  .doNow small{ display:block; font-size:13px; letter-spacing:.12em; color:var(--pink); margin-bottom:2px; }
+
+  .flow{ display:flex; flex-wrap:wrap; gap:6px; margin:0 0 26px; }
+  .flow span{ border:2px solid var(--ink); border-radius:999px; padding:3px 13px; font-weight:800; font-size:16px; }
+  .flow span.p{ background:var(--pink); border-color:var(--pink); color:#fff; }
+
+  .card{ border:2px solid var(--ink); border-radius:12px; padding:18px; margin:0 0 16px; }
+  .card h3{ margin-top:0; }
+
+  .callout{ border-radius:12px; padding:15px 17px; margin:0 0 18px; font-size:16px; }
+  .callout.blue{ background:var(--ice); }
+  .callout.yellow{ background:#fff4cc; color:#3a2f00; }
+  .callout.green{ background:#dff5e6; color:#0b3d1e; }
+  .callout.pink{ background:var(--pink); color:#fff; font-weight:700; }
+  .callout b{ font-weight:800; }
+
+  .quote{ border-left:5px solid var(--pink); padding:2px 0 2px 15px; font-size:20px; font-weight:800; margin:22px 0; line-height:1.6; }
+
+  /* 勾選 */
+  .checks{ list-style:none; padding:0; margin:0 0 18px; }
+  .checks label{
+    display:flex; gap:12px; align-items:flex-start; cursor:pointer;
+    padding:11px 14px; border:2px solid var(--line); border-radius:10px; margin-bottom:9px;
+    min-height:48px;
+  }
+  .checks input{ width:24px; height:24px; margin:2px 0 0; flex:none; accent-color:var(--pink); }
+  .checks input:checked + span{ font-weight:700; }
+  .checks label:has(input:checked){ border-color:var(--pink); background:var(--soft); }
+
+  /* 輸入欄 */
+  label.field{ display:block; font-weight:800; margin:0 0 7px; }
+  input[type=text]{
+    width:100%; font:inherit; font-size:18px; padding:13px 14px; min-height:52px;
+    border:2px solid var(--ink); border-radius:10px; background:var(--paper); color:var(--ink);
+  }
+  input[type=text]:focus{ outline:3px solid var(--pink); outline-offset:1px; }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 20px; }
+  .chips button{
+    font:inherit; font-size:15px; font-weight:700; cursor:pointer;
+    border:2px solid var(--ink); background:var(--paper); color:var(--ink);
+    border-radius:999px; padding:6px 14px; min-height:44px;
+  }
+  .chips button:hover{ background:var(--pink); border-color:var(--pink); color:#fff; }
+
+  /* Prompt 卡片 */
+  .prompt{ border:2px solid var(--ink); border-radius:12px; margin:0 0 20px; overflow:hidden; }
+  .prompt .head{ padding:14px 16px 10px; background:var(--soft); border-bottom:2px solid var(--ink); }
+  .prompt .head b{ display:block; font-size:18px; }
+  .prompt .head span{ font-size:15px; color:var(--muted); }
+  .prompt pre{
+    margin:0; padding:14px 16px; white-space:pre-wrap; word-break:break-word;
+    font-family:inherit; font-size:16px; line-height:1.75; max-height:150px; overflow:hidden; position:relative;
+  }
+  .prompt.open pre{ max-height:none; }
+  .prompt:not(.open) pre::after{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:56px;
+    background:linear-gradient(transparent,var(--paper));
+  }
+  .prompt .row{ display:flex; gap:10px; padding:12px 16px 16px; flex-wrap:wrap; }
+  .btn{
+    font:inherit; font-weight:800; font-size:17px; cursor:pointer; text-align:center;
+    min-height:48px; padding:0 20px; border-radius:8px; border:2px solid var(--ink);
+    background:var(--paper); color:var(--ink); text-decoration:none;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+  .btn.pink{ background:var(--pink); border-color:var(--pink); color:#fff; }
+  .btn.copied{ background:var(--ink); border-color:var(--ink); color:var(--paper); }
+  .prompt .row .btn.pink{ flex:1 1 150px; }
+  .btn:focus-visible{ outline:3px solid var(--pink); outline-offset:2px; }
+
+  /* 下一步列 */
+  .nav{ display:flex; gap:10px; margin-top:30px; }
+  .nav .btn{ flex:1; min-height:54px; font-size:18px; }
+  .nav .btn.pink{ flex:2; }
+
+  .tbl{ width:100%; border-collapse:collapse; margin:0 0 18px; font-size:16px; }
+  .tbl td{ border:2px solid var(--line); padding:10px 12px; vertical-align:top; }
+  .tbl td:first-child{ font-weight:800; white-space:nowrap; background:var(--soft); }
+
+  .ng{ color:#b00020; font-weight:800; }
+  .ok{ color:#0a7a3b; font-weight:800; }
+  @media (prefers-color-scheme: dark){ .ng{ color:#ff8a9b; } .ok{ color:#6ee7a0; } .callout.yellow{ background:#3a3200; color:#ffe9a0; } .callout.green{ background:#0f2e1a; color:#bdf0cf; } }
+
+  .skillname{ display:inline-block; background:var(--pink); color:#fff; border-radius:6px; padding:0 10px; font-weight:800; }
+
+  footer{ padding:34px 0 56px; font-size:14px; color:var(--muted); text-align:center; border-top:1px solid var(--line); }
+  footer .sig{ font-weight:800; color:var(--ink); font-size:16px; margin-bottom:6px; }
+  footer a{ color:var(--muted); }
+
+  noscript .callout{ margin-top:20px; }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress" hidden>
+  <div class="wrap">
+    <div class="label"><span id="plabel"></span><span><b id="pcount"></b></span></div>
+    <div class="dots" id="dots" role="tablist" aria-label="七個步驟"></div>
+  </div>
+</div>
+
+<main class="wrap">
+
+<noscript>
+  <div class="callout yellow">這個互動頁需要開啟 JavaScript 才能一步一步操作。如果你的瀏覽器擋住了，請改用 Chrome 或 Safari 開啟。</div>
+</noscript>
+
+<!-- ===== 首頁 ===== -->
+<section class="panel" id="p0" data-title="開始">
+  <span class="eyebrow">薇光AI課堂｜課後操作工具</span>
+  <h1>GPT <span class="x">×</span> Skill</h1>
+  <p class="sub">把你每天重複做的事，變成自己的 AI 技能</p>
+
+  <div class="callout pink">跟著步驟一路按下去，你就能完成自己的第一個 Skill。不用寫程式，也不用從零開始寫。</div>
+
+  <h3>你會走過這七步</h3>
+  <div class="flow" aria-label="找、找、拆、包、裝、測、改">
+    <span>找</span><span>找</span><span>拆</span><span>包</span><span>裝</span><span>測</span><span class="p">改</span>
+  </div>
+  <p>先用白話解釋一次：<b>Skill</b> 就是「一份 AI 看得懂的工作 SOP」。你把自己做事的方法寫清楚，之後每次開新對話，丟給 AI，它就照你的方法做，不用每次重新解釋。</p>
+
+  <h3>什麼事情適合做成 Skill？</h3>
+  <p>符合下面條件越多，越適合：</p>
+  <ul>
+    <li>一週至少會做 2～3 次</li>
+    <li>每次處理流程差不多</li>
+    <li>每次都要重新跟 AI 解釋</li>
+    <li>最後通常有固定的輸出成果</li>
+  </ul>
+  <p>例如：<code>開會紀錄</code>、<code>社群文案</code>、<code>圖片提示詞</code>、<code>商品介紹</code>、<code>短影音腳本</code>、<code>客戶需求整理</code>、<code>活動企劃</code>、<code>課程通知</code></p>
+  <div class="quote">Skill 不需要從最複雜的事情開始。越常做、越重複的事情，越值得先做成 Skill。</div>
+
+  <div class="nav"><button class="btn pink" data-go="1">開始製作我的第一個 Skill</button></div>
+</section>
+
+<!-- ===== STEP 1 ===== -->
+<section class="panel" id="p1" data-title="找事情">
+  <span class="eyebrow">STEP 1 / 7</span>
+  <h2>找事情</h2>
+  <div class="doNow"><small>現在要做</small>想一件你常做、每次流程都差不多的工作，把名稱填在下面。</div>
+
+  <label class="field" for="task">我想做成 Skill 的事情是：</label>
+  <input type="text" id="task" placeholder="例如：開會紀錄" autocomplete="off" maxlength="40">
+  <p style="font-size:15px;color:var(--muted);margin:10px 0 0">想不到？點一個先用，之後隨時可以改。</p>
+  <div class="chips" id="taskChips">
+    <button type="button">開會紀錄</button><button type="button">社群文案</button><button type="button">圖片提示詞</button><button type="button">商品介紹</button><button type="button">短影音腳本</button><button type="button">客戶需求整理</button><button type="button">活動企劃</button><button type="button">課程通知</button>
+  </div>
+
+  <div class="nav">
+    <button class="btn" data-go="0">回上一步</button>
+    <button class="btn pink" data-go="2">下一步｜找成功對話</button>
+  </div>
+</section>
+
+<!-- ===== STEP 2 ===== -->
+<section class="panel" id="p2" data-title="找對話">
+  <span class="eyebrow">STEP 2 / 7</span>
+  <h2>找成功對話</h2>
+  <div class="doNow"><small>現在要做</small>打開 ChatGPT，找一次你曾覺得「這一次 GPT 真的做得很好」的完整對話。</div>
+
+  <p>你要找的事情是：<span class="skillname" data-bind="task">（還沒填）</span></p>
+  <p>不要只看最後答案，要看整個過程：</p>
+  <div class="callout blue">你一開始怎麼問 → GPT 怎麼回答 → 你怎麼修改 → GPT 怎麼調整 → 最後怎麼得到你真正滿意的結果</div>
+  <div class="callout yellow"><b>最有價值的不一定是最後一個 Prompt</b>，而是你和 GPT 來回合作後形成的整套成功流程。</div>
+
+  <h3>完成確認（三個都打勾才往下）</h3>
+  <ul class="checks" data-group="s2">
+    <li><label><input type="checkbox" data-k="s2a"><span>我找到一個成功的 GPT 對話</span></label></li>
+    <li><label><input type="checkbox" data-k="s2b"><span>這個對話有完整的來回修改過程</span></label></li>
+    <li><label><input type="checkbox" data-k="s2c"><span>最後成果是我真正滿意的</span></label></li>
+  </ul>
+
+  <div class="nav">
+    <button class="btn" data-go="1">回上一步</button>
+    <button class="btn pink" data-go="3">下一步｜拆出 Skill</button>
+  </div>
+</section>
+
+<!-- ===== STEP 3 ===== -->
+<section class="panel" id="p3" data-title="拆流程">
+  <span class="eyebrow">STEP 3 / 7</span>
+  <h2>拆流程</h2>
+  <div class="doNow"><small>現在要做</small>回到剛剛那個成功對話，在最下面貼上下面這段指令，送出。</div>
+
+  <div class="prompt" data-name="拆 Skill Prompt">
+    <div class="head"><b>拆 Skill Prompt</b><span>讓 GPT 把這次成功的合作流程，抽成 Skill 規格。</span></div>
+    <pre>請分析我們上面這整段對話，不要只摘要內容。
+
+我要把這次成功的合作流程做成一個可以重複使用的 Skill。
+
+請幫我抽出：
+
+1. 這個 Skill 的目的
+2. 什麼情況下會使用
+3. 我需要提供哪些資料
+4. AI 應該按照什麼順序處理
+5. 過程中有哪些判斷規則
+6. 哪些細節一定要確認，不能自行猜測
+7. 固定的輸出格式
+8. 哪些事情不能做
+9. 最後應該怎麼檢查成果
+
+請先給我「Skill 規格總覽」。
+
+暫時不要直接打包成檔案。</pre>
+    <div class="row"><button class="btn pink" data-copy>複製 Prompt</button><button class="btn" data-toggle>展開全部</button></div>
+  </div>
+
+  <h3>GPT 回覆後，換你人工確認</h3>
+  <ul class="checks">
+    <li><label><input type="checkbox" data-k="s3a"><span>這真的是我平常做事情的方法嗎？</span></label></li>
+    <li><label><input type="checkbox" data-k="s3b"><span>執行順序正確嗎？</span></label></li>
+    <li><label><input type="checkbox" data-k="s3c"><span>有沒有漏掉重要步驟？</span></label></li>
+    <li><label><input type="checkbox" data-k="s3d"><span>AI 有沒有自己增加我沒有要求的內容？</span></label></li>
+    <li><label><input type="checkbox" data-k="s3e"><span>哪些事情一定要問我，不能自己猜？</span></label></li>
+  </ul>
+  <div class="quote">先確認流程，再打包 Skill。</div>
+
+  <div class="nav">
+    <button class="btn" data-go="2">回上一步</button>
+    <button class="btn pink" data-go="4">下一步｜包 Skill</button>
+  </div>
+</section>
+
+<!-- ===== STEP 4 ===== -->
+<section class="panel" id="p4" data-title="包 Skill">
+  <span class="eyebrow">STEP 4 / 7</span>
+  <h2>包 Skill</h2>
+  <div class="doNow"><small>現在要做</small>規格沒問題了，才貼這段，請 GPT 正式打包。接著幫 Skill 取名、輸出成 MD 檔。</div>
+
+  <div class="prompt" data-name="打包 Skill">
+    <div class="head"><b>打包 Skill</b><span>把你確認過的規格，整理成完整 Skill。</span></div>
+    <pre>這個 Skill 流程確認沒問題。
+
+請依照剛剛確認的 Skill 規格，幫我整理成一個可以重複使用的完整 Skill。
+
+請確保內容包含：
+
+1. Skill 名稱
+2. Skill 用途
+3. 適用情境
+4. 使用者需要提供的資料
+5. 固定執行流程
+6. 判斷規則
+7. 哪些資訊缺少時一定要先詢問
+8. 固定輸出格式
+9. 禁止事項
+10. 最終檢查方式
+
+請不要省略前面已經確認的重要規則。</pre>
+    <div class="row"><button class="btn pink" data-copy>複製 Prompt</button><button class="btn" data-toggle>展開全部</button></div>
+  </div>
+
+  <h3>幫 Skill 取名字</h3>
+  <p>原則：<b>看到名稱，就知道這個 Skill 是做什麼的。</b>例如：開會紀錄、文案製作、圖片提示詞、短影音分鏡、活動企劃、客戶需求整理。</p>
+  <label class="field" for="skillname">我的 Skill 名稱：</label>
+  <input type="text" id="skillname" placeholder="例如：開會紀錄" autocomplete="off" maxlength="30">
+
+  <h3>輸出成 MD 檔</h3>
+  <p><b>MD</b> 是一種純文字文件格式，可以先把它理解成「一份 AI 看得懂的工作 SOP」。</p>
+  <div class="prompt" data-name="輸出 MD">
+    <div class="head"><b>輸出 MD</b><span>讓 GPT 把 Skill 輸出成 .md 檔，換到全新對話也能用。</span></div>
+    <pre>請把這個 Skill 整理成完整的 Markdown 格式，並輸出成 .md 檔。
+
+請完整保留：
+
+- Skill 名稱
+- 用途
+- 適用情境
+- 使用者輸入
+- 執行流程
+- 判斷規則
+- 必須確認的資訊
+- 輸出格式
+- 禁止事項
+- 最終檢查清單
+
+請確保即使換到全新的 AI 對話，另一個 AI 只讀這份內容，也能理解並按照這個流程執行。</pre>
+    <div class="row"><button class="btn pink" data-copy>複製 Prompt</button><button class="btn" data-toggle>展開全部</button></div>
+  </div>
+  <div class="callout yellow">MD 是可攜式的 Skill / SOP 文件，不代表每個 AI 平台都會自動安裝。不同平台可能需要上傳 MD、貼入 Instructions，或放到 Project / Knowledge / Skill 等對應位置。</div>
+
+  <div class="nav">
+    <button class="btn" data-go="3">回上一步</button>
+    <button class="btn pink" data-go="5">下一步｜裝 Skill</button>
+  </div>
+</section>
+
+<!-- ===== STEP 5 ===== -->
+<section class="panel" id="p5" data-title="裝 Skill">
+  <span class="eyebrow">STEP 5 / 7</span>
+  <h2>裝 Skill</h2>
+  <div class="doNow"><small>現在要做</small>把剛剛做好的 .md 檔，裝進 ChatGPT，之後在新對話就能重複使用。</div>
+
+  <div class="callout pink">做好 Skill 還不夠，裝進去之後，才可以在新的對話裡重複使用。</div>
+
+  <h3>安裝前確認</h3>
+  <ul class="checks">
+    <li><label><input type="checkbox" data-k="s5a"><span>Skill 流程已確認</span></label></li>
+    <li><label><input type="checkbox" data-k="s5b"><span>Skill 已取好名稱</span></label></li>
+    <li><label><input type="checkbox" data-k="s5c"><span>已產出完整 <code>.md</code> 檔</span></label></li>
+    <li><label><input type="checkbox" data-k="s5d"><span>名稱是自己看得懂、記得住的</span></label></li>
+  </ul>
+
+  <h3>如果你的 ChatGPT 有 Skills 功能</h3>
+  <ol>
+    <li>開啟 ChatGPT 的 Skills 管理位置。</li>
+    <li>選擇新增／匯入 Skill。</li>
+    <li>上傳剛剛完成的 <code>.md</code> Skill 檔。</li>
+    <li>確認 Skill 名稱。</li>
+    <li>完成加入／安裝。</li>
+    <li>開新的對話測試。</li>
+  </ol>
+  <div class="callout green"><b>看到 Skill 出現在可使用的 Skill 清單中，才算安裝完成。</b></div>
+
+  <h3>安裝完成後怎麼用？</h3>
+  <div class="card">
+    <h3>方法 1｜直接說需求</h3>
+    <p>Skill 安裝後，可以直接在新對話說需求，ChatGPT 可依任務內容判斷是否使用相關 Skill。</p>
+  </div>
+  <div class="card">
+    <h3>方法 2｜明確指定 Skill</h3>
+    <p>如果希望這一次明確使用某個 Skill，輸入：<b>@技能名稱 ＋ 需求</b></p>
+    <p>例如：<code>@開會紀錄 幫我整理下面這場會議。</code></p>
+  </div>
+  <div class="callout pink">想明確指定 Skill → 用 @技能名稱</div>
+
+  <h3>@ 和 / 的差別</h3>
+  <ul>
+    <li><b>@技能名稱</b>：明確指定這次要使用哪一個 Skill。課堂主要教這個。</li>
+    <li><b>/</b>：叫出目前介面可使用的命令／功能選單；部分介面可能顯示已啟用 Skill，但不要當成 <code>/技能名稱</code> 在所有裝置都一定能用。</li>
+  </ul>
+
+  <h3>如果找不到 Skills 功能</h3>
+  <p>不同帳號、方案、裝置或工作區的介面可能不同。如果目前沒有 Skill 安裝功能，仍可使用 <code>.md</code>：</p>
+  <ol>
+    <li>新開一個對話，上傳 <code>.md</code>，並說：<b>「請依照這份 Skill 執行接下來的任務。」</b></li>
+    <li>如果不能上傳，就貼上 Skill 內容，並說：<b>「請閱讀並依照以上 Skill 規則執行後續任務。」</b></li>
+  </ol>
+  <table class="tbl">
+    <tr><td>有安裝</td><td>新對話可以直接使用／指定 Skill。</td></tr>
+    <tr><td>只有 MD</td><td>新對話需要重新上傳或貼入。</td></tr>
+  </table>
+
+  <h3>安裝完成確認</h3>
+  <ul class="checks">
+    <li><label><input type="checkbox" data-k="s5e"><span>Skill 出現在可使用的 Skill 清單</span></label></li>
+    <li><label><input type="checkbox" data-k="s5f"><span>Skill 名稱正確</span></label></li>
+    <li><label><input type="checkbox" data-k="s5g"><span>新開一個對話</span></label></li>
+    <li><label><input type="checkbox" data-k="s5h"><span>可以用 <code>@技能名稱</code> 指定</span></label></li>
+    <li><label><input type="checkbox" data-k="s5i"><span>AI 知道這個 Skill 是做什麼的</span></label></li>
+    <li><label><input type="checkbox" data-k="s5j"><span>不需要重新貼整份 Skill 才能開始工作</span></label></li>
+  </ul>
+
+  <div class="nav">
+    <button class="btn" data-go="4">回上一步</button>
+    <button class="btn pink" data-go="6">安裝完成｜開始測試</button>
+  </div>
+</section>
+
+<!-- ===== STEP 6 ===== -->
+<section class="panel" id="p6" data-title="測 Skill">
+  <span class="eyebrow">STEP 6 / 7</span>
+  <h2>測 Skill</h2>
+  <div class="doNow"><small>現在要做</small>用上一步裝好的 Skill，在全新對話連測兩次：一次正常、一次故意少給資料。</div>
+
+  <div class="callout blue"><b>不要在原本製作 Skill 的聊天室測。</b>那個 GPT 已經知道前面所有資訊，測試會失真。不要相信第一次成功，換一個新對話測。</div>
+
+  <h3>TEST 1｜正常測試</h3>
+  <p>在新對話裡，用 <code>@技能名稱</code> 叫出剛裝好的 Skill（沒有安裝功能的人，就上傳或貼入 MD），再給它一個新的正常案例。檢查：</p>
+  <ul class="checks">
+    <li><label><input type="checkbox" data-k="s6a"><span>有沒有按照 Skill 的流程？</span></label></li>
+    <li><label><input type="checkbox" data-k="s6b"><span>有沒有少做步驟？</span></label></li>
+    <li><label><input type="checkbox" data-k="s6c"><span>輸出格式是不是我要的？</span></label></li>
+    <li><label><input type="checkbox" data-k="s6d"><span>有沒有出現原本沒要求的內容？</span></label></li>
+    <li><label><input type="checkbox" data-k="s6e"><span>最後有沒有完成檢查？</span></label></li>
+  </ul>
+
+  <h3>TEST 2｜故意少給資料</h3>
+  <p>第二次測試時，故意不要把資料全部給完。例如 Skill 原本需要：活動名稱、日期、地點、對象；這次故意不給日期。</p>
+  <table class="tbl">
+    <tr><td class="ng">❌ 不及格</td><td>AI 自己猜了一個日期 → Skill 還需要修</td></tr>
+    <tr><td class="ok">✅ 及格</td><td>AI 告訴你缺少日期、需要確認 → 判斷規則正常</td></tr>
+  </table>
+  <ul class="checks">
+    <li><label><input type="checkbox" data-k="s6f"><span>我做過「故意少給資料」的測試了</span></label></li>
+  </ul>
+  <div class="quote">不是只測它會不會做，還要測它知不知道「什麼時候不能做」。</div>
+
+  <div class="nav">
+    <button class="btn" data-go="5">回上一步</button>
+    <button class="btn pink" data-go="7">下一步｜改 Skill</button>
+  </div>
+</section>
+
+<!-- ===== STEP 7 ===== -->
+<section class="panel" id="p7" data-title="改 Skill">
+  <span class="eyebrow">STEP 7 / 7</span>
+  <h2>改 Skill</h2>
+  <div class="doNow"><small>現在要做</small>測試出錯時，不要只說「幫我改一下」。貼下面這段，請 GPT 修改 Skill 本體。</div>
+
+  <div class="callout pink">不是改答案，是改規則。只改答案，只修這一次；改規則，才能改善未來每一次。</div>
+
+  <h3>先判斷問題屬於哪一類</h3>
+  <table class="tbl">
+    <tr><td>輸入問題</td><td>需要的資料沒有寫清楚</td></tr>
+    <tr><td>流程問題</td><td>AI 執行順序有問題</td></tr>
+    <tr><td>規則問題</td><td>沒有定義什麼能做、不能做</td></tr>
+    <tr><td>判斷問題</td><td>缺資料時 AI 沒有先詢問</td></tr>
+    <tr><td>輸出問題</td><td>格式、長度、結構不符合需求</td></tr>
+    <tr><td>檢查問題</td><td>做完沒有重新驗收</td></tr>
+  </table>
+
+  <div class="prompt" data-name="修改 Skill">
+    <div class="head"><b>修改 Skill</b><span>把【請在這裡貼上問題】換成你剛測到的問題再送出。</span></div>
+    <pre>剛剛測試這個 Skill 時，出現以下問題：
+
+【請在這裡貼上問題】
+
+請不要只修改這一次的答案。
+
+請先判斷問題出在 Skill 本體的哪一個部分：
+
+- 輸入條件
+- 執行流程
+- 判斷規則
+- 必須確認的資訊
+- 輸出格式
+- 禁止事項
+- 最終檢查
+
+請幫我修改 Skill 本體。
+
+修改後請告訴我：
+
+1. 原本哪裡有問題
+2. 修改了哪一條規則
+3. 為什麼這樣修改
+4. 未來如何避免再次發生
+
+最後請重新輸出完整最新版 Skill。</pre>
+    <div class="row"><button class="btn pink" data-copy>複製 Prompt</button><button class="btn" data-toggle>展開全部</button></div>
+  </div>
+
+  <div class="callout blue"><b>改完要再測一次。</b>開一個新的測試，同一個問題不再出現，才代表這次修改成功。</div>
+
+  <h3>Skill 改完，也要更新安裝版本</h3>
+  <p>如果 Skill 本體已經從 v1 改成 v2：</p>
+  <ol>
+    <li>重新輸出最新版 <code>.md</code></li>
+    <li>更新／重新匯入 Skill</li>
+    <li>確認舊版本是否需要停用</li>
+    <li>再開新對話測試</li>
+    <li>確認目前使用的是最新版</li>
+  </ol>
+
+  <h3>版本管理</h3>
+  <p>每次重要修改後留一個版本，檔名像這樣：</p>
+  <p><code>開會紀錄_v1.md</code>　<code>開會紀錄_v2.md</code>　<code>開會紀錄_v3.md</code></p>
+  <p>建議記錄：Skill 名稱、版本、修改日期、修改原因、修改內容。範例：</p>
+  <div class="card">
+    <b>開會紀錄 v2｜2026/10/08</b><br>
+    修改原因：AI 在缺少會議日期時自行產生日期。<br>
+    修改內容：新增「未提供日期時，必須先詢問使用者，不得自行推測。」
+  </div>
+
+  <div class="nav">
+    <button class="btn" data-go="6">回上一步</button>
+    <button class="btn pink" data-go="8">我改好了｜看完成頁</button>
+  </div>
+</section>
+
+<!-- ===== 完成頁 ===== -->
+<section class="panel" id="p8" data-title="完成">
+  <span class="eyebrow">DONE</span>
+  <h2>🎉 我的第一個 Skill 完成了</h2>
+  <p>你的 Skill：<span class="skillname" data-bind="skillname">（還沒取名）</span></p>
+  <p>對照一下，每一項都打勾，才算真的完成：</p>
+  <ul class="checks" id="finalChecks">
+    <li><label><input type="checkbox" data-k="f1"><span>找到一個高頻重複工作</span></label></li>
+    <li><label><input type="checkbox" data-k="f2"><span>找到一個成功 GPT 對話</span></label></li>
+    <li><label><input type="checkbox" data-k="f3"><span>拆出成功流程</span></label></li>
+    <li><label><input type="checkbox" data-k="f4"><span>人工確認 Skill 規格</span></label></li>
+    <li><label><input type="checkbox" data-k="f5"><span>幫 Skill 取名字</span></label></li>
+    <li><label><input type="checkbox" data-k="f6"><span>完成 Skill 打包</span></label></li>
+    <li><label><input type="checkbox" data-k="f7"><span>輸出 MD</span></label></li>
+    <li><label><input type="checkbox" data-k="f7b"><span>把 Skill 裝進 ChatGPT，新對話可以直接用</span></label></li>
+    <li><label><input type="checkbox" data-k="f8"><span>新開對話測試</span></label></li>
+    <li><label><input type="checkbox" data-k="f9"><span>測試缺資料情況</span></label></li>
+    <li><label><input type="checkbox" data-k="f10"><span>修改 Skill 本體</span></label></li>
+    <li><label><input type="checkbox" data-k="f11"><span>保存最新版</span></label></li>
+  </ul>
+
+  <div class="flow" aria-label="找、找、拆、包、裝、測、改"><span>找</span><span>找</span><span>拆</span><span>包</span><span>裝</span><span>測</span><span class="p">改</span></div>
+  <div class="quote">不要從零寫 Skill。把你已經成功做過的事情，複製成 Skill。</div>
+  <div class="quote">不是改答案，是改規則。</div>
+  <p>好的 Skill，不是一次寫完，而是在每一次使用後，越來越接近你的工作方法。</p>
+
+  <div class="nav">
+    <button class="btn" data-go="7">回上一步</button>
+    <button class="btn pink" data-go="0">回到最前面</button>
+  </div>
+  <p style="margin-top:20px"><button class="btn" id="reset" style="width:100%;font-size:15px;min-height:44px">清除我在這一頁填的資料，重新開始</button></p>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="sig">薇光 AI 課堂｜GPT × Skill</div>
+    <p>不同 AI 平台對 Skill、Instructions、Project、Knowledge 等功能的支援方式可能不同，實際使用方式依各平台功能為準。</p>
+    <p><a href="/">← 回薇光AI課堂首頁</a>　<a href="/free/">免費資源總表</a></p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var KEY = 'gptSkill.v2';
+  var state = { step: 0, task: '', skillname: '', checks: {} };
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(raw){ var s = JSON.parse(raw); if(s && typeof s === 'object'){
+        state.step = +s.step || 0; state.task = s.task || ''; state.skillname = s.skillname || ''; state.checks = s.checks || {};
+      } }
+    }catch(e){}
+  }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  var last = panels.length - 1;               // 8 = 完成頁
+  var progress = document.getElementById('progress');
+  var dots = document.getElementById('dots');
+  var names = ['找事情','找對話','拆流程','包 Skill','裝 Skill','測 Skill','改 Skill'];
+
+  names.forEach(function(n, i){
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = (i+1); b.setAttribute('aria-label','STEP '+(i+1)+' '+n);
+    b.addEventListener('click', function(){ go(i+1); });
+    dots.appendChild(b);
+  });
+
+  function bindText(){
+    document.querySelectorAll('[data-bind]').forEach(function(el){
+      var v = state[el.getAttribute('data-bind')];
+      if(v){ el.textContent = v; el.style.display = ''; }
+      else { el.textContent = el.getAttribute('data-bind') === 'task' ? '（還沒填，回 STEP 1 填一下）' : '（還沒取名，回 STEP 4 取一個）'; }
+    });
+  }
+
+  function go(n, noScroll){
+    n = Math.max(0, Math.min(last, n));
+    state.step = n; save();
+    panels.forEach(function(p, i){ p.classList.toggle('show', i === n); });
+    if(n >= 1 && n <= 7){
+      progress.hidden = false;
+      document.getElementById('plabel').textContent = 'STEP ' + n + ' / 7｜' + names[n-1];
+      document.getElementById('pcount').textContent = '';
+    } else if(n === 8){
+      progress.hidden = false;
+      document.getElementById('plabel').textContent = '全部完成';
+      document.getElementById('pcount').textContent = '';
+    } else { progress.hidden = true; }
+    Array.prototype.forEach.call(dots.children, function(b, i){
+      b.classList.toggle('now', i+1 === n);
+      b.classList.toggle('done', i+1 < n);
+    });
+    bindText();
+    if(!noScroll) window.scrollTo(0, 0);
+    try{ history.replaceState(null, '', n ? '#step' + n : location.pathname + location.search); }catch(e){}
+  }
+
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('[data-go]');
+    if(t){ go(+t.getAttribute('data-go')); return; }
+
+    var c = e.target.closest('[data-copy]');
+    if(c){
+      var card = c.closest('.prompt');
+      var text = card.querySelector('pre').innerText;
+      copy(text, function(ok){
+        var old = '複製 Prompt';
+        c.textContent = ok ? '✓ 已複製' : '複製失敗，請長按文字手動複製';
+        c.classList.add('copied');
+        setTimeout(function(){ c.textContent = old; c.classList.remove('copied'); }, 2200);
+      });
+      return;
+    }
+    var tg = e.target.closest('[data-toggle]');
+    if(tg){
+      var pc = tg.closest('.prompt');
+      pc.classList.toggle('open');
+      tg.textContent = pc.classList.contains('open') ? '收合' : '展開全部';
+    }
+  });
+
+  function copy(text, done){
+    function fallback(){
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly',''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var ok = false; try{ ok = document.execCommand('copy'); }catch(e){}
+      document.body.removeChild(ta); done(ok);
+    }
+    if(navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(function(){ done(true); }, fallback);
+    } else { fallback(); }
+  }
+
+  // 輸入欄
+  var task = document.getElementById('task');
+  var sname = document.getElementById('skillname');
+  task.addEventListener('input', function(){
+    state.task = task.value.trim(); save(); bindText();
+    // 還沒取名時，Skill 名稱預設跟著工作名稱
+    if(!sname.dataset.touched){ sname.value = state.task; state.skillname = state.task; save(); }
+  });
+  sname.addEventListener('input', function(){ sname.dataset.touched = '1'; state.skillname = sname.value.trim(); save(); bindText(); });
+  document.getElementById('taskChips').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    task.value = b.textContent; task.dispatchEvent(new Event('input'));
+  });
+
+  // 勾選
+  document.querySelectorAll('input[type=checkbox][data-k]').forEach(function(cb){
+    cb.checked = !!state.checks[cb.getAttribute('data-k')];
+    cb.addEventListener('change', function(){ state.checks[cb.getAttribute('data-k')] = cb.checked; save(); });
+  });
+
+  document.getElementById('reset').addEventListener('click', function(){
+    if(!confirm('確定要清掉你填的 Skill 名稱和打勾紀錄嗎？')) return;
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    location.hash = ''; location.reload();
+  });
+
+  // 啟動
+  load();
+  task.value = state.task; sname.value = state.skillname;
+  if(state.skillname && state.skillname !== state.task) sname.dataset.touched = '1';
+  document.querySelectorAll('input[type=checkbox][data-k]').forEach(function(cb){ cb.checked = !!state.checks[cb.getAttribute('data-k')]; });
+  var m = /^#step(\d)$/.exec(location.hash);
+  go(m ? +m[1] : state.step, true);
+  window.addEventListener('hashchange', function(){
+    var h = /^#step(\d)$/.exec(location.hash); go(h ? +h[1] : 0);
+  });
+})();
+</script>
+</body>
+</html>
