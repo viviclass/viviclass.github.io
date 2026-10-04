@@ -19,9 +19,13 @@
   </url>
   <url>
     <loc>https://viviclass.github.io/gpt-skill/</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://viviclass.github.io/gpt-skill/vivi-share.jpg</image:loc>
+      <image:caption>GPT × Skill｜不用每次重新教 GPT｜薇光AI課堂</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://viviclass.github.io/notion-ai-vault/</loc>
