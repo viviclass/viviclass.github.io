@@ -155,7 +155,7 @@
           "@type": "HowToStep",
           "position": 5,
           "name": "裝 Skill",
-          "text": "把 .md 檔匯入 ChatGPT 的 Skills 功能，確認 Skill 出現在清單，之後可用 @技能名稱 在新對話呼叫；沒有該功能時，改為在新對話上傳或貼入 MD。",
+          "text": "在對話中上傳 .md 檔並貼上安裝指令，讓 ChatGPT 把它安裝成 Skill；確認回覆「已安裝」後，依 ChatGPT 告知的呼叫方式在新對話使用；沒有安裝功能時，改為在新對話上傳或貼入 MD。",
           "url": "https://viviclass.github.io/gpt-skill/#step5"
         },
         {
@@ -326,6 +326,17 @@
   .about img{ width:84px; height:84px; flex:none; border-radius:50%; object-fit:cover; border:3px solid var(--pink); }
   .about b{ display:block; font-size:18px; margin-bottom:2px; }
   .about p{ margin:0; font-size:15.5px; line-height:1.7; color:var(--muted); }
+
+  /* Skill 名稱鎖定 */
+  .nm{ background:#fde9f0; color:#b0215f; font-weight:800; border-radius:5px; padding:0 5px; }
+  .nm.empty{ background:#eee; color:#777; }
+  @media (prefers-color-scheme: dark){ .nm{ background:#4a1530; color:#ff9cc6; } .nm.empty{ background:#2a2a2a; color:#aaa; } }
+  .prompt pre .nm{ white-space:normal; }
+  .names{ border:2px solid var(--ink); border-radius:12px; padding:6px 14px 14px; margin:0 0 14px; }
+  .nrow{ margin-top:12px; }
+  .nlabel{ display:block; font-weight:800; font-size:15px; margin-bottom:4px; }
+  .nrow b.nm{ display:inline-block; font-size:18px; padding:2px 10px; }
+  .names input[type=text]{ font-size:17px; min-height:48px; }
 
   /* 常見問題 */
   .faq details{ border-bottom:1px solid var(--line); padding:12px 0; }
@@ -599,13 +610,23 @@
 <section class="panel" id="p4" data-title="包 Skill">
   <span class="eyebrow">STEP 4 / 7</span>
   <h2>包 Skill</h2>
-  <div class="doNow"><small>現在要做</small>規格沒問題了，才貼這段，請 GPT 正式打包。接著幫 Skill 取名、輸出成 MD 檔。</div>
+  <div class="doNow"><small>現在要做</small>先確認 Skill 名稱，再貼指令請 GPT 打包，最後輸出成 MD 檔並核對名稱。</div>
 
+  <h3>先確認 Skill 名稱</h3>
+  <p>原則：<b>看到名稱，就知道這個 Skill 是做什麼的。</b>例如：開會紀錄、文案製作、圖片提示詞、短影音分鏡、活動企劃、客戶需求整理。</p>
+  <label class="field" for="skillname">我的 Skill 名稱：</label>
+  <input type="text" id="skillname" placeholder="例如：開會紀錄" autocomplete="off" maxlength="30">
+  <div class="callout blue" style="margin-top:14px"><b>這個名稱會自動寫進下面的指令，</b>讓 ChatGPT 照用，不會自己改名。名稱在 STEP 1 填的事情會先帶進來，不對就直接改。</div>
+
+  <h3>請 GPT 打包</h3>
   <div class="prompt" data-name="打包 Skill">
     <div class="head"><b>打包 Skill</b><span>把你確認過的規格，整理成完整 Skill。</span></div>
     <pre>這個 Skill 流程確認沒問題。
 
 請依照剛剛確認的 Skill 規格，幫我整理成一個可以重複使用的完整 Skill。
+
+這個 Skill 的名稱固定為：「<span class="nm" data-name-bind></span>」。
+請直接使用這個名稱，不要自己改名、翻譯或加字。
 
 請確保內容包含：
 
@@ -624,16 +645,13 @@
     <div class="row"><button class="btn pink" data-copy>複製 Prompt</button><button class="btn" data-toggle>展開全部</button></div>
   </div>
 
-  <h3>幫 Skill 取名字</h3>
-  <p>原則：<b>看到名稱，就知道這個 Skill 是做什麼的。</b>例如：開會紀錄、文案製作、圖片提示詞、短影音分鏡、活動企劃、客戶需求整理。</p>
-  <label class="field" for="skillname">我的 Skill 名稱：</label>
-  <input type="text" id="skillname" placeholder="例如：開會紀錄" autocomplete="off" maxlength="30">
-
   <h3>輸出成 MD 檔</h3>
   <p><b>MD</b> 是一種純文字文件格式，可以先把它理解成「一份 AI 看得懂的工作 SOP」。</p>
   <div class="prompt" data-name="輸出 MD">
     <div class="head"><b>輸出 MD</b><span>讓 GPT 把 Skill 輸出成 .md 檔，換到全新對話也能用。</span></div>
     <pre>請把這個 Skill 整理成完整的 Markdown 格式，並輸出成 .md 檔。
+
+Skill 名稱固定為：「<span class="nm" data-name-bind></span>」，請不要更改。
 
 請完整保留：
 
@@ -651,6 +669,15 @@
 請確保即使換到全新的 AI 對話，另一個 AI 只讀這份內容，也能理解並按照這個流程執行。</pre>
     <div class="row"><button class="btn pink" data-copy>複製 Prompt</button><button class="btn" data-toggle>展開全部</button></div>
   </div>
+  <h3>核對名稱有沒有被改</h3>
+  <p>輸出之後，先請 GPT 自查一次：名字有沒有被偷偷改掉。</p>
+  <div class="prompt" data-name="核對 MD 裡的名稱">
+    <div class="head"><b>核對 MD 裡的名稱</b><span>輸出 MD 之後貼這段，確認名稱就是你取的。</span></div>
+    <pre>請列出這份 .md 檔裡的 Skill 名稱，並確認是否和我指定的「<span class="nm" data-name-bind></span>」完全相同。
+
+如果不同，請改成「<span class="nm" data-name-bind></span>」，並重新輸出完整 .md 檔，其他內容不要動。</pre>
+    <div class="row"><button class="btn pink" data-copy>複製 Prompt</button><button class="btn" data-toggle>展開全部</button></div>
+  </div>
   <div class="callout yellow">MD 是可攜式的 Skill / SOP 文件，不代表每個 AI 平台都會自動安裝。不同平台可能需要上傳 MD、貼入 Instructions，或放到 Project / Knowledge / Skill 等對應位置。</div>
 
   <div class="nav">
@@ -663,7 +690,7 @@
 <section class="panel" id="p5" data-title="裝 Skill">
   <span class="eyebrow">STEP 5 / 7</span>
   <h2>裝 Skill</h2>
-  <div class="doNow"><small>現在要做</small>把剛剛做好的 .md 檔，裝進 ChatGPT，之後在新對話就能重複使用。</div>
+  <div class="doNow"><small>現在要做</small>開新對話、上傳 .md 檔，貼上安裝指令，讓 ChatGPT 把它裝成 Skill。</div>
 
   <div class="callout pink">做好 Skill 還不夠，裝進去之後，才可以在新的對話裡重複使用。</div>
 
@@ -675,16 +702,38 @@
     <li><label><input type="checkbox" data-k="s5d"><span>名稱是自己看得懂、記得住的</span></label></li>
   </ul>
 
-  <h3>如果你的 ChatGPT 有 Skills 功能</h3>
+  <h3>安裝方法｜上傳 MD ＋ 貼安裝指令</h3>
+  <ol>
+    <li>開一個新的 ChatGPT 對話。</li>
+    <li>按迴紋針，上傳 STEP 4 輸出的 <code>.md</code> 檔。</li>
+    <li>貼上下面的「安裝 Skill」指令，送出。</li>
+    <li>等 ChatGPT 回覆「已安裝」，並告訴你名稱、用途和呼叫方式。</li>
+  </ol>
+  <div class="prompt" data-name="安裝 Skill">
+    <div class="head"><b>安裝 Skill</b><span>上傳 .md 檔之後，貼這段，讓 ChatGPT 把它裝成 Skill。</span></div>
+    <pre>我上傳了一份 Skill 的 .md 檔，請把它安裝成可以重複使用的 Skill。
+
+安裝時請注意：
+1. 使用檔案裡的 Skill 名稱
+2. 不要改寫或省略檔案裡的任何規則
+3. 裝好後告訴我：Skill 名稱、用途，以及我之後要怎麼呼叫它
+4. 如果檔案裡的 Skill 名稱和「<span class="nm" data-name-bind></span>」不同，請先告訴我，不要自己決定
+
+如果你的環境沒有辦法安裝 Skill，請直接告訴我原因，不要假裝已經安裝，並告訴我最接近的替代做法。</pre>
+    <div class="row"><button class="btn pink" data-copy>複製 Prompt</button><button class="btn" data-toggle>展開全部</button></div>
+  </div>
+  <div class="callout green"><b>看到 ChatGPT 回覆「已安裝」，並出現「查看已安裝的 Skill」，才算安裝完成。</b></div>
+  <div class="callout yellow"><b>把它回覆的「呼叫方式」記下來。</b>之後呼叫用的名稱，以它回覆的為準，有時會和你取的中文名稱不一樣。</div>
+
+  <h3>另一條路｜從 Skills 管理位置匯入</h3>
+  <p>如果你的 ChatGPT 有 Skills 管理頁，也可以從那裡匯入：</p>
   <ol>
     <li>開啟 ChatGPT 的 Skills 管理位置。</li>
     <li>選擇新增／匯入 Skill。</li>
     <li>上傳剛剛完成的 <code>.md</code> Skill 檔。</li>
     <li>確認 Skill 名稱。</li>
-    <li>完成加入／安裝。</li>
-    <li>開新的對話測試。</li>
+    <li>完成加入／安裝，再開新的對話測試。</li>
   </ol>
-  <div class="callout green"><b>看到 Skill 出現在可使用的 Skill 清單中，才算安裝完成。</b></div>
 
   <h3>安裝完成後怎麼用？</h3>
   <div class="card">
@@ -693,36 +742,51 @@
   </div>
   <div class="card">
     <h3>方法 2｜明確指定 Skill</h3>
-    <p>如果希望這一次明確使用某個 Skill，輸入：<b>@技能名稱 ＋ 需求</b></p>
-    <p>例如：<code>@開會紀錄 幫我整理下面這場會議。</code></p>
+    <p>如果希望這一次明確使用某個 Skill，照 ChatGPT 安裝完告訴你的呼叫方式用。常見的是直接說：<b>「使用〈Skill 名稱〉，幫我……」</b>，也可以用 <code>@</code> 叫出 Skill。</p>
+    <p>例如：<code>使用「開會紀錄」，幫我整理下面這場會議。</code></p>
   </div>
-  <div class="callout pink">想明確指定 Skill → 用 @技能名稱</div>
 
   <h3>@ 和 / 的差別</h3>
   <ul>
-    <li><b>@技能名稱</b>：明確指定這次要使用哪一個 Skill。課堂主要教這個。</li>
+    <li><b>@</b>：明確指定這次要使用哪一個 Skill。</li>
     <li><b>/</b>：叫出目前介面可使用的命令／功能選單；部分介面可能顯示已啟用 Skill，但不要當成 <code>/技能名稱</code> 在所有裝置都一定能用。</li>
   </ul>
 
-  <h3>如果找不到 Skills 功能</h3>
-  <p>不同帳號、方案、裝置或工作區的介面可能不同。如果目前沒有 Skill 安裝功能，仍可使用 <code>.md</code>：</p>
-  <ol>
-    <li>新開一個對話，上傳 <code>.md</code>，並說：<b>「請依照這份 Skill 執行接下來的任務。」</b></li>
-    <li>如果不能上傳，就貼上 Skill 內容，並說：<b>「請閱讀並依照以上 Skill 規則執行後續任務。」</b></li>
-  </ol>
+  <h3>如果沒辦法安裝</h3>
+  <p>不同帳號、方案、裝置或工作區的介面可能不同。如果 ChatGPT 回覆沒有安裝功能，仍可使用 <code>.md</code>，在新對話貼下面其中一段：</p>
+  <div class="prompt" data-name="備用指令｜已上傳 MD">
+    <div class="head"><b>備用指令｜已上傳 MD</b><span>沒有安裝功能時，新開對話、上傳 .md 後貼這句。</span></div>
+    <pre>請依照這份 Skill 執行接下來的任務。</pre>
+    <div class="row"><button class="btn pink" data-copy>複製 Prompt</button><button class="btn" data-toggle>展開全部</button></div>
+  </div>
+  <div class="prompt" data-name="備用指令｜貼上內容">
+    <div class="head"><b>備用指令｜貼上內容</b><span>不能上傳檔案時，先把 Skill 全文貼進對話，再貼這句。</span></div>
+    <pre>請閱讀並依照以上 Skill 規則執行後續任務。</pre>
+    <div class="row"><button class="btn pink" data-copy>複製 Prompt</button><button class="btn" data-toggle>展開全部</button></div>
+  </div>
   <table class="tbl">
     <tr><td>有安裝</td><td>新對話可以直接使用／指定 Skill。</td></tr>
     <tr><td>只有 MD</td><td>新對話需要重新上傳或貼入。</td></tr>
   </table>
 
   <h3>安裝完成確認</h3>
+  <h3>名稱三對照</h3>
+  <p>安裝完成後，把這三個名字並排看一次。名字對不上，之後就叫不出這個 Skill。</p>
+  <div class="names">
+    <div class="nrow"><span class="nlabel">① 我取的名稱</span><b class="nm" data-name-bind></b></div>
+    <div class="nrow"><label class="nlabel" for="mdname">② MD 檔裡的名稱</label><input type="text" id="mdname" placeholder="打開 .md 檔，把名稱貼在這裡" autocomplete="off" maxlength="60"></div>
+    <div class="nrow"><label class="nlabel" for="callname">③ ChatGPT 回報的呼叫名稱</label><input type="text" id="callname" placeholder="貼上 ChatGPT 告訴你的呼叫名稱" autocomplete="off" maxlength="80"></div>
+  </div>
+  <div class="callout blue" id="nameCheck"></div>
+
   <ul class="checks">
-    <li><label><input type="checkbox" data-k="s5e"><span>Skill 出現在可使用的 Skill 清單</span></label></li>
+    <li><label><input type="checkbox" data-k="s5e"><span>ChatGPT 回覆「已安裝」，Skill 出現在可使用的清單</span></label></li>
     <li><label><input type="checkbox" data-k="s5f"><span>Skill 名稱正確</span></label></li>
     <li><label><input type="checkbox" data-k="s5g"><span>新開一個對話</span></label></li>
-    <li><label><input type="checkbox" data-k="s5h"><span>可以用 <code>@技能名稱</code> 指定</span></label></li>
-    <li><label><input type="checkbox" data-k="s5i"><span>AI 知道這個 Skill 是做什麼的</span></label></li>
+    <li><label><input type="checkbox" data-k="s5h"><span>我知道怎麼呼叫它（照 ChatGPT 回覆的呼叫方式）</span></label></li>
     <li><label><input type="checkbox" data-k="s5j"><span>不需要重新貼整份 Skill 才能開始工作</span></label></li>
+    <li><label><input type="checkbox" data-k="s5k"><span>我確認 MD 檔裡的名稱，就是我取的名稱</span></label></li>
+    <li><label><input type="checkbox" data-k="s5l"><span>我記下了 ChatGPT 回報的呼叫名稱</span></label></li>
   </ul>
 
   <div class="nav">
@@ -735,12 +799,28 @@
 <section class="panel" id="p6" data-title="測 Skill">
   <span class="eyebrow">STEP 6 / 7</span>
   <h2>測 Skill</h2>
-  <div class="doNow"><small>現在要做</small>用上一步裝好的 Skill，在全新對話連測兩次：一次正常、一次故意少給資料。</div>
+  <div class="doNow"><small>現在要做</small>用上一步裝好的 Skill，在全新對話先確認它讀到了，再連測兩次：一次正常、一次故意少給資料。</div>
 
   <div class="callout blue"><b>不要在原本製作 Skill 的聊天室測。</b>那個 GPT 已經知道前面所有資訊，測試會失真。不要相信第一次成功，換一個新對話測。</div>
 
+  <h3>TEST 0｜先確認它真的讀到了</h3>
+  <p>開一個新對話，貼下面這段（網頁已自動帶入你的 Skill 名稱），<b>先不要給它工作</b>，看它說得對不對：</p>
+  <div class="prompt" data-name="確認 Skill 有裝好">
+    <div class="head"><b>確認 Skill 有裝好</b><span>把【Skill 名稱】換成你的，看 ChatGPT 是不是真的讀到。</span></div>
+    <pre>請先不要開始做事。
+
+請使用我剛安裝的「<span class="nm" data-name-bind></span>」，告訴我：
+1. 這個 Skill 的名稱和用途
+2. 我需要提供哪些資料
+3. 缺少哪些資料時，你一定要先問我</pre>
+    <div class="row"><button class="btn pink" data-copy>複製 Prompt</button><button class="btn" data-toggle>展開全部</button></div>
+  </div>
+  <ul class="checks">
+    <li><label><input type="checkbox" data-k="s5i"><span>AI 說得出這個 Skill 的用途和需要的資料</span></label></li>
+  </ul>
+
   <h3>TEST 1｜正常測試</h3>
-  <p>在新對話裡，用 <code>@技能名稱</code> 叫出剛裝好的 Skill（沒有安裝功能的人，就上傳或貼入 MD），再給它一個新的正常案例。檢查：</p>
+  <p>在新對話裡，用 ChatGPT 安裝完告訴你的呼叫方式，叫出剛裝好的 Skill（沒有安裝功能的人，就上傳或貼入 MD），再給它一個新的正常案例。檢查：</p>
   <ul class="checks">
     <li><label><input type="checkbox" data-k="s6a"><span>有沒有按照 Skill 的流程？</span></label></li>
     <li><label><input type="checkbox" data-k="s6b"><span>有沒有少做步驟？</span></label></li>
@@ -890,13 +970,13 @@
 <script>
 (function(){
   var KEY = 'gptSkill.v2';
-  var state = { step: 0, task: '', skillname: '', checks: {} };
+  var state = { step: 0, task: '', skillname: '', mdname: '', callname: '', checks: {} };
 
   function load(){
     try{
       var raw = localStorage.getItem(KEY);
       if(raw){ var s = JSON.parse(raw); if(s && typeof s === 'object'){
-        state.step = +s.step || 0; state.task = s.task || ''; state.skillname = s.skillname || ''; state.checks = s.checks || {};
+        state.step = +s.step || 0; state.task = s.task || ''; state.skillname = s.skillname || ''; state.mdname = s.mdname || ''; state.callname = s.callname || ''; state.checks = s.checks || {};
       } }
     }catch(e){}
   }
@@ -915,7 +995,22 @@
     dots.appendChild(b);
   });
 
+  function normName(v){ return (v || '').replace(/[「」『』"'“”\s]/g, '').toLowerCase(); }
+  function bindName(){
+    document.querySelectorAll('[data-name-bind]').forEach(function(el){
+      el.textContent = state.skillname || '【你的 Skill 名稱】';
+      el.classList.toggle('empty', !state.skillname);
+    });
+    var box = document.getElementById('nameCheck'); if(!box) return;
+    var mdn = state.mdname, call = state.callname, me = state.skillname, msg, cls = 'callout blue';
+    if(!me){ msg = '你還沒取 Skill 名稱，請回 STEP 4 填一個。'; cls = 'callout yellow'; }
+    else if(!mdn){ msg = '把 .md 檔裡的名稱貼在②，我幫你比對。'; }
+    else if(normName(mdn) === normName(me)){ msg = '<b>✓ ② 和 ① 一致。</b>MD 檔裡的名稱就是你取的。' + (call && normName(call) !== normName(me) ? ' ③ 和你取的不同，這可能是 ChatGPT 的顯示方式，之後請用它回報的名稱呼叫。' : ''); cls = 'callout green'; }
+    else { msg = '<b>⚠️ ② 和 ① 不一樣。</b>MD 檔裡的名稱被改掉了，之後可能叫不出來。請回 STEP 4，貼「核對 MD 裡的名稱」那張卡，請 GPT 改回來、重新輸出，再重新安裝。'; cls = 'callout yellow'; }
+    box.className = cls; box.innerHTML = msg;
+  }
   function bindText(){
+    bindName();
     document.querySelectorAll('[data-bind]').forEach(function(el){
       var v = state[el.getAttribute('data-bind')];
       if(v){ el.textContent = v; el.style.display = ''; }
@@ -952,6 +1047,11 @@
     var c = e.target.closest('[data-copy]');
     if(c){
       var card = c.closest('.prompt');
+      if(card.querySelector('.nm') && !state.skillname){
+        c.textContent = '請先回 STEP 4 填 Skill 名稱'; c.classList.add('copied');
+        setTimeout(function(){ c.textContent = '複製 Prompt'; c.classList.remove('copied'); }, 2600);
+        return;
+      }
       var text = card.querySelector('pre').innerText;
       copy(text, function(ok){
         var old = '複製 Prompt';
@@ -991,6 +1091,9 @@
     if(!sname.dataset.touched){ sname.value = state.task; state.skillname = state.task; save(); }
   });
   sname.addEventListener('input', function(){ sname.dataset.touched = '1'; state.skillname = sname.value.trim(); save(); bindText(); });
+  var mdnameEl = document.getElementById('mdname'), callnameEl = document.getElementById('callname');
+  mdnameEl.addEventListener('input', function(){ state.mdname = mdnameEl.value.trim(); save(); bindName(); });
+  callnameEl.addEventListener('input', function(){ state.callname = callnameEl.value.trim(); save(); bindName(); });
   document.getElementById('taskChips').addEventListener('click', function(e){
     var b = e.target.closest('button'); if(!b) return;
     task.value = b.textContent; task.dispatchEvent(new Event('input'));
@@ -1015,7 +1118,7 @@
     ['找對話', '找一次你最滿意的 GPT 成功對話。要看整個來回合作的過程，不是只看最後答案。'],
     ['拆流程', '請 GPT 分析這次成功的合作流程，先產出「Skill 規格總覽」，你確認過再往下。'],
     ['包 Skill', '把確認好的規格整理成完整 Skill，取一個看名字就懂的中文名稱，輸出成 .md 檔。'],
-    ['裝 Skill', '把 .md 檔裝進 ChatGPT，之後在新對話就能用「@技能名稱」呼叫它。'],
+    ['裝 Skill', '上傳 .md 檔、貼上安裝指令，讓 ChatGPT 裝成 Skill，之後在新對話就能呼叫它。'],
     ['測 Skill', '開新對話測兩次：一次正常案例，一次故意少給資料，看它會不會停下來問你。'],
     ['改 Skill', '不是改答案，是改規則。改完要更新安裝版本，再測一次。']
   ];
@@ -1035,7 +1138,7 @@
 
   // 啟動
   load();
-  task.value = state.task; sname.value = state.skillname;
+  task.value = state.task; sname.value = state.skillname; mdnameEl.value = state.mdname; callnameEl.value = state.callname;
   if(state.skillname && state.skillname !== state.task) sname.dataset.touched = '1';
   document.querySelectorAll('input[type=checkbox][data-k]').forEach(function(cb){ cb.checked = !!state.checks[cb.getAttribute('data-k')]; });
   var m = /^#step(\d)$/.exec(location.hash);
