@@ -78,23 +78,39 @@ async function addFiles(files) {
   render();
 }
 
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
 function render() {
   fileList.innerHTML = '';
   items.forEach((it, i) => {
     const li = document.createElement('li');
-    li.innerHTML = `<span class="nm">${i + 1}. ${it.file.name}</span>
-                    <span class="du">${it.dur.toFixed(1)}s · ${it.w}×${it.h}</span>
-                    <span class="x" data-i="${i}">✕</span>`;
+    li.innerHTML =
+      `<span class="seq">${i + 1}</span>
+       <span class="nm">${esc(it.file.name)}<br><span class="du">${it.dur.toFixed(1)}s · ${it.w}×${it.h}</span></span>
+       <span class="mv">
+         <button data-up="${i}" ${i === 0 ? 'disabled' : ''} title="往前">↑</button>
+         <button data-dn="${i}" ${i === items.length - 1 ? 'disabled' : ''} title="往後">↓</button>
+       </span>
+       <span class="x" data-i="${i}" title="移除">✕</span>`;
     fileList.appendChild(li);
   });
-  fileList.querySelectorAll('.x').forEach(x => x.onclick = () => { items.splice(+x.dataset.i, 1); render(); });
+  fileList.querySelectorAll('[data-i]').forEach(b => b.onclick = () => { items.splice(+b.dataset.i, 1); render(); });
+  fileList.querySelectorAll('[data-up]').forEach(b => b.onclick = () => { const i = +b.dataset.up; [items[i-1], items[i]] = [items[i], items[i-1]]; render(); });
+  fileList.querySelectorAll('[data-dn]').forEach(b => b.onclick = () => { const i = +b.dataset.dn; [items[i+1], items[i]] = [items[i], items[i+1]]; render(); });
+
   const total = items.reduce((s, i) => s + i.dur, 0);
   if (items.length) {
     const li = document.createElement('li');
     li.style.background = 'transparent';
     li.innerHTML = `<span class="nm" style="color:#8a8a8a">合計 ${items.length} 段</span>
-                    <span class="du" style="color:#D9347B">${total.toFixed(1)} 秒</span>`;
+                    <span class="du" style="color:#D9347B;font-size:13px">${total.toFixed(1)} 秒</span>`;
     fileList.appendChild(li);
+    const note = document.createElement('div');
+    note.className = 'orderNote';
+    note.textContent = items.length > 1
+      ? '上面的順序就是接片順序，用 ↑ ↓ 可以調整。'
+      : '';
+    fileList.appendChild(note);
   }
   go.disabled = items.length === 0;
   updateHint();
