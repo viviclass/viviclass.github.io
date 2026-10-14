@@ -18,13 +18,32 @@ const drop=$('drop'), pick=$('pick'), fileList=$('files'), secsIn=$('secs'),
       planEl=$('plan'), warnEl=$('warn'), doneEl=$('done'), prev=$('prev'), dl=$('dl'),
       verifyEl=$('verify'), errEl=$('err'), dlSrt=$('dlSrt'),
       bSubOn=$('bSubOn'), bSubOff=$('bSubOff'), subOpts=$('subOpts'), subHint=$('subHint'),
-      bQBase=$('bQBase'), bQSmall=$('bQSmall');
+      bQBase=$('bQBase'), bQSmall=$('bQSmall'),
+      bPause=$('bPause'), bPad=$('bPad'), bSlow=$('bSlow'), shortHint=$('shortHint');
 
 let items = [];        // {file, dur, w, h}
 let portrait = false;
 let wantSub = true;    // 預設自動上字幕
 let quality = 'base';
+// 長度不符時怎麼補。預設 slow：太長快轉、太短放慢，全片都有聲音。
+// 考試作業規定秒數的情境下，這個最安全 —— 不會出現任何沒聲音的空檔。
+let shortMode = 'slow';    // slow 變速 / pause 調整停頓 / pad 定格補尾
 let ffmpeg = null, loaded = false;
+
+const SHORT_HINT = {
+  slow:  '太長就快轉、太短就放慢。全片都有聲音，不會有空檔',
+  pause: '太長就砍掉停頓、太短就拉長停頓。說話速度不變，但中間會有安靜的片段',
+  pad:   '最後一幀定格補到指定秒數。補太多的話結尾會有一段沒聲音',
+};
+function pickShort(mode, btn) {
+  shortMode = mode;
+  [bPause, bPad, bSlow].forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  updateHint();
+}
+bPause.onclick = () => pickShort('pause', bPause);
+bPad.onclick   = () => pickShort('pad', bPad);
+bSlow.onclick  = () => pickShort('slow', bSlow);
 
 bSubOn.onclick  = () => { wantSub = true;  bSubOn.classList.add('on');  bSubOff.classList.remove('on'); subOpts.classList.remove('off'); };
 bSubOff.onclick = () => { wantSub = false; bSubOff.classList.add('on'); bSubOn.classList.remove('on');  subOpts.classList.add('off'); };
@@ -38,6 +57,24 @@ function updateHint() {
   const est = Math.ceil((total || target) * m.rate / 10) * 10;
   subHint.textContent = `繁體中文．英文保留原文．第一次要下載辨識模型約 ${m.mb} MB`
     + (total ? `．辨識這段大約要 ${est >= 60 ? Math.ceil(est / 60) + ' 分鐘' : est + ' 秒'}` : '');
+
+  let h = SHORT_HINT[shortMode];
+  if (total) {
+    const sp = total / target;
+    if (total > target + 0.15) {
+      if (shortMode === 'slow' || sp <= MAX_SPEEDUP)
+        h += `　→ 這次會快轉 ${sp.toFixed(2)} 倍` + (sp > MAX_SPEEDUP ? '，講話會明顯變快' : '');
+      else h += '　→ 這次會先砍掉停頓再快轉';
+    } else if (total < target - 0.15) {
+      const need = target - total;
+      if (shortMode === 'slow')     h += `　→ 這次會放慢到 ${sp.toFixed(2)} 倍` + (sp < 0.85 ? '，會明顯聽得出來' : '');
+      else if (shortMode === 'pad') h += `　→ 這次結尾會定格 ${need.toFixed(0)} 秒`;
+      else                          h += `　→ 這次要在停頓裡補 ${need.toFixed(0)} 秒`;
+    } else {
+      h += '　→ 長度剛好，不用調整';
+    }
+  }
+  shortHint.textContent = h;
 }
 secsIn.addEventListener('input', updateHint);
 
@@ -133,6 +170,27 @@ function setProg(p) {
 }
 const showErr = m => { errEl.style.display = 'block'; errEl.textContent = m; };
 
+// iOS Safari 的 <a download> 對 blob 沒用 —— 它會直接在分頁裡開啟而不是存檔。
+// 有 Web Share API 就走系統分享（可以存進「檔案」或相簿），沒有才退回 <a download>。
+async function saveFile(blob, name) {
+  const file = new File([blob], name, { type: blob.type });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file] });
+      $('saveHint').textContent = '';
+      return;
+    } catch (e) {
+      if (e && e.name === 'AbortError') return;   // 使用者自己取消，不用退回下載
+    }
+  }
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+  $('saveHint').textContent = '如果沒有跳出儲存，長按上面的影片選「下載」也可以。';
+}
+
 // ---------- 載入引擎 ----------
 async function ensureLoaded() {
   if (loaded) return;
@@ -164,12 +222,51 @@ function concatFilter(n, W, H, tail) {
   return parts.join(';');
 }
 
-// atempo 單次上限 2.0，超過要串接
+// atempo 一次只吃 0.5～2.0，超出範圍要串接好幾層
 function atempoChain(sp) {
   const out = []; let r = sp;
   while (r > 2.0) { out.push('atempo=2.0'); r /= 2.0; }
+  while (r < 0.5) { out.push('atempo=0.5'); r /= 0.5; }
   out.push(`atempo=${r.toFixed(6)}`);
   return out.join(',');
+}
+
+/** 把要補的時間分散到說話之間的停頓裡，說話速度完全不動。
+ *  只挑最長的幾個停頓來拉，不然 filter 會長到 wasm 吃不消。 */
+function planStretch(silences, totalDur, needExtra, maxPauses = 6) {
+  const usable = silences
+    .filter(s => s.end - s.start > 0.3)
+    .sort((a, b) => (b.end - b.start) - (a.end - a.start))
+    .slice(0, maxPauses)
+    .sort((a, b) => a.start - b.start);
+  if (!usable.length) return null;
+
+  const per = needExtra / usable.length;
+  const segs = [];
+  let cur = 0;
+  for (const s of usable) {
+    if (s.start > cur + 0.05) segs.push({ start: cur, end: s.start, stretch: 1 });
+    const dur = s.end - s.start;
+    segs.push({ start: s.start, end: s.end, stretch: (dur + per) / dur });
+    cur = s.end;
+  }
+  if (cur < totalDur - 0.05) segs.push({ start: cur, end: totalDur, stretch: 1 });
+  return segs;
+}
+
+/** 把分段計畫組成 filter_complex */
+function stretchFilter(segs) {
+  const parts = [], labels = [];
+  segs.forEach((s, i) => {
+    const t = `trim=${s.start.toFixed(3)}:${s.end.toFixed(3)}`;
+    const at = `atrim=${s.start.toFixed(3)}:${s.end.toFixed(3)}`;
+    parts.push(`[0:v]${t},setpts=${s.stretch === 1 ? 'PTS-STARTPTS' : `(PTS-STARTPTS)*${s.stretch.toFixed(6)}`}[sv${i}]`);
+    // 停頓本來就是靜音，放慢聽不出來
+    parts.push(`[0:a]${at},asetpts=PTS-STARTPTS${s.stretch === 1 ? '' : `,${atempoChain(1 / s.stretch)}`}[sa${i}]`);
+    labels.push(`[sv${i}][sa${i}]`);
+  });
+  parts.push(`${labels.join('')}concat=n=${segs.length}:v=1:a=1[v][a]`);
+  return parts.join(';');
 }
 
 // ---------- 主流程 ----------
@@ -200,10 +297,19 @@ go.onclick = async () => {
     // ── 預先判斷策略。能一次做完就不要編碼兩次（省一半時間）──
     const ratio = srcTotal / target;
     let plan, oneShot = true;
-    if (Math.abs(srcTotal - target) <= TOLERANCE)  plan = { kind: 'cut',  note: '長度本來就剛好' };
-    else if (srcTotal > target && ratio <= MAX_SPEEDUP) plan = { kind: 'speed', sp: ratio, note: `加速 ${ratio.toFixed(3)} 倍` };
-    else if (srcTotal < target) plan = { kind: 'pad', pad: target - srcTotal, note: `補尾 ${(target - srcTotal).toFixed(2)} 秒（定格最後一幀，不放慢語速）` };
-    else { plan = { kind: 'trim' }; oneShot = false; }   // 太長太多 → 要先砍停頓
+    if (Math.abs(srcTotal - target) <= TOLERANCE) {
+      plan = { kind: 'cut', note: '長度本來就剛好' };
+    } else if (srcTotal > target) {
+      // 變速模式一律快轉到底，不砍內容 —— 考試作業要的是秒數剛好且全程有聲音
+      if (shortMode === 'slow' || ratio <= MAX_SPEEDUP)
+        plan = { kind: 'speed', sp: ratio, note: `快轉 ${ratio.toFixed(3)} 倍` };
+      else { plan = { kind: 'trim' }; oneShot = false; }   // 其他模式才先砍停頓
+    } else {
+      const need = target - srcTotal;
+      if (shortMode === 'pad')       plan = { kind: 'pad', pad: need, note: `定格補尾 ${need.toFixed(2)} 秒` };
+      else if (shortMode === 'slow') plan = { kind: 'speed', sp: ratio, note: `放慢到 ${ratio.toFixed(3)} 倍` };
+      else { plan = { kind: 'stretch', need }; oneShot = false; }  // 拉長停頓要先偵測靜音
+    }
 
     let src = null;        // 兩階段時的中間檔
     let curDur = srcTotal; // 砍完停頓後的實際長度，警告訊息要用這個算
@@ -217,15 +323,41 @@ go.onclick = async () => {
         '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', 'merged.mp4']);
       for (const n of names) { try { await ffmpeg.deleteFile(n); } catch {} }
 
-      // 偵測長停頓
-      setStage('太長了，正在找可以砍掉的停頓…', 0.50, 0.06);
+      // 偵測停頓。太長要砍、太短要拉，兩種情況都得先知道停頓在哪
+      setStage(plan.kind === 'stretch' ? '正在找說話之間的空檔…' : '太長了，正在找可以砍掉的停頓…', 0.50, 0.06);
       logBuf = [];
-      await ffmpeg.exec(['-i', 'merged.mp4', '-af', `silencedetect=noise=-32dB:d=${MIN_SILENCE}`, '-f', 'null', '-']);
+      const detectD = plan.kind === 'stretch' ? 0.35 : MIN_SILENCE;   // 要拉長的話，短一點的空檔也算
+      await ffmpeg.exec(['-i', 'merged.mp4', '-af', `silencedetect=noise=-32dB:d=${detectD}`, '-f', 'null', '-']);
       const text = logBuf.join('\n');
       const starts = [...text.matchAll(/silence_start:\s*([\d.]+)/g)].map(m => +m[1]);
       const ends   = [...text.matchAll(/silence_end:\s*([\d.]+)/g)].map(m => +m[1]);
 
-      // 每段停頓留 0.25 秒當呼吸，其餘砍掉
+      // ── 太短：把要補的時間分散到停頓裡，說話速度完全不動 ──
+      if (plan.kind === 'stretch') {
+        const sil = starts.map((s, i) => ({ start: s, end: i < ends.length ? ends[i] : srcTotal }))
+                          .filter(x => x.end > x.start);
+        const segs = planStretch(sil, srcTotal, plan.need);
+        if (segs && segs.some(s => s.stretch > 1)) {
+          const n = segs.filter(s => s.stretch > 1).length;
+          planEl.textContent = `合併後 ${srcTotal.toFixed(2)} 秒\n在 ${n} 個停頓裡補上 ${plan.need.toFixed(1)} 秒，說話速度不變`;
+          setStage('拉長停頓…', 0.56, 0.20);
+          await ffmpeg.exec(['-i', 'merged.mp4', '-filter_complex', stretchFilter(segs),
+            '-map', '[v]', '-map', '[a]',
+            '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '23', '-pix_fmt', 'yuv420p',
+            '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', 'stretched.mp4']);
+          try { await ffmpeg.deleteFile('merged.mp4'); } catch {}
+          src = 'stretched.mp4';
+          curDur = target;
+          plan = { kind: 'cut', note: `拉長了 ${n} 個停頓` };
+        } else {
+          planEl.textContent = `合併後 ${srcTotal.toFixed(2)} 秒\n找不到可以拉長的空檔，改用定格補尾`;
+          src = 'merged.mp4';
+          curDur = srcTotal;
+          plan = { kind: 'pad', pad: plan.need, note: `定格補尾 ${plan.need.toFixed(2)} 秒` };
+        }
+      } else {
+
+      // ── 太長：每段停頓留 0.25 秒當呼吸，其餘砍掉 ──
       const keep = []; let cursor = 0;
       for (let i = 0; i < starts.length; i++) {
         const s = starts[i], e = (i < ends.length ? ends[i] : srcTotal);
@@ -257,6 +389,7 @@ go.onclick = async () => {
       plan = r2 > 1 ? { kind: 'speed', sp: r2, note: `加速 ${r2.toFixed(3)} 倍` }
            : r2 < 1 ? { kind: 'pad', pad: target - curDur, note: `補尾 ${(target - curDur).toFixed(2)} 秒` }
                     : { kind: 'cut', note: '剛好' };
+      }   // ← 太長那條路結束
     }
 
     // 加速超過安全線要講。建議秒數要用「砍完停頓後」的長度算，
@@ -302,7 +435,7 @@ go.onclick = async () => {
     await ffmpeg.exec(args);
 
     // ── 字幕 ──
-    let finalName = 'out.mp4', srtURL = null, cardCount = 0;
+    let finalName = 'out.mp4', srtBlob = null, cardCount = 0;
     if (wantSub) {
       // 先剪再辨識：這樣字幕時間一定對，不用因為變速去重算時間軸
       setStage('抽出聲音…', 0.42, 0.02);
@@ -337,8 +470,7 @@ go.onclick = async () => {
           '-c:a', 'copy', 'final.mp4']);
         finalName = 'final.mp4';
 
-        const srtBlob = new Blob([toSRT(cards)], { type: 'text/plain;charset=utf-8' });
-        srtURL = URL.createObjectURL(srtBlob);
+        srtBlob = new Blob([toSRT(cards)], { type: 'text/plain;charset=utf-8' });
       } else {
         planEl.textContent += '\n（這段聲音辨識不出內容，沒有加字幕）';
       }
@@ -360,8 +492,9 @@ go.onclick = async () => {
 
     setProg(1);
     prev.src = url;
-    dl.href = url;
-    dl.download = `成品_${Math.round(target)}秒.mp4`;
+    const outName = `成品_${Math.round(target)}秒.mp4`;
+    dl.onclick = () => saveFile(blob, outName);
+    $('saveHint').textContent = '';
     const diff = Math.abs(real - target);
     const ok = isFinite(real) && diff <= TOLERANCE;
     verifyEl.innerHTML =
@@ -369,10 +502,9 @@ go.onclick = async () => {
       `${ok ? '' : ' <span style="color:#fbbf24">⚠ 秒數沒對上</span>'}<br>` +
       `${W}×${H}　${(blob.size / 1024 / 1024).toFixed(1)} MB　耗時 ${Math.round((Date.now() - t0) / 1000)} 秒` +
       (cardCount ? `<br>字幕 ${cardCount} 張` : '');
-    if (srtURL) {
+    if (srtBlob) {
       dlSrt.style.display = 'block';
-      dlSrt.href = srtURL;
-      dlSrt.download = `字幕_${Math.round(target)}秒.srt`;
+      dlSrt.onclick = () => saveFile(srtBlob, `字幕_${Math.round(target)}秒.srt`);
     } else {
       dlSrt.style.display = 'none';
     }

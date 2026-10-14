@@ -91,12 +91,13 @@
 
   #done{display:none}
   video{width:100%; border-radius:10px; background:#000; margin-bottom:12px}
-  .dl2{display:block; text-align:center; background:transparent; color:var(--pink);
+  .dl2{display:block; width:100%; text-align:center; background:transparent; color:var(--pink);
        border:1px solid var(--pink); text-decoration:none; border-radius:12px;
-       padding:13px; font-size:14px; margin-top:10px}
+       padding:13px; font-size:14px; margin-top:10px; font-family:inherit; cursor:pointer}
   #dl{
-    display:block; text-align:center; background:var(--pink); color:#fff; text-decoration:none;
-    border-radius:12px; padding:16px; font-size:16px; font-weight:700;
+    display:block; width:100%; text-align:center; background:var(--pink); color:#fff;
+    text-decoration:none; border:0; border-radius:12px; padding:16px;
+    font-size:16px; font-weight:700; font-family:inherit; cursor:pointer;
   }
   #verify{font-size:13px; margin-top:12px; color:var(--dim); font-variant-numeric:tabular-nums}
   #verify b{color:var(--ok)}
@@ -142,6 +143,14 @@
     </div>
   </div>
 
+  <label style="margin-top:16px">長度不符的時候怎麼補</label>
+  <div class="seg">
+    <button id="bSlow" class="on">變速</button>
+    <button id="bPause">調整停頓</button>
+    <button id="bPad">定格補尾</button>
+  </div>
+  <div class="hint" id="shortHint">太長就快轉、太短就放慢。全片都有聲音，不會有空檔</div>
+
   <label style="margin-top:16px">字幕</label>
   <div class="seg">
     <button id="bSubOn" class="on">自動上字幕</button>
@@ -172,8 +181,9 @@
 <div class="card" id="done">
   <div class="step">完成</div>
   <video id="prev" controls playsinline></video>
-  <a id="dl" download>下載成品</a>
-  <a id="dlSrt" class="dl2" download style="display:none">順便下載字幕檔（.srt）</a>
+  <button id="dl">儲存成品</button>
+  <button id="dlSrt" class="dl2" style="display:none">順便存字幕檔（.srt）</button>
+  <div id="saveHint" class="hint"></div>
   <div id="verify"></div>
 </div>
 
