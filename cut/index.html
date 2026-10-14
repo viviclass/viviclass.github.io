@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>精準秒數剪輯｜薇光 AI 課堂</title>
+<meta name="description" content="上傳影片、指定秒數，自動合併並輸出剛好那麼長的 MP4。影片不會上傳，全部在你自己的裝置上處理。">
+<style>
+  :root{
+    --pink:#D9347B; --bg:#000; --fg:#fff;
+    --dim:#8a8a8a; --line:#242424; --card:#0e0e0e;
+    --ok:#4ade80; --warn:#fbbf24; --bad:#f87171;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html,body{margin:0; padding:0; background:var(--bg); color:var(--fg)}
+  body{
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    line-height:1.65; padding:16px; padding-bottom:48px;
+    max-width:680px; margin:0 auto;
+  }
+  h1{font-size:22px; margin:8px 0 4px; letter-spacing:.5px}
+  h1 span{color:var(--pink)}
+  .sub{color:var(--dim); font-size:13px; margin-bottom:22px}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:14px}
+  .step{font-size:12px; color:var(--pink); font-weight:700; letter-spacing:1px; margin-bottom:10px}
+
+  /* 拖放區 */
+  #drop{
+    border:2px dashed #333; border-radius:14px; padding:30px 16px; text-align:center;
+    cursor:pointer; transition:.15s; background:#080808;
+  }
+  #drop.over{border-color:var(--pink); background:#1a0a12}
+  #drop .big{font-size:15px; margin-bottom:6px}
+  #drop .small{font-size:12px; color:var(--dim)}
+  #files{list-style:none; padding:0; margin:12px 0 0; font-size:13px}
+  #files li{
+    display:flex; justify-content:space-between; gap:10px; align-items:center;
+    padding:9px 11px; background:#141414; border-radius:8px; margin-bottom:6px;
+  }
+  #files .nm{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  #files .du{color:var(--dim); flex:0 0 auto; font-variant-numeric:tabular-nums}
+  #files .x{color:#666; cursor:pointer; flex:0 0 auto; padding:0 4px; font-size:17px}
+  #files .x:hover{color:var(--bad)}
+
+  label{display:block; font-size:13px; color:var(--dim); margin-bottom:7px}
+  input[type=number]{
+    width:100%; background:#141414; border:1px solid var(--line); color:var(--fg);
+    border-radius:10px; padding:13px; font-size:17px; font-family:inherit;
+  }
+  input[type=number]:focus{outline:none; border-color:var(--pink)}
+  .seg{display:flex; gap:8px}
+  .seg button{
+    flex:1; background:#141414; border:1px solid var(--line); color:var(--dim);
+    border-radius:10px; padding:13px 8px; font-size:14px; font-family:inherit; cursor:pointer;
+  }
+  .seg button.on{background:var(--pink); border-color:var(--pink); color:#fff; font-weight:700}
+  .row{display:flex; gap:12px}
+  .row > div{flex:1}
+
+  #go{
+    width:100%; background:var(--pink); color:#fff; border:0; border-radius:12px;
+    padding:17px; font-size:17px; font-weight:700; font-family:inherit; cursor:pointer;
+    margin-top:4px;
+  }
+  #go:disabled{background:#2a2a2a; color:#666; cursor:not-allowed}
+
+  #progWrap{display:none}
+  .bar{height:8px; background:#1c1c1c; border-radius:99px; overflow:hidden; margin:12px 0 8px}
+  .bar i{display:block; height:100%; width:0; background:var(--pink); transition:width .25s}
+  .pmeta{display:flex; justify-content:space-between; font-size:12px; color:var(--dim); font-variant-numeric:tabular-nums}
+  #plan{font-size:13px; margin-top:12px; padding:11px; background:#141414; border-radius:8px; white-space:pre-wrap}
+  #warn{display:none; font-size:13px; margin-top:10px; padding:11px; border-radius:8px;
+        background:#2a1f05; border:1px solid #4a3a08; color:var(--warn); white-space:pre-wrap}
+
+  #done{display:none}
+  video{width:100%; border-radius:10px; background:#000; margin-bottom:12px}
+  #dl{
+    display:block; text-align:center; background:var(--pink); color:#fff; text-decoration:none;
+    border-radius:12px; padding:16px; font-size:16px; font-weight:700;
+  }
+  #verify{font-size:13px; margin-top:12px; color:var(--dim); font-variant-numeric:tabular-nums}
+  #verify b{color:var(--ok)}
+  #err{display:none; color:var(--bad); font-size:13px; padding:12px; background:#2a0d0d;
+       border:1px solid #4a1515; border-radius:8px; white-space:pre-wrap}
+
+  details{margin-top:18px; font-size:13px; color:var(--dim)}
+  summary{cursor:pointer; padding:8px 0}
+  details p{margin:6px 0}
+  .foot{margin-top:28px; font-size:12px; color:#555; text-align:center; line-height:1.9}
+  .foot b{color:var(--pink)}
+</style>
+</head>
+<body>
+
+<h1>精準秒數剪輯<span>．</span></h1>
+<div class="sub">上傳影片 → 指定秒數 → 輸出剛好那麼長的 MP4<br>
+影片<b style="color:#fff">不會上傳到任何地方</b>，全部在你自己的裝置上處理</div>
+
+<div class="card">
+  <div class="step">① 選影片</div>
+  <div id="drop">
+    <div class="big">點這裡選影片，或把檔案拖進來</div>
+    <div class="small">多段也可以．由上到下就是接片順序</div>
+  </div>
+  <input type="file" id="pick" accept="video/*" multiple hidden>
+  <ul id="files"></ul>
+</div>
+
+<div class="card">
+  <div class="step">② 設定</div>
+  <div class="row">
+    <div>
+      <label>要輸出幾秒</label>
+      <input type="number" id="secs" value="60" min="1" max="1800" step="1" inputmode="numeric">
+    </div>
+    <div>
+      <label>畫面比例</label>
+      <div class="seg">
+        <button id="bLand" class="on">橫式</button>
+        <button id="bPort">直式</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button id="go" disabled>開始剪輯</button>
+
+<div class="card" id="progWrap">
+  <div class="step">處理中</div>
+  <div id="stage">準備中…</div>
+  <div class="bar"><i id="pbar"></i></div>
+  <div class="pmeta"><span id="ppct">0%</span><span id="peta"></span></div>
+  <div id="plan"></div>
+  <div id="warn"></div>
+</div>
+
+<div class="card" id="done">
+  <div class="step">完成</div>
+  <video id="prev" controls playsinline></video>
+  <a id="dl" download>下載成品</a>
+  <div id="verify"></div>
+</div>
+
+<div id="err"></div>
+
+<details>
+  <summary>它會怎麼把長度調到我要的秒數？</summary>
+  <p><b>影片比目標長，差 15% 以內</b> → 加速。音高不變，不會變成花栗鼠的聲音。</p>
+  <p><b>影片比目標長，差超過 15%</b> → 先砍掉講話之間的長停頓，不夠再加速。如果加速會超過 1.15 倍，會先警告你，因為講話會明顯變快。</p>
+  <p><b>影片比目標短</b> → 不會放慢，用最後一幀定格補到指定秒數。<br>
+     為什麼不放慢？45 秒放慢成 60 秒等於 0.75 倍速，講話會變慢動作，一聽就知道不對。</p>
+  <p><b>多段規格不一樣</b>（1080p、720p、直式混在一起）會自動統一再接起來。</p>
+</details>
+
+<details>
+  <summary>為什麼第一次開比較慢？</summary>
+  <p>第一次要下載約 31 MB 的影片處理引擎，之後瀏覽器會記住，再開就很快。</p>
+  <p>引擎載好之後<b>完全不需要網路</b>，斷網也能剪完。</p>
+</details>
+
+<details>
+  <summary>處理要多久？</summary>
+  <p>實測：45 秒素材做成 30 秒成品，電腦上約 2 分鐘。手機會慢一些。</p>
+  <p><b>處理中請不要關掉這個分頁</b>。可以切去別的分頁做事，但手機切太久可能被系統中斷。</p>
+</details>
+
+<div class="foot">
+  <b>薇光 AI 課堂</b><br>
+  影片全程留在你的裝置上，沒有上傳、沒有伺服器
+</div>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>
