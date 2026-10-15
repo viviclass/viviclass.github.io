@@ -12,6 +12,94 @@
 <meta property="og:title" content="圖片規格檢查器｜薇光AI課堂">
 <meta property="og:description" content="丟一張圖進來，馬上知道符不符合社群與網站常用尺寸，不符合可一鍵裁切或放大。">
 <meta property="og:url" content="https://viviclass.github.io/img-spec/">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "我上傳的圖片會被傳到伺服器嗎？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "不會。檢查、裁切、放大都在你自己的瀏覽器內完成，圖片不會上傳到任何地方，關掉頁面就沒有了。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "哪些圖片格式可以上傳？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "瀏覽器能開啟的常見圖片格式，例如 JPG、PNG、WebP。可以點選選檔、拖曳到頁面，或直接貼上（Ctrl／⌘ + V）。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "為什麼比例明明對了，還是沒有顯示「符合」？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "判定標準是尺寸完全相同才算「符合」。比例相同（誤差 0.5% 內）但尺寸不同，會標示「比例對、尺寸需調整」，按「調整尺寸」就能縮放到正確尺寸。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "「裁切填滿」和「完整放入」有什麼差別？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "裁切填滿會把圖片置中放大到蓋滿目標尺寸，超出的部分切掉，並提示切掉了約幾成面積，要確認主體還在畫面內。完整放入會保留整張圖，不夠的地方補邊，底色可選透明、白、黑或自訂顏色。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "原圖比目標尺寸小，放大會變糊嗎？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "會。工具會提醒已放大幾 %，畫面會稍微變糊，建議改用解析度更高的原圖。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Hero Banner 的尺寸每次都不一樣怎麼辦？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "預設是 1920×720 px。考題或客戶有指定尺寸時，直接在 Hero Banner 那一列改寬和高，判定與裁切會立刻照新尺寸重算。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Logo 要怎樣才算符合？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "檔案必須是 PNG、含有透明像素，而且圖片四個角落都是透明的。即使看起來像去背，只要是 JPG 或四角還有白底，就會判定為不符合。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Logo 去背可以處理什麼樣的背景？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "只能處理從四個角落連通的純色背景，並可調整容許值、裁掉多餘透明邊。背景是漸層、照片或四角顏色不一致時，效果有限或無法判斷，需要改用專業去背工具（例如 Canva、Photoshop）。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "輸出 JPG 的話透明部分會變成什麼？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "JPG 不支援透明，透明的地方會補成白底。需要透明背景請選 PNG。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "按「下載圖片」沒有反應怎麼辦？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "在轉換結果的圖片上按右鍵（手機長按），選「另存圖片」即可。"
+   }
+  }
+ ]
+}
+</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap">
 <style>
 /* 配色沿用首頁：黑／白＋薇光粉 #D9347B，自動跟隨深色模式 */
@@ -111,6 +199,13 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 .note.warnline { color: var(--warn); }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .foot { color: var(--muted); font-size: 13px; }
+.faq details { border-top: 1px solid var(--line); padding: 14px 0; }
+.faq details:first-of-type { border-top: 0; padding-top: 0; }
+.faq summary { font-weight: 800; cursor: pointer; list-style: none; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::before { content: "＋ "; color: var(--accent); }
+.faq details[open] summary::before { content: "－ "; }
+.faq details p { margin: 10px 0 0; color: var(--muted); font-size: 14.5px; }
 [hidden] { display: none !important; }
 </style>
 </head>
@@ -186,6 +281,19 @@ button:disabled { opacity: .45; cursor: not-allowed; }
       <button class="primary" id="dl">下載圖片</button>
       <span class="note" id="dlHint">如果按鈕沒有反應，在上方圖片上按右鍵（手機長按）選「另存圖片」。</span>
     </div>
+  </section>
+  <section class="panel faq" aria-label="常見問題">
+    <p class="label">常見問題</p>
+    <details><summary>我上傳的圖片會被傳到伺服器嗎？</summary><p>不會。檢查、裁切、放大都在你自己的瀏覽器內完成，圖片不會上傳到任何地方，關掉頁面就沒有了。</p></details>
+    <details><summary>哪些圖片格式可以上傳？</summary><p>瀏覽器能開啟的常見圖片格式，例如 JPG、PNG、WebP。可以點選選檔、拖曳到頁面，或直接貼上（Ctrl／⌘ + V）。</p></details>
+    <details><summary>為什麼比例明明對了，還是沒有顯示「符合」？</summary><p>判定標準是尺寸完全相同才算「符合」。比例相同（誤差 0.5% 內）但尺寸不同，會標示「比例對、尺寸需調整」，按「調整尺寸」就能縮放到正確尺寸。</p></details>
+    <details><summary>「裁切填滿」和「完整放入」有什麼差別？</summary><p>裁切填滿會把圖片置中放大到蓋滿目標尺寸，超出的部分切掉，並提示切掉了約幾成面積，要確認主體還在畫面內。完整放入會保留整張圖，不夠的地方補邊，底色可選透明、白、黑或自訂顏色。</p></details>
+    <details><summary>原圖比目標尺寸小，放大會變糊嗎？</summary><p>會。工具會提醒已放大幾 %，畫面會稍微變糊，建議改用解析度更高的原圖。</p></details>
+    <details><summary>Hero Banner 的尺寸每次都不一樣怎麼辦？</summary><p>預設是 1920×720 px。考題或客戶有指定尺寸時，直接在 Hero Banner 那一列改寬和高，判定與裁切會立刻照新尺寸重算。</p></details>
+    <details><summary>Logo 要怎樣才算符合？</summary><p>檔案必須是 PNG、含有透明像素，而且圖片四個角落都是透明的。即使看起來像去背，只要是 JPG 或四角還有白底，就會判定為不符合。</p></details>
+    <details><summary>Logo 去背可以處理什麼樣的背景？</summary><p>只能處理從四個角落連通的純色背景，並可調整容許值、裁掉多餘透明邊。背景是漸層、照片或四角顏色不一致時，效果有限或無法判斷，需要改用專業去背工具（例如 Canva、Photoshop）。</p></details>
+    <details><summary>輸出 JPG 的話透明部分會變成什麼？</summary><p>JPG 不支援透明，透明的地方會補成白底。需要透明背景請選 PNG。</p></details>
+    <details><summary>按「下載圖片」沒有反應怎麼辦？</summary><p>在轉換結果的圖片上按右鍵（手機長按），選「另存圖片」即可。</p></details>
   </section>
   <footer><div class="sig">ViVi 老師｜薇光AI課堂</div>把真實生活，拍成有光的樣子。</footer>
 </div>
