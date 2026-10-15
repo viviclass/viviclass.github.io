@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>圖片規格檢查器｜薇光AI課堂</title>
+<meta name="description" content="上傳圖片，立刻檢查是否符合 16:9、9:16、4:5、1:1、Hero Banner 與透明背景 Logo PNG 規格，不符合可一鍵裁切或放大。圖片只在你的瀏覽器處理，不會上傳。">
+<link rel="canonical" href="https://viviclass.github.io/img-spec/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:site_name" content="薇光AI課堂">
+<meta property="og:title" content="圖片規格檢查器｜薇光AI課堂">
+<meta property="og:description" content="丟一張圖進來，馬上知道符不符合社群與網站常用尺寸，不符合可一鍵裁切或放大。">
+<meta property="og:url" content="https://viviclass.github.io/img-spec/">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap">
+<style>
+/* 配色沿用首頁：黑／白＋薇光粉 #D9347B，自動跟隨深色模式 */
+:root {
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f4f4f4;
+  --fg: #000000;
+  --muted: #5a5a5a;
+  --line: #e4e4e4;
+  --accent: #D9347B;
+  --accent-fg: #ffffff;
+  --pass: #1b7f4a;
+  --pass-bg: #dff3e7;
+  --warn: #8f5c0a;
+  --warn-bg: #fbecc9;
+  --fail: #b52f2f;
+  --fail-bg: #fadcdc;
+  --check-a: #ffffff;
+  --check-b: #e4e4e4;
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-mono: ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a0a0a; --surface: #141414; --surface-2: #1e1e1e; --fg: #ffffff; --muted: #a8a8a8;
+    --line: #2a2a2a; --pass: #6fd49a; --pass-bg: #163a28; --warn: #f0c36a; --warn-bg: #3d2f10;
+    --fail: #ff8f8f; --fail-bg: #411d1d; --check-a: #1e1e1e; --check-b: #2c2c2c;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.6;
+  padding-block: 28px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+h1 { font-size: clamp(27px, 6.4vw, 38px); line-height: 1.28; font-weight: 800; margin: 0; text-wrap: balance; }
+h1 .pink { color: var(--accent); }
+.eyebrow { display: block; width: fit-content; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; letter-spacing: .14em; padding: 5px 13px; border-radius: 3px; margin-bottom: 18px; }
+header { padding-bottom: 22px; border-bottom: 3px solid var(--fg); }
+.back { color: var(--accent); font-size: 14px; text-decoration: none; }
+footer { text-align: center; color: var(--muted); font-size: 14px; padding-top: 6px; }
+footer .sig { color: var(--fg); font-weight: 800; font-size: 16px; }
+.lede { margin: 4px 0 0; color: var(--muted); }
+.grid { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 800px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 2px solid var(--fg); border-radius: 9px; padding: 18px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.label { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 0; }
+
+.drop { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; border: 2px dashed var(--line); border-radius: 8px; padding: 22px 12px; cursor: pointer; transition: border-color .15s, background .15s; }
+.drop:hover, .drop.over, .drop:focus-within { border-color: var(--accent); background: var(--surface-2); }
+.drop strong { font-size: 16px; }
+.drop span { color: var(--muted); font-size: 13px; }
+.drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.thumb { background: repeating-conic-gradient(var(--check-a) 0% 25%, var(--check-b) 0% 50%) 0 0 / 16px 16px; border-radius: 6px; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; max-height: 260px; overflow: hidden; }
+.thumb img { display: block; max-width: 100%; max-height: 258px; object-fit: contain; }
+dl.meta { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 14px; }
+dl.meta dt { color: var(--muted); }
+dl.meta dd { margin: 0; font-family: var(--font-mono); font-size: 13px; text-align: right; overflow-wrap: anywhere; }
+.sample-tag { font-size: 12px; color: var(--warn); background: var(--warn-bg); padding: 2px 8px; border-radius: 99px; align-self: flex-start; }
+
+.rows { display: flex; flex-direction: column; }
+.row { display: grid; grid-template-columns: minmax(0, 1.1fr) auto minmax(0, 1.5fr) auto; gap: 10px 14px; align-items: center; padding: 14px 0; border-top: 1px solid var(--line); }
+.row:first-child { border-top: 0; padding-top: 0; }
+@media (max-width: 800px) { .row { grid-template-columns: minmax(0, 1fr) auto; } .row .detail { grid-column: 1 / -1; order: 3; } .row .act { grid-column: 1 / -1; order: 4; } }
+.row .name { font-weight: 700; }
+.row .size { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 13px; padding: 3px 11px; border-radius: 99px; white-space: nowrap; }
+.pill.pass { color: var(--pass); background: var(--pass-bg); }
+.pill.warn { color: var(--warn); background: var(--warn-bg); }
+.pill.fail { color: var(--fail); background: var(--fail-bg); }
+.detail { font-size: 13.5px; color: var(--muted); min-width: 0; overflow-wrap: anywhere; }
+.dims { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; }
+.dims input { width: 76px; }
+input[type="number"], select { font: inherit; font-family: var(--font-mono); font-size: 13px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+button { font: inherit; font-weight: 700; font-size: 14px; padding: 7px 14px; border-radius: 7px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.result-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; align-items: baseline; }
+.result-head h2 { margin: 0; font-size: 18px; }
+.opts { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; font-size: 14px; }
+.opts label { display: inline-flex; align-items: center; gap: 6px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg label { padding: 6px 12px; cursor: pointer; position: relative; }
+.seg input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.seg label:has(input:checked) { background: var(--accent); color: var(--accent-fg); font-weight: 700; }
+.seg label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
+.stage { background: repeating-conic-gradient(var(--check-a) 0% 25%, var(--check-b) 0% 50%) 0 0 / 16px 16px; border: 1px solid var(--line); border-radius: 8px; padding: 12px; display: flex; justify-content: center; overflow: auto; }
+.stage img { display: block; max-width: 100%; max-height: 520px; height: auto; width: auto; }
+.note { font-size: 13.5px; color: var(--muted); margin: 0; }
+.note.warnline { color: var(--warn); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.foot { color: var(--muted); font-size: 13px; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="/">← 回薇光AI課堂首頁</a>
+    <h1><span class="eyebrow">薇光AI課堂 · 免費小工具</span>圖片規格檢查器，<span class="pink">丟進來就知道對不對</span></h1>
+    <p class="lede">把圖片丟進來，馬上知道符不符合 6 種常用規格。不符合的可以一鍵裁切或放大成正確尺寸。圖片只在你的瀏覽器處理，不會上傳。</p>
+  </header>
+
+  <div class="grid">
+    <section class="panel" aria-label="上傳圖片">
+      <p class="label">1 · 上傳圖片</p>
+      <label class="drop" id="drop">
+        <strong>點擊選擇，或拖曳圖片到這裡</strong>
+        <span>也可以直接貼上（Ctrl／⌘ + V）· JPG、PNG、WebP</span>
+        <input type="file" id="file" accept="image/*">
+      </label>
+      <span class="sample-tag" id="sampleTag">目前是範例圖，請換成你的圖片</span>
+      <div class="thumb"><img id="thumb" alt="已上傳圖片預覽"></div>
+      <dl class="meta">
+        <dt>檔名</dt><dd id="mName">—</dd>
+        <dt>格式</dt><dd id="mType">—</dd>
+        <dt>尺寸</dt><dd id="mSize">—</dd>
+        <dt>比例</dt><dd id="mRatio">—</dd>
+        <dt>透明像素</dt><dd id="mAlpha">—</dd>
+      </dl>
+    </section>
+
+    <section class="panel" aria-label="規格判定">
+      <p class="label">2 · 規格判定</p>
+      <div class="rows" id="rows"></div>
+      <p class="foot">判定標準：尺寸完全相同才算「符合」。比例相同（誤差 0.5% 內）但尺寸不同，會標示為「比例對、尺寸需調整」。</p>
+    </section>
+  </div>
+
+  <section class="panel" id="result" hidden aria-label="轉換結果">
+    <p class="label">3 · 轉換結果</p>
+    <div class="result-head">
+      <h2 id="rTitle"></h2>
+      <span class="note" id="rInfo"></span>
+    </div>
+    <div class="opts" id="optsResize">
+      <div class="seg" role="radiogroup" aria-label="處理方式">
+        <label><input type="radio" name="mode" value="cover" checked>裁切填滿</label>
+        <label><input type="radio" name="mode" value="contain">完整放入（補邊）</label>
+      </div>
+      <div id="bgOpts" class="opts">
+        <label>補邊底色
+          <select id="bgSel">
+            <option value="transparent">透明</option>
+            <option value="#ffffff">白</option>
+            <option value="#000000">黑</option>
+            <option value="custom">自訂</option>
+          </select>
+        </label>
+        <input type="color" id="bgColor" value="#f5f5f8" aria-label="自訂底色" hidden>
+      </div>
+      <label>輸出格式
+        <select id="fmtSel"><option value="png">PNG</option><option value="jpeg">JPG</option></select>
+      </label>
+    </div>
+    <div class="opts" id="optsLogo" hidden>
+      <label>去背容許值
+        <input type="range" id="tol" min="4" max="120" value="40"> <span id="tolV" style="font-family:var(--font-mono)">40</span>
+      </label>
+      <label><input type="checkbox" id="trim" checked> 裁掉多餘透明邊</label>
+    </div>
+    <p class="note warnline" id="rWarn" hidden></p>
+    <div class="stage"><img id="out" alt="轉換後的圖片"></div>
+    <div class="actions">
+      <button class="primary" id="dl">下載圖片</button>
+      <span class="note" id="dlHint">如果按鈕沒有反應，在上方圖片上按右鍵（手機長按）選「另存圖片」。</span>
+    </div>
+  </section>
+  <footer><div class="sig">ViVi 老師｜薇光AI課堂</div>把真實生活，拍成有光的樣子。</footer>
+</div>
+
+<script>
+(function () {
+  var SPECS = [
+    { id: '16x9', name: '16:9 Key Visual', w: 1920, h: 1080 },
+    { id: '9x16', name: '9:16 Mobile／Story', w: 1080, h: 1920 },
+    { id: '4x5', name: '4:5 Social Post', w: 1080, h: 1350 },
+    { id: '1x1', name: '1:1 Square Ad', w: 1080, h: 1080 },
+    { id: 'hero', name: 'Website Hero Banner', w: 1920, h: 720, custom: true },
+    { id: 'logo', name: '透明背景 Logo PNG', logo: true }
+  ];
+  var $ = function (id) { return document.getElementById(id); };
+  var S = { img: null, file: null, W: 0, H: 0, isPng: false, alphaRatio: 0, cornersClear: false, sample: false, target: null, blobUrl: null, lastBlob: null };
+
+  /* ---------- helpers ---------- */
+  function gcd(a, b) { return b ? gcd(b, a % b) : a; }
+  function ratioText(w, h) {
+    var g = gcd(w, h), a = w / g, b = h / g;
+    return (a <= 32 && b <= 32) ? a + ':' + b : (w / h).toFixed(3) + ':1';
+  }
+  function specRatio(s) { return ratioText(s.w, s.h); }
+  function ratioMatch(W, H, w, h) { var r = w / h; return Math.abs(W / H - r) / r < 0.005; }
+  function fmtBytes(n) { return n > 1048576 ? (n / 1048576).toFixed(2) + ' MB' : Math.round(n / 1024) + ' KB'; }
+  function heroSpec() { return SPECS.filter(function (s) { return s.id === 'hero'; })[0]; }
+
+  /* ---------- load image ---------- */
+  function loadFromUrl(url, file, isSample) {
+    var img = new Image();
+    img.onload = function () {
+      S.img = img; S.file = file; S.sample = !!isSample;
+      S.W = img.naturalWidth; S.H = img.naturalHeight;
+      S.isPng = !!file && (file.type === 'image/png');
+      analyseAlpha();
+      $('thumb').src = url;
+      $('sampleTag').hidden = !isSample;
+      fillMeta(); renderRows();
+      $('result').hidden = true; S.target = null;
+    };
+    img.onerror = function () { $('mName').textContent = '無法讀取這個檔案'; };
+    img.src = url;
+  }
+  function loadFile(f) {
+    if (!f || f.type.indexOf('image/') !== 0) { $('mName').textContent = '請選擇圖片檔'; return; }
+    loadFromUrl(URL.createObjectURL(f), f, false);
+  }
+  function analyseAlpha() {
+    var max = 1600, sc = Math.min(1, max / Math.max(S.W, S.H));
+    var w = Math.max(1, Math.round(S.W * sc)), h = Math.max(1, Math.round(S.H * sc));
+    var c = document.createElement('canvas'); c.width = w; c.height = h;
+    var x = c.getContext('2d', { willReadFrequently: true });
+    x.drawImage(S.img, 0, 0, w, h);
+    var d = x.getImageData(0, 0, w, h).data, clear = 0;
+    for (var i = 3; i < d.length; i += 4) if (d[i] < 250) clear++;
+    S.alphaRatio = clear / (w * h);
+    function a(px, py) { return d[(py * w + px) * 4 + 3]; }
+    S.cornersClear = a(0, 0) < 10 && a(w - 1, 0) < 10 && a(0, h - 1) < 10 && a(w - 1, h - 1) < 10;
+  }
+  function fillMeta() {
+    $('mName').textContent = S.file ? S.file.name : '範例圖 sample.png';
+    $('mType').textContent = S.file ? (S.file.type.replace('image/', '').toUpperCase() + ' · ' + fmtBytes(S.file.size)) : 'PNG';
+    $('mSize').textContent = S.W + ' × ' + S.H + ' px';
+    $('mRatio').textContent = ratioText(S.W, S.H);
+    $('mAlpha').textContent = (S.alphaRatio * 100).toFixed(1) + '%';
+  }
+
+  /* ---------- evaluate ---------- */
+  function evaluate(s) {
+    if (s.logo) {
+      var probs = [];
+      if (!S.isPng) probs.push('檔案不是 PNG');
+      if (S.alphaRatio < 0.001) probs.push('沒有透明像素');
+      else if (!S.cornersClear) probs.push('四個角落不是透明的，背景可能還在');
+      if (!probs.length) return { st: 'pass', msg: 'PNG 格式，四角透明，透明像素 ' + (S.alphaRatio * 100).toFixed(1) + '%。' };
+      return { st: 'fail', msg: probs.join('；') + '。' };
+    }
+    if (S.W === s.w && S.H === s.h) return { st: 'pass', msg: '尺寸與比例完全符合。' };
+    if (ratioMatch(S.W, S.H, s.w, s.h)) return { st: 'warn', msg: '比例正確，但現在是 ' + S.W + '×' + S.H + '，要' + (S.W > s.w ? '縮小' : '放大') + '到 ' + s.w + '×' + s.h + '。' };
+    return { st: 'fail', msg: '現在是 ' + S.W + '×' + S.H + '（' + ratioText(S.W, S.H) + '），比例不是 ' + specRatio(s) + '。' };
+  }
+  var LABEL = { pass: '✓ 符合', warn: '! 比例對、尺寸需調整', fail: '✕ 不符合' };
+
+  function renderRows() {
+    var box = $('rows'); box.innerHTML = '';
+    SPECS.forEach(function (s) {
+      var r = evaluate(s);
+      var row = document.createElement('div'); row.className = 'row';
+      var sizeTxt = s.logo ? 'PNG · 透明背景' : s.w + ' × ' + s.h + ' px · ' + specRatio(s);
+      var left = '<div><div class="name">' + s.name + '</div><div class="size" id="size-' + s.id + '">' + sizeTxt + '</div>';
+      if (s.custom) {
+        left += '<div class="dims"><input type="number" id="hw" min="1" max="8000" value="' + s.w + '" aria-label="Banner 寬度"> × <input type="number" id="hh" min="1" max="8000" value="' + s.h + '" aria-label="Banner 高度"></div><div class="size">考題有指定就改這裡，沒指定用 1920×720</div>';
+      }
+      left += '</div>';
+      var btnTxt = s.logo ? (r.st === 'pass' ? '重新處理' : '去背／轉 PNG') : (r.st === 'pass' ? '重新輸出' : (r.st === 'warn' ? '調整尺寸' : '裁切／放大'));
+      row.innerHTML = left +
+        '<span class="pill ' + r.st + '">' + LABEL[r.st] + '</span>' +
+        '<div class="detail">' + r.msg + '</div>' +
+        '<div class="act"><button data-spec="' + s.id + '"' + (r.st === 'pass' ? '' : ' class="primary"') + '>' + btnTxt + '</button></div>';
+      box.appendChild(row);
+    });
+    var hw = $('hw'), hh = $('hh');
+    function upd() {
+      var w = parseInt(hw.value, 10), h = parseInt(hh.value, 10);
+      if (w > 0 && h > 0) { var s = heroSpec(); s.w = w; s.h = h; var f1 = hw.id, f2 = hh.id; renderRows(); $(f1).focus(); if (S.target && S.target.id === 'hero') render(); }
+    }
+    hw.addEventListener('change', upd); hh.addEventListener('change', upd);
+  }
+
+  $('rows').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-spec]'); if (!b) return;
+    S.target = SPECS.filter(function (s) { return s.id === b.getAttribute('data-spec'); })[0];
+    openResult();
+  });
+
+  /* ---------- result workspace ---------- */
+  function openResult() {
+    var s = S.target, logo = !!s.logo;
+    $('result').hidden = false;
+    $('optsResize').hidden = logo; $('optsLogo').hidden = !logo;
+    $('rTitle').textContent = s.name + (logo ? '' : '　' + s.w + ' × ' + s.h);
+    render();
+    $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function getMode() { return document.querySelector('input[name="mode"]:checked').value; }
+  function bgValue() { var v = $('bgSel').value; return v === 'custom' ? $('bgColor').value : v; }
+
+  function render() {
+    if (!S.target || !S.img) return;
+    var s = S.target, c, ctx, warn = '', info = '';
+    if (s.logo) {
+      var cap = Math.min(1, 4096 / Math.max(S.W, S.H));
+      var w = Math.round(S.W * cap), h = Math.round(S.H * cap);
+      c = document.createElement('canvas'); c.width = w; c.height = h;
+      ctx = c.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(S.img, 0, 0, w, h);
+      var removed = floodRemove(ctx, w, h, parseInt($('tol').value, 10));
+      if ($('trim').checked) c = trimCanvas(c);
+      info = '輸出 PNG ' + c.width + ' × ' + c.height + ' px';
+      if (removed === 0 && !S.cornersClear && S.alphaRatio < 0.001) warn = '沒有偵測到可以去除的純色背景。背景如果有漸層或照片，需要用專業去背工具（例如 Canva、Photoshop）處理。';
+      else if (removed === -1) warn = '四個角落顏色不一致，無法判斷背景色。';
+      else warn = '去背只處理從四角連通的純色背景，邊緣可能有毛邊。複雜背景請改用專業去背工具。';
+    } else {
+      var tw = s.w, th = s.h, mode = getMode(), fmt = $('fmtSel').value;
+      c = document.createElement('canvas'); c.width = tw; c.height = th;
+      ctx = c.getContext('2d');
+      var sc = mode === 'cover' ? Math.max(tw / S.W, th / S.H) : Math.min(tw / S.W, th / S.H);
+      var dw = S.W * sc, dh = S.H * sc, dx = (tw - dw) / 2, dy = (th - dh) / 2;
+      var bg = bgValue();
+      if (mode === 'contain') {
+        if (fmt === 'jpeg' && bg === 'transparent') bg = '#ffffff';
+        if (bg !== 'transparent') { ctx.fillStyle = bg; ctx.fillRect(0, 0, tw, th); }
+      } else if (fmt === 'jpeg') { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, tw, th); }
+      ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(S.img, dx, dy, dw, dh);
+      info = '輸出 ' + fmt.toUpperCase().replace('JPEG', 'JPG') + ' ' + tw + ' × ' + th + ' px　✓ 符合規格';
+      if (sc > 1.001) warn = '原圖解析度比目標小，已放大 ' + Math.round(sc * 100) + '%，畫面會稍微變糊。建議改用更高解析度的原圖。';
+      if (mode === 'cover') {
+        var lost = 1 - Math.min(1, (tw / sc) * (th / sc) / (S.W * S.H));
+        if (lost > 0.005) warn += (warn ? ' ' : '') + '裁切會切掉原圖約 ' + Math.round(lost * 100) + '% 的面積，請確認主體還在畫面內。';
+      }
+    }
+    S.canvas = c;
+    $('rInfo').textContent = info;
+    $('rWarn').textContent = warn; $('rWarn').hidden = !warn;
+    var type = (s.logo || $('fmtSel').value === 'png') ? 'image/png' : 'image/jpeg';
+    c.toBlob(function (blob) {
+      if (!blob) return;
+      if (S.blobUrl) URL.revokeObjectURL(S.blobUrl);
+      S.blobUrl = URL.createObjectURL(blob); S.lastBlob = blob; S.type = type;
+      $('out').src = S.blobUrl;
+    }, type, 0.92);
+  }
+
+  function floodRemove(ctx, w, h, tol) {
+    var im = ctx.getImageData(0, 0, w, h), d = im.data;
+    function px(x, y) { var i = (y * w + x) * 4; return [d[i], d[i + 1], d[i + 2], d[i + 3]]; }
+    var corners = [[0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1]];
+    var ref = px(0, 0);
+    function dist(i) {
+      var dr = d[i] - ref[0], dg = d[i + 1] - ref[1], db = d[i + 2] - ref[2];
+      return Math.sqrt(dr * dr + dg * dg + db * db);
+    }
+    if (ref[3] < 10) return 0; /* already transparent */
+    for (var k = 1; k < 4; k++) { var p = px(corners[k][0], corners[k][1]); if (Math.abs(p[0] - ref[0]) + Math.abs(p[1] - ref[1]) + Math.abs(p[2] - ref[2]) > tol * 1.5 && p[3] > 10) return -1; }
+    var seen = new Uint8Array(w * h), stack = [], removed = 0;
+    corners.forEach(function (c) { stack.push(c[1] * w + c[0]); });
+    while (stack.length) {
+      var idx = stack.pop();
+      if (seen[idx]) continue; seen[idx] = 1;
+      var i4 = idx * 4;
+      if (d[i4 + 3] === 0 || dist(i4) <= tol) {
+        d[i4 + 3] = 0; removed++;
+        var x = idx % w, y = (idx / w) | 0;
+        if (x > 0) stack.push(idx - 1);
+        if (x < w - 1) stack.push(idx + 1);
+        if (y > 0) stack.push(idx - w);
+        if (y < h - 1) stack.push(idx + w);
+      }
+    }
+    ctx.putImageData(im, 0, 0);
+    return removed;
+  }
+  function trimCanvas(c) {
+    var w = c.width, h = c.height, d = c.getContext('2d').getImageData(0, 0, w, h).data;
+    var x0 = w, y0 = h, x1 = -1, y1 = -1;
+    for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
+      if (d[(y * w + x) * 4 + 3] > 8) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+    }
+    if (x1 < 0) return c;
+    var o = document.createElement('canvas'); o.width = x1 - x0 + 1; o.height = y1 - y0 + 1;
+    o.getContext('2d').drawImage(c, x0, y0, o.width, o.height, 0, 0, o.width, o.height);
+    return o;
+  }
+
+  /* ---------- events ---------- */
+  document.querySelectorAll('input[name="mode"]').forEach(function (r) {
+    r.addEventListener('change', function () { $('bgOpts').hidden = getMode() !== 'contain'; render(); });
+  });
+  $('bgSel').addEventListener('change', function () { $('bgColor').hidden = $('bgSel').value !== 'custom'; render(); });
+  $('bgColor').addEventListener('input', render);
+  $('fmtSel').addEventListener('change', render);
+  $('tol').addEventListener('input', function () { $('tolV').textContent = $('tol').value; render(); });
+  $('trim').addEventListener('change', render);
+  $('dl').addEventListener('click', function () {
+    if (!S.lastBlob) return;
+    try {
+      var a = document.createElement('a'); a.href = S.blobUrl;
+      var ext = S.type === 'image/png' ? 'png' : 'jpg';
+      a.download = (S.target.id + '_' + (S.target.logo ? S.canvas.width + 'x' + S.canvas.height : S.target.w + 'x' + S.target.h)) + '.' + ext;
+      document.body.appendChild(a); a.click(); a.remove();
+    } catch (e) { /* 預覽環境可能禁止下載，使用者可改用右鍵另存 */ }
+  });
+
+  $('file').addEventListener('change', function (e) { loadFile(e.target.files[0]); });
+  var drop = $('drop');
+  ['dragenter', 'dragover'].forEach(function (n) { drop.addEventListener(n, function (e) { e.preventDefault(); drop.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function (n) { drop.addEventListener(n, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
+  drop.addEventListener('drop', function (e) { loadFile(e.dataTransfer.files[0]); });
+  document.addEventListener('paste', function (e) {
+    var items = (e.clipboardData || {}).items || [];
+    for (var i = 0; i < items.length; i++) if (items[i].type.indexOf('image/') === 0) { loadFile(items[i].getAsFile()); break; }
+  });
+
+  /* ---------- sample image so the tool opens in a working state ---------- */
+  (function sample() {
+    var c = document.createElement('canvas'); c.width = 1600; c.height = 1200;
+    var x = c.getContext('2d');
+    var g = x.createLinearGradient(0, 0, 1600, 1200); g.addColorStop(0, '#6a67ff'); g.addColorStop(1, '#ff8fb1');
+    x.fillStyle = g; x.fillRect(0, 0, 1600, 1200);
+    x.fillStyle = 'rgba(255,255,255,.9)'; x.font = '700 150px "Noto Sans TC", sans-serif'; x.textAlign = 'center';
+    x.fillText('範例圖片', 800, 600);
+    x.font = '400 64px "IBM Plex Mono", monospace'; x.fillText('1600 × 1200 · 4:3', 800, 720);
+    c.toBlob(function (b) { loadFromUrl(URL.createObjectURL(b), null, true); }, 'image/png');
+  })();
+})();
+</script>
+</body>
+</html>
