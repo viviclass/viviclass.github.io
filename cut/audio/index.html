@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>精準秒數剪輯｜語音版</title>
+<meta name="description" content="上傳語音檔、指定秒數，輸出剛好那麼長的 MP3。聲音不會上傳，全部在你自己的裝置上處理。">
+<style>
+  :root{ --pink:#D9347B; --bg:#000; --fg:#fff; --dim:#8a8a8a; --line:#242424; --card:#0e0e0e;
+         --ok:#4ade80; --warn:#fbbf24; --bad:#f87171; }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html,body{margin:0; padding:0; background:var(--bg); color:var(--fg)}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+       line-height:1.65; padding:16px; padding-bottom:48px; max-width:680px; margin:0 auto}
+  h1{font-size:22px; margin:8px 0 4px; letter-spacing:.5px}
+  h1 span{color:var(--pink)}
+  .sub{color:var(--dim); font-size:13px; margin-bottom:22px}
+  .sub a{color:var(--pink)}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:14px}
+  .step{font-size:12px; color:var(--pink); font-weight:700; letter-spacing:1px; margin-bottom:10px}
+
+  #drop{border:2px dashed #333; border-radius:14px; padding:30px 16px; text-align:center;
+        cursor:pointer; transition:.15s; background:#080808}
+  #drop.over{border-color:var(--pink); background:#1a0a12}
+  #drop .big{font-size:15px; margin-bottom:6px}
+  #drop .small{font-size:12px; color:var(--dim)}
+
+  #files{list-style:none; padding:0; margin:12px 0 0; font-size:13px}
+  #files li{display:flex; justify-content:space-between; gap:10px; align-items:center;
+            padding:9px 11px; background:#141414; border-radius:8px; margin-bottom:6px}
+  #files .nm{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1}
+  #files .du{color:var(--dim); flex:0 0 auto; font-size:12px; font-variant-numeric:tabular-nums}
+  #files .x{color:#666; cursor:pointer; flex:0 0 auto; padding:0 4px; font-size:17px}
+  #files .x:hover{color:var(--bad)}
+  #files .mv{display:flex; gap:3px; flex:0 0 auto}
+  #files .mv button{background:#222; border:1px solid #333; color:#aaa; border-radius:6px;
+                    width:30px; height:30px; font-size:14px; cursor:pointer; padding:0; line-height:1}
+  #files .mv button:disabled{opacity:.25; cursor:default}
+  #files .mv button:not(:disabled):hover{background:var(--pink); border-color:var(--pink); color:#fff}
+  #files .seq{flex:0 0 auto; width:24px; height:24px; border-radius:50%; background:var(--pink);
+              color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center}
+  .orderNote{font-size:12px; color:#666; margin-top:10px}
+
+  label{display:block; font-size:13px; color:var(--dim); margin-bottom:7px}
+  input[type=number]{width:100%; background:#141414; border:1px solid var(--line); color:var(--fg);
+                     border-radius:10px; padding:13px; font-size:17px; font-family:inherit}
+  input[type=number]:focus{outline:none; border-color:var(--pink)}
+  .seg{display:flex; gap:8px}
+  .seg button{flex:1; background:#141414; border:1px solid var(--line); color:var(--dim);
+              border-radius:10px; padding:13px 8px; font-size:14px; font-family:inherit; cursor:pointer}
+  .seg button.on{background:var(--pink); border-color:var(--pink); color:#fff; font-weight:700}
+  .hint{font-size:12px; color:#666; margin-top:8px; line-height:1.6}
+
+  #go{width:100%; background:var(--pink); color:#fff; border:0; border-radius:12px;
+      padding:17px; font-size:17px; font-weight:700; font-family:inherit; cursor:pointer; margin-top:4px}
+  #go:disabled{background:#2a2a2a; color:#666; cursor:not-allowed}
+
+  #progWrap{display:none}
+  .bar{height:8px; background:#1c1c1c; border-radius:99px; overflow:hidden; margin:12px 0 8px}
+  .bar i{display:block; height:100%; width:0; background:var(--pink); transition:width .25s}
+  .pmeta{display:flex; justify-content:space-between; font-size:12px; color:var(--dim); font-variant-numeric:tabular-nums}
+  #plan{font-size:13px; margin-top:12px; padding:11px; background:#141414; border-radius:8px; white-space:pre-wrap}
+  #warn{display:none; font-size:13px; margin-top:10px; padding:11px; border-radius:8px;
+        background:#2a1f05; border:1px solid #4a3a08; color:var(--warn); white-space:pre-wrap}
+
+  #done{display:none}
+  audio{width:100%; margin-bottom:12px}
+  #dl{display:block; width:100%; text-align:center; background:var(--pink); color:#fff; border:0;
+      border-radius:12px; padding:16px; font-size:16px; font-weight:700; font-family:inherit; cursor:pointer}
+  .dl2{display:block; width:100%; text-align:center; background:transparent; color:var(--pink);
+       border:1px solid var(--pink); border-radius:12px; padding:13px; font-size:14px;
+       margin-top:10px; font-family:inherit; cursor:pointer}
+  #verify{font-size:13px; margin-top:12px; color:var(--dim); font-variant-numeric:tabular-nums}
+  #verify b{color:var(--ok)}
+  #err{display:none; color:var(--bad); font-size:13px; padding:12px; background:#2a0d0d;
+       border:1px solid #4a1515; border-radius:8px; white-space:pre-wrap}
+  .foot{margin-top:28px; font-size:12px; color:#555; text-align:center; line-height:1.9}
+  .foot b{color:var(--pink)}
+  .foot a{color:#777}
+</style>
+</head>
+<body>
+
+<h1>精準秒數剪輯<span>．</span>語音版</h1>
+<div class="sub">上傳語音 → 指定秒數 → 輸出剛好那麼長的 MP3<br>
+聲音<b style="color:#fff">不會上傳到任何地方</b>，全部在你自己的裝置上處理<br>
+<a href="../">要剪影片的話用這個 →</a></div>
+
+<div class="card">
+  <div class="step">① 選語音檔</div>
+  <div id="drop">
+    <div class="big">點這裡選語音，或把檔案拖進來</div>
+    <div class="small">MP3、M4A、WAV、AAC 都可以．多段也行</div>
+  </div>
+  <input type="file" id="pick" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg,.flac" multiple hidden>
+  <ul id="files"></ul>
+</div>
+
+<div class="card">
+  <div class="step">② 設定</div>
+  <label>要輸出幾秒</label>
+  <input type="number" id="secs" value="60" min="1" max="7200" step="1" inputmode="numeric">
+
+  <label style="margin-top:16px">長度不符的時候怎麼補</label>
+  <div class="seg">
+    <button id="bSlow" class="on">變速</button>
+    <button id="bPause">調整停頓</button>
+    <button id="bPad">靜音補尾</button>
+  </div>
+  <div class="hint" id="shortHint">太長就快轉、太短就放慢。全程都有聲音，不會有空檔</div>
+
+  <label style="margin-top:16px">順便做字幕檔</label>
+  <div class="seg">
+    <button id="bSubOff" class="on">不用</button>
+    <button id="bSubOn">產生 .srt</button>
+  </div>
+  <div class="hint" id="subHint">辨識成繁體中文字幕檔，可以拿去配影片用</div>
+</div>
+
+<button id="go" disabled>開始處理</button>
+
+<div class="card" id="progWrap">
+  <div class="step">處理中</div>
+  <div id="stage">準備中…</div>
+  <div class="bar"><i id="pbar"></i></div>
+  <div class="pmeta"><span id="ppct">0%</span><span id="peta"></span></div>
+  <div id="plan"></div>
+  <div id="warn"></div>
+</div>
+
+<div class="card" id="done">
+  <div class="step">完成</div>
+  <audio id="prev" controls></audio>
+  <button id="dl">儲存成品</button>
+  <button id="dlSrt" class="dl2" style="display:none">順便存字幕檔（.srt）</button>
+  <div class="hint" id="saveHint"></div>
+  <div id="verify"></div>
+</div>
+
+<div id="err"></div>
+
+<div class="foot">
+  <b>薇光 AI 課堂</b><br>
+  <a href="../help/">使用說明</a>　｜　<a href="../">影片版</a><br>
+  聲音全程留在你的裝置上，沒有上傳、沒有伺服器
+</div>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>
