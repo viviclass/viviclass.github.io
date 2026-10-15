@@ -265,7 +265,10 @@ function stretchFilter(segs) {
     parts.push(`[0:a]${at},asetpts=PTS-STARTPTS${s.stretch === 1 ? '' : `,${atempoChain(1 / s.stretch)}`}[sa${i}]`);
     labels.push(`[sv${i}][sa${i}]`);
   });
-  parts.push(`${labels.join('')}concat=n=${segs.length}:v=1:a=1[v][a]`);
+  // ⚠ concat 後面一定要補 fps。setpts 只是把時間戳拉開，不會生出新的幀，
+  //   被拉長的那幾秒會掉到 7 fps 左右，播起來一頓一頓的。
+  //   秒數驗收看不出這個問題，要看「影格數 ÷ 時長」才抓得到。
+  parts.push(`${labels.join('')}concat=n=${segs.length}:v=1:a=1[vc][ac];[vc]fps=${FPS}[v];[ac]anull[a]`);
   return parts.join(';');
 }
 
