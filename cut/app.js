@@ -55,7 +55,7 @@ function updateHint() {
   const total = items.reduce((s, i) => s + i.dur, 0);
   const target = Math.max(1, parseFloat(secsIn.value) || 60);
   const est = Math.ceil((total || target) * m.rate / 10) * 10;
-  subHint.textContent = `繁體中文．英文保留原文．第一次要下載辨識模型約 ${m.mb} MB`
+  subHint.textContent = `繁體中文．英文保留原文．第一次要下載辨識模型約 ${m.mb} MB 和字幕字體約 6 MB`
     + (total ? `．辨識這段大約要 ${est >= 60 ? Math.ceil(est / 60) + ' 分鐘' : est + ' 秒'}` : '');
 
   let h = SHORT_HINT[shortMode];
@@ -464,13 +464,22 @@ go.onclick = async () => {
         await ffmpeg.writeFile('sub.ass', new TextEncoder().encode(ass));
         // 這個 core 沒編 fontconfig，所以不能用字型名稱查，要把字型放進目錄再用 fontsdir 指
         try { await ffmpeg.createDir('/fonts'); } catch {}
-        await ffmpeg.writeFile('/fonts/MantouSans-Regular.ttf',
-          await fetchFile(new URL('./assets/MantouSans-Regular.ttf', location.href).href));
+        await ffmpeg.writeFile('/fonts/NotoSansTC-Bold.otf',
+          await fetchFile(new URL('./assets/NotoSansTC-Bold.otf', location.href).href));
 
         setStage('把字幕燒進畫面…', 0.80, 0.16);
-        await ffmpeg.exec(['-i', 'out.mp4', '-vf', 'subtitles=sub.ass:fontsdir=/fonts',
+        const burn = () => ffmpeg.exec(['-i', 'out.mp4', '-vf', 'subtitles=sub.ass:fontsdir=/fonts',
           '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '23', '-pix_fmt', 'yuv420p',
           '-c:a', 'copy', 'final.mp4']);
+        try { await burn(); }
+        catch (e) {
+          // 思源黑體載不進去時，退回舊字體（饅頭黑體）再燒一次，不要整支失敗
+          console.warn('思源黑體燒字幕失敗，改用饅頭黑體', e);
+          await ffmpeg.writeFile('/fonts/MantouSans-Regular.ttf',
+            await fetchFile(new URL('./assets/MantouSans-Regular.ttf', location.href).href));
+          await ffmpeg.writeFile('sub.ass', new TextEncoder().encode(ass.replace('Style: Default,Noto Sans TC,', 'Style: Default,Mantou Sans,')));
+          await burn();
+        }
         finalName = 'final.mp4';
 
         srtBlob = new Blob([toSRT(cards)], { type: 'text/plain;charset=utf-8' });

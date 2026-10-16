@@ -85,6 +85,13 @@ function splitCard(start, end, text, maxChars) {
     rest = rest.slice(cut);
   }
   if (rest) cards.push(rest);
+  // 最後一張只剩一兩個字很突兀 → 跟前一張平均分
+  if (cards.length >= 2 && cards[cards.length - 1].length < 3) {
+    const comb = cards[cards.length - 2] + cards[cards.length - 1];
+    const mid = Math.ceil(comb.length / 2);
+    cards[cards.length - 2] = comb.slice(0, mid);
+    cards[cards.length - 1] = comb.slice(mid);
+  }
 
   // 時間按字數比例切
   const total = cards.reduce((s, c) => s + c.length, 0);
@@ -122,9 +129,9 @@ const t2a = t => {
 
 /** 產生 ASS。字一律釘死在 \pos —— libass 的碰撞閃避會把時間有交集的字卡整張往上疊。 */
 export function toASS(cards, { W, H, portrait }) {
-  const fontSize = portrait ? 64 : 72;
-  const marginV  = portrait ? 150 : 70;
-  const outline  = portrait ? 3.5 : 4;
+  const fontSize = portrait ? 96 : 108;    // 比舊版大 1.5 倍。ASS 字號是「行高」，思源黑體實際字寬約 0.7 倍字號：橫式 18 字約 1350px（<1920），直式 14 字約 925px（<1080），所以 maxChars 不用跟著減
+  const marginV  = portrait ? 170 : 80;
+  const outline  = portrait ? 5 : 6;
   const posY = H - marginV;
   const head =
 `[Script Info]
@@ -136,7 +143,7 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Default,Mantou Sans,${fontSize},&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,${outline},0,2,40,40,${marginV},1
+Style: Default,Noto Sans TC,${fontSize},&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,${outline},0,2,40,40,${marginV},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
