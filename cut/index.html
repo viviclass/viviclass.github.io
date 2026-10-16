@@ -86,8 +86,8 @@
         background:#2a1f05; border:1px solid #4a3a08; color:var(--warn); white-space:pre-wrap}
 
   .hint{font-size:12px; color:#666; margin-top:8px; line-height:1.6}
-  #subOpts, #srtOpts{overflow:hidden; transition:.2s}
-  #subOpts.off, #srtOpts.off{display:none}
+  #subOpts{overflow:hidden; transition:.2s}
+  #subOpts.off{display:none}
 
   /* 字幕校對 */
   #editWrap{display:none}
@@ -171,8 +171,7 @@
 
   <label style="margin-top:16px">字幕</label>
   <div class="seg">
-    <button id="bSubOn" class="on">自動辨識</button>
-    <button id="bSubSrt">我有字幕檔</button>
+    <button id="bSubOn" class="on">自動上字幕</button>
     <button id="bSubOff">不要字幕</button>
   </div>
 
@@ -183,13 +182,6 @@
       <button id="bQSmall">較準（慢 3 倍）</button>
     </div>
     <div class="hint" id="subHint">繁體中文．英文保留原文．第一次要下載辨識模型約 80 MB</div>
-  </div>
-
-  <div id="srtOpts" class="off">
-    <div class="hint" style="margin-top:14px">丟一個 .srt 檔進來，直接用你自己的字幕</div>
-    <button id="pickSrtBtn" class="dl2" style="margin-top:8px">選 .srt 檔案</button>
-    <input type="file" id="pickSrt" accept=".srt,.txt,text/plain" hidden>
-    <div class="hint" id="srtName"></div>
   </div>
 </div>
 

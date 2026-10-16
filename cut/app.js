@@ -2,7 +2,7 @@
 // 全部在瀏覽器裡跑，影片不離開使用者的裝置。
 import { FFmpeg } from './lib/ffmpeg/index.js';
 import { fetchFile } from './lib/util/index.js';
-import { MODELS, loadASR, extractAudio, transcribe, buildCards, toASS, toSRT, parseSRT } from './subtitle.js';
+import { MODELS, loadASR, extractAudio, transcribe, buildCards, toASS, toSRT } from './subtitle.js';
 
 // ---------- 可調參數（跟本機版一致）----------
 const MAX_SPEEDUP = 1.15;   // 加速上限。超過會警告，因為講話會明顯變快
@@ -20,14 +20,12 @@ const drop=$('drop'), pick=$('pick'), fileList=$('files'), secsIn=$('secs'),
       bSubOn=$('bSubOn'), bSubOff=$('bSubOff'), subOpts=$('subOpts'), subHint=$('subHint'),
       bQBase=$('bQBase'), bQSmall=$('bQSmall'),
       bPause=$('bPause'), bPad=$('bPad'), bSlow=$('bSlow'), shortHint=$('shortHint'),
-      bSubSrt=$('bSubSrt'), srtOpts=$('srtOpts'), pickSrt=$('pickSrt'), pickSrtBtn=$('pickSrtBtn'),
-      srtName=$('srtName'), editWrap=$('editWrap'), editHint=$('editHint'), subList=$('subList'),
+      editWrap=$('editWrap'), editHint=$('editHint'), subList=$('subList'),
       burn=$('burn'), skipBurn=$('skipBurn');
 
 let items = [];        // {file, dur, w, h}
 let portrait = false;
-let subMode = 'auto';  // auto 自動辨識 / srt 自己的字幕檔 / none 不要
-let userSrt = null;    // 使用者上傳的 .srt 檔
+let wantSub = true;    // 預設自動上字幕
 let quality = 'base';
 // 長度不符時怎麼補。預設 slow：太長快轉、太短放慢，全片都有聲音。
 // 考試作業規定秒數的情境下，這個最安全 —— 不會出現任何沒聲音的空檔。
@@ -49,29 +47,8 @@ bPause.onclick = () => pickShort('pause', bPause);
 bPad.onclick   = () => pickShort('pad', bPad);
 bSlow.onclick  = () => pickShort('slow', bSlow);
 
-function pickSub(m) {
-  subMode = m;
-  [bSubOn, bSubSrt, bSubOff].forEach(b => b.classList.remove('on'));
-  ({ auto: bSubOn, srt: bSubSrt, none: bSubOff })[m].classList.add('on');
-  subOpts.classList.toggle('off', m !== 'auto');
-  srtOpts.classList.toggle('off', m !== 'srt');
-  updateHint();
-}
-bSubOn.onclick  = () => pickSub('auto');
-bSubSrt.onclick = () => pickSub('srt');
-bSubOff.onclick = () => pickSub('none');
-
-pickSrtBtn.onclick = () => pickSrt.click();
-pickSrt.onchange = async e => {
-  const f = e.target.files[0];
-  if (!f) return;
-  userSrt = f;
-  try {
-    const n = parseSRT(await f.text()).length;
-    srtName.textContent = n ? `${f.name}　讀到 ${n} 張字幕` : `${f.name}　⚠ 讀不到字幕，確認是 .srt 格式`;
-    if (!n) userSrt = null;
-  } catch { srtName.textContent = '讀不到這個檔案'; userSrt = null; }
-};
+bSubOn.onclick  = () => { wantSub = true;  bSubOn.classList.add('on');  bSubOff.classList.remove('on'); subOpts.classList.remove('off'); updateHint(); };
+bSubOff.onclick = () => { wantSub = false; bSubOff.classList.add('on'); bSubOn.classList.remove('on');  subOpts.classList.add('off'); updateHint(); };
 bQBase.onclick  = () => { quality = 'base';  bQBase.classList.add('on');  bQSmall.classList.remove('on'); updateHint(); };
 bQSmall.onclick = () => { quality = 'small'; bQSmall.classList.add('on'); bQBase.classList.remove('on');  updateHint(); };
 
@@ -561,7 +538,7 @@ go.onclick = async () => {
 
     // ── 最後一步：套用策略並輸出 ──
     // 有字幕的話剪輯只佔前段，後面要留給辨識和燒字幕
-    const needASR  = subMode === 'auto';            // 只有自動辨識要留後段的進度給它
+    const needASR = wantSub;   // 要辨識的話，後段進度要留給它
     const EDIT_END = needASR ? 0.42 : 1.0;
     const encBase  = oneShot ? 0.12 : (needASR ? 0.32 : 0.76);
     setStage('輸出成品…', encBase, Math.max(0.05, EDIT_END - encBase - (needASR ? 0 : 0.04)));
@@ -594,33 +571,27 @@ go.onclick = async () => {
     // ── 字幕：先產生，然後停下來給人校對 ──
     pending = { W, H, portrait, target, t0, names };
 
-    if (subMode === 'none') { await finish('out.mp4', null); return; }
+    if (!wantSub) { await finish('out.mp4', null); return; }
 
-    let cards = [];
-    if (subMode === 'srt') {
-      setStage('讀取字幕檔…', 0.42, 0.04);
-      cards = parseSRT(await userSrt.text());
-    } else {
-      // 先剪再辨識：這樣字幕時間一定對，不用因為變速去重算時間軸
-      setStage('抽出聲音…', 0.42, 0.02);
-      const audioURL = await extractAudio(ffmpeg, 'out.mp4');
+    // 先剪再辨識：這樣字幕時間一定對，不用因為變速去重算時間軸
+    setStage('抽出聲音…', 0.42, 0.02);
+    const audioURL = await extractAudio(ffmpeg, 'out.mp4');
 
-      setStage(`載入辨識模型（第一次要下載約 ${MODELS[quality].mb} MB）…`, 0.44, 0.08);
-      const asr = await loadASR(quality, p => setProg(p));
+    setStage(`載入辨識模型（第一次要下載約 ${MODELS[quality].mb} MB）…`, 0.44, 0.08);
+    const asr = await loadASR(quality, p => setProg(p));
 
-      // 辨識本身不回報進度，用實測速率推一個預估進度，免得畫面像當掉
-      setStage('辨識語音…', 0.52, 0.40);
-      const estMs = Math.max(3000, target * MODELS[quality].rate * 1000);
-      const tick0 = Date.now();
-      const tick = setInterval(() => setProg(Math.min(0.97, (Date.now() - tick0) / estMs)), 400);
-      let segs;
-      try { segs = await transcribe(asr, audioURL); } finally { clearInterval(tick); }
-      setProg(1);
-      cards = buildCards(segs, { maxChars: portrait ? 14 : 18, totalDur: target });
-    }
+    // 辨識本身不回報進度，用實測速率推一個預估進度，免得畫面像當掉
+    setStage('辨識語音…', 0.52, 0.40);
+    const estMs = Math.max(3000, target * MODELS[quality].rate * 1000);
+    const tick0 = Date.now();
+    const tick = setInterval(() => setProg(Math.min(0.97, (Date.now() - tick0) / estMs)), 400);
+    let segs;
+    try { segs = await transcribe(asr, audioURL); } finally { clearInterval(tick); }
+    setProg(1);
+    const cards = buildCards(segs, { maxChars: portrait ? 14 : 18, totalDur: target });
 
     if (!cards.length) {
-      planEl.textContent += subMode === 'srt' ? '\n（字幕檔讀不到內容）' : '\n（這段聲音辨識不出內容）';
+      planEl.textContent += '\n（這段聲音辨識不出內容）';
       await finish('out.mp4', null);
       return;
     }
