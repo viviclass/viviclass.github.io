@@ -86,8 +86,24 @@
         background:#2a1f05; border:1px solid #4a3a08; color:var(--warn); white-space:pre-wrap}
 
   .hint{font-size:12px; color:#666; margin-top:8px; line-height:1.6}
-  #subOpts{overflow:hidden; transition:.2s}
-  #subOpts.off{display:none}
+  #subOpts, #srtOpts{overflow:hidden; transition:.2s}
+  #subOpts.off, #srtOpts.off{display:none}
+
+  /* 字幕校對 */
+  #editWrap{display:none}
+  #subList{max-height:52vh; overflow-y:auto; margin-bottom:14px;
+           border:1px solid var(--line); border-radius:10px; padding:8px; background:#080808}
+  .srow{display:flex; gap:8px; align-items:center; margin-bottom:7px}
+  .srow .t{flex:0 0 auto; width:46px; font-size:11px; color:#666;
+           font-variant-numeric:tabular-nums; text-align:right}
+  .srow input{flex:1; background:#161616; border:1px solid #2a2a2a; color:var(--fg);
+              border-radius:7px; padding:10px 11px; font-size:15px; font-family:inherit; min-width:0}
+  .srow input:focus{outline:none; border-color:var(--pink); background:#1d1218}
+  .srow input.long{border-color:#6b5410}
+  .srow .del{flex:0 0 auto; color:#555; cursor:pointer; padding:0 3px; font-size:16px}
+  .srow .del:hover{color:var(--bad)}
+  #burn{width:100%; background:var(--pink); color:#fff; border:0; border-radius:12px;
+        padding:16px; font-size:16px; font-weight:700; font-family:inherit; cursor:pointer}
 
   #done{display:none}
   video{width:100%; border-radius:10px; background:#000; margin-bottom:12px}
@@ -155,7 +171,8 @@
 
   <label style="margin-top:16px">字幕</label>
   <div class="seg">
-    <button id="bSubOn" class="on">自動上字幕</button>
+    <button id="bSubOn" class="on">自動辨識</button>
+    <button id="bSubSrt">我有字幕檔</button>
     <button id="bSubOff">不要字幕</button>
   </div>
 
@@ -165,7 +182,14 @@
       <button id="bQBase" class="on">一般（快）</button>
       <button id="bQSmall">較準（慢 3 倍）</button>
     </div>
-    <div class="hint" id="subHint">繁體中文．英文保留原文．第一次要下載辨識模型約 80 MB 和字幕字體約 6 MB</div>
+    <div class="hint" id="subHint">繁體中文．英文保留原文．第一次要下載辨識模型約 80 MB</div>
+  </div>
+
+  <div id="srtOpts" class="off">
+    <div class="hint" style="margin-top:14px">丟一個 .srt 檔進來，直接用你自己的字幕</div>
+    <button id="pickSrtBtn" class="dl2" style="margin-top:8px">選 .srt 檔案</button>
+    <input type="file" id="pickSrt" accept=".srt,.txt,text/plain" hidden>
+    <div class="hint" id="srtName"></div>
   </div>
 </div>
 
@@ -178,6 +202,14 @@
   <div class="pmeta"><span id="ppct">0%</span><span id="peta"></span></div>
   <div id="plan"></div>
   <div id="warn"></div>
+</div>
+
+<div class="card" id="editWrap">
+  <div class="step">字幕校對</div>
+  <div class="hint" id="editHint" style="margin-top:0;margin-bottom:12px"></div>
+  <div id="subList"></div>
+  <button id="burn">確認，把字幕燒上去</button>
+  <button id="skipBurn" class="dl2">不燒字幕，直接要影片</button>
 </div>
 
 <div class="card" id="done">
@@ -193,10 +225,10 @@
 
 <details>
   <summary>它會怎麼把長度調到我要的秒數？</summary>
-  <p>先看你在設定裡選的「長度不符的時候怎麼補」，預設是<b>變速</b>。變速不會改變音高，不會變成花栗鼠的聲音。</p>
-  <p><b>變速（預設）</b> → 太長就整段快轉、太短就整段放慢，剛好對上你要的秒數。全片都有聲音，不會有空檔。加速超過 1.15 倍會警告你，因為講話會明顯變快；放慢到 0.85 倍以下也會提醒，因為會明顯聽得出來。開始前畫面就會先告訴你這次是幾倍。</p>
-  <p><b>調整停頓</b> → 太長：差 15% 以內直接加速；差更多就先砍掉講話之間的長停頓，不夠再加速。太短：把講話之間的停頓拉長來補時間，說話速度不變，但中間會有安靜的片段。如果找不到可以拉長的空檔，會改用定格補尾。</p>
-  <p><b>定格補尾</b> → 太短就用最後一幀定格補到指定秒數，補太多的話結尾會有一段沒聲音。太長的處理方式跟「調整停頓」一樣。</p>
+  <p><b>影片比目標長，差 15% 以內</b> → 加速。音高不變，不會變成花栗鼠的聲音。</p>
+  <p><b>影片比目標長，差超過 15%</b> → 先砍掉講話之間的長停頓，不夠再加速。如果加速會超過 1.15 倍，會先警告你，因為講話會明顯變快。</p>
+  <p><b>影片比目標短</b> → 不會放慢，用最後一幀定格補到指定秒數。<br>
+     為什麼不放慢？45 秒放慢成 60 秒等於 0.75 倍速，講話會變慢動作，一聽就知道不對。</p>
   <p><b>多段規格不一樣</b>（1080p、720p、直式混在一起）會自動統一再接起來。</p>
 </details>
 

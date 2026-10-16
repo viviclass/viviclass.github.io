@@ -85,13 +85,6 @@ function splitCard(start, end, text, maxChars) {
     rest = rest.slice(cut);
   }
   if (rest) cards.push(rest);
-  // 最後一張只剩一兩個字很突兀 → 跟前一張平均分
-  if (cards.length >= 2 && cards[cards.length - 1].length < 3) {
-    const comb = cards[cards.length - 2] + cards[cards.length - 1];
-    const mid = Math.ceil(comb.length / 2);
-    cards[cards.length - 2] = comb.slice(0, mid);
-    cards[cards.length - 1] = comb.slice(mid);
-  }
 
   // 時間按字數比例切
   const total = cards.reduce((s, c) => s + c.length, 0);
@@ -129,9 +122,9 @@ const t2a = t => {
 
 /** 產生 ASS。字一律釘死在 \pos —— libass 的碰撞閃避會把時間有交集的字卡整張往上疊。 */
 export function toASS(cards, { W, H, portrait }) {
-  const fontSize = portrait ? 96 : 108;    // 比舊版大 1.5 倍。ASS 字號是「行高」，思源黑體實際字寬約 0.7 倍字號：橫式 18 字約 1350px（<1920），直式 14 字約 925px（<1080），所以 maxChars 不用跟著減
-  const marginV  = portrait ? 170 : 80;
-  const outline  = portrait ? 5 : 6;
+  const fontSize = portrait ? 64 : 72;
+  const marginV  = portrait ? 150 : 70;
+  const outline  = portrait ? 3.5 : 4;
   const posY = H - marginV;
   const head =
 `[Script Info]
@@ -143,7 +136,7 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Default,Noto Sans TC,${fontSize},&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,${outline},0,2,40,40,${marginV},1
+Style: Default,Mantou Sans,${fontSize},&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,${outline},0,2,40,40,${marginV},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -152,6 +145,23 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     `Dialogue: 0,${t2a(c.start)},${t2a(c.end)},Default,,0,0,0,,{\\an2\\pos(${Math.round(W / 2)},${posY})}${c.text.replace(/\n/g, ' ')}`
   ).join('\n');
   return head + body + '\n';
+}
+
+/** 讀使用者自己的 .srt。時間用逗號或點都吃，一張多行會併成一行。 */
+export function parseSRT(text) {
+  const out = [];
+  for (const blk of text.replace(/\r/g, '').replace(/^﻿/, '').split(/\n\s*\n/)) {
+    const lines = blk.split('\n').filter(l => l.trim() !== '');
+    const i = lines.findIndex(l => l.includes('-->'));
+    if (i < 0) continue;
+    const m = lines[i].match(/(\d+):(\d+):(\d+)[,.](\d+)\s*-->\s*(\d+):(\d+):(\d+)[,.](\d+)/);
+    if (!m) continue;
+    const s = +m[1] * 3600 + +m[2] * 60 + +m[3] + +m[4] / 1000;
+    const e = +m[5] * 3600 + +m[6] * 60 + +m[7] + +m[8] / 1000;
+    const t = lines.slice(i + 1).join(' ').trim();
+    if (t && e > s) out.push({ start: s, end: e, text: t });
+  }
+  return out.sort((a, b) => a.start - b.start);
 }
 
 /** 順便給學員一份 SRT，拿去 YouTube 或剪映都能用 */

@@ -2,7 +2,7 @@
 // 全部在瀏覽器裡跑，影片不離開使用者的裝置。
 import { FFmpeg } from './lib/ffmpeg/index.js';
 import { fetchFile } from './lib/util/index.js';
-import { MODELS, loadASR, extractAudio, transcribe, buildCards, toASS, toSRT } from './subtitle.js';
+import { MODELS, loadASR, extractAudio, transcribe, buildCards, toASS, toSRT, parseSRT } from './subtitle.js';
 
 // ---------- 可調參數（跟本機版一致）----------
 const MAX_SPEEDUP = 1.15;   // 加速上限。超過會警告，因為講話會明顯變快
@@ -19,11 +19,15 @@ const drop=$('drop'), pick=$('pick'), fileList=$('files'), secsIn=$('secs'),
       verifyEl=$('verify'), errEl=$('err'), dlSrt=$('dlSrt'),
       bSubOn=$('bSubOn'), bSubOff=$('bSubOff'), subOpts=$('subOpts'), subHint=$('subHint'),
       bQBase=$('bQBase'), bQSmall=$('bQSmall'),
-      bPause=$('bPause'), bPad=$('bPad'), bSlow=$('bSlow'), shortHint=$('shortHint');
+      bPause=$('bPause'), bPad=$('bPad'), bSlow=$('bSlow'), shortHint=$('shortHint'),
+      bSubSrt=$('bSubSrt'), srtOpts=$('srtOpts'), pickSrt=$('pickSrt'), pickSrtBtn=$('pickSrtBtn'),
+      srtName=$('srtName'), editWrap=$('editWrap'), editHint=$('editHint'), subList=$('subList'),
+      burn=$('burn'), skipBurn=$('skipBurn');
 
 let items = [];        // {file, dur, w, h}
 let portrait = false;
-let wantSub = true;    // 預設自動上字幕
+let subMode = 'auto';  // auto 自動辨識 / srt 自己的字幕檔 / none 不要
+let userSrt = null;    // 使用者上傳的 .srt 檔
 let quality = 'base';
 // 長度不符時怎麼補。預設 slow：太長快轉、太短放慢，全片都有聲音。
 // 考試作業規定秒數的情境下，這個最安全 —— 不會出現任何沒聲音的空檔。
@@ -45,8 +49,29 @@ bPause.onclick = () => pickShort('pause', bPause);
 bPad.onclick   = () => pickShort('pad', bPad);
 bSlow.onclick  = () => pickShort('slow', bSlow);
 
-bSubOn.onclick  = () => { wantSub = true;  bSubOn.classList.add('on');  bSubOff.classList.remove('on'); subOpts.classList.remove('off'); };
-bSubOff.onclick = () => { wantSub = false; bSubOff.classList.add('on'); bSubOn.classList.remove('on');  subOpts.classList.add('off'); };
+function pickSub(m) {
+  subMode = m;
+  [bSubOn, bSubSrt, bSubOff].forEach(b => b.classList.remove('on'));
+  ({ auto: bSubOn, srt: bSubSrt, none: bSubOff })[m].classList.add('on');
+  subOpts.classList.toggle('off', m !== 'auto');
+  srtOpts.classList.toggle('off', m !== 'srt');
+  updateHint();
+}
+bSubOn.onclick  = () => pickSub('auto');
+bSubSrt.onclick = () => pickSub('srt');
+bSubOff.onclick = () => pickSub('none');
+
+pickSrtBtn.onclick = () => pickSrt.click();
+pickSrt.onchange = async e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  userSrt = f;
+  try {
+    const n = parseSRT(await f.text()).length;
+    srtName.textContent = n ? `${f.name}　讀到 ${n} 張字幕` : `${f.name}　⚠ 讀不到字幕，確認是 .srt 格式`;
+    if (!n) userSrt = null;
+  } catch { srtName.textContent = '讀不到這個檔案'; userSrt = null; }
+};
 bQBase.onclick  = () => { quality = 'base';  bQBase.classList.add('on');  bQSmall.classList.remove('on'); updateHint(); };
 bQSmall.onclick = () => { quality = 'small'; bQSmall.classList.add('on'); bQBase.classList.remove('on');  updateHint(); };
 
@@ -55,8 +80,9 @@ function updateHint() {
   const total = items.reduce((s, i) => s + i.dur, 0);
   const target = Math.max(1, parseFloat(secsIn.value) || 60);
   const est = Math.ceil((total || target) * m.rate / 10) * 10;
-  subHint.textContent = `繁體中文．英文保留原文．第一次要下載辨識模型約 ${m.mb} MB 和字幕字體約 6 MB`
-    + (total ? `．辨識這段大約要 ${est >= 60 ? Math.ceil(est / 60) + ' 分鐘' : est + ' 秒'}` : '');
+  subHint.textContent = `繁體中文．英文保留原文．第一次要下載辨識模型約 ${m.mb} MB`
+    + (total ? `．辨識這段大約要 ${est >= 60 ? Math.ceil(est / 60) + ' 分鐘' : est + ' 秒'}` : '')
+    + '．辨識完會讓你先校對錯字再燒上去';
 
   let h = SHORT_HINT[shortMode];
   if (total) {
@@ -273,7 +299,134 @@ function stretchFilter(segs) {
 }
 
 // ---------- 主流程 ----------
+// ---------- 字幕校對 ----------
+// 剪輯完先停在這裡，讓人把辨識錯的字改掉再燒。
+let pending = null;
+
+const MAXCH = () => (portrait ? 14 : 18);
+
+function showEditor(cards) {
+  progWrap.style.display = 'none';
+  subList.innerHTML = '';
+  cards.forEach(c => {
+    const row = document.createElement('div');
+    row.className = 'srow';
+    const mm = Math.floor(c.start / 60), ss = Math.floor(c.start % 60);
+    row.innerHTML = `<span class="t">${mm}:${String(ss).padStart(2, '0')}</span>`;
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.value = c.text;
+    inp.dataset.s = c.start;
+    inp.dataset.e = c.end;
+    const mark = () => inp.classList.toggle('long', [...inp.value].length > MAXCH());
+    inp.oninput = mark; mark();
+    const del = document.createElement('span');
+    del.className = 'del'; del.textContent = '✕';
+    del.title = '這張不要';
+    del.onclick = () => { row.remove(); refreshEditHint(); };
+    row.appendChild(inp); row.appendChild(del);
+    subList.appendChild(row);
+  });
+  refreshEditHint();
+  editWrap.style.display = 'block';
+  editWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function refreshEditHint() {
+  const inputs = [...subList.querySelectorAll('input')];
+  const over = inputs.filter(i => [...i.value].length > MAXCH()).length;
+  editHint.innerHTML = `辨識出 ${inputs.length} 張字幕，有錯字直接改。✕ 可以把整張刪掉。` +
+    (over ? `<br><span style="color:#fbbf24">有 ${over} 張超過 ${MAXCH()} 字（邊框變黃的那幾張），在畫面上會比較擠</span>` : '');
+}
+
+function readEditor() {
+  return [...subList.querySelectorAll('input')]
+    .map(i => ({ start: +i.dataset.s, end: +i.dataset.e, text: i.value.trim() }))
+    .filter(c => c.text && c.end > c.start);
+}
+
+burn.onclick = async () => {
+  const cards = readEditor();
+  if (!cards.length) { showErr('字幕全被刪掉了，沒有東西可以燒。'); return; }
+  burn.disabled = true; skipBurn.disabled = true;
+  editWrap.style.display = 'none';
+  progWrap.style.display = 'block';
+  try {
+    const { W, H, portrait: p } = pending;
+    await ffmpeg.writeFile('sub.ass', new TextEncoder().encode(toASS(cards, { W, H, portrait: p })));
+    // 這個 core 沒編 fontconfig，所以不能用字型名稱查，要把字型放進目錄再用 fontsdir 指
+    try { await ffmpeg.createDir('/fonts'); } catch {}
+    await ffmpeg.writeFile('/fonts/MantouSans-Regular.ttf',
+      await fetchFile(new URL('./assets/MantouSans-Regular.ttf', location.href).href));
+
+    setStage('把字幕燒進畫面…', 0.80, 0.16);
+    await ffmpeg.exec(['-i', 'out.mp4', '-vf', 'subtitles=sub.ass:fontsdir=/fonts',
+      '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '23', '-pix_fmt', 'yuv420p',
+      '-c:a', 'copy', 'final.mp4']);
+    await finish('final.mp4', cards);
+  } catch (e) {
+    progWrap.style.display = 'none';
+    showErr('燒字幕失敗：' + e);
+  } finally {
+    burn.disabled = false; skipBurn.disabled = false;
+  }
+};
+
+skipBurn.onclick = async () => {
+  editWrap.style.display = 'none';
+  progWrap.style.display = 'block';
+  // 字幕檔還是給，只是不燒進畫面
+  await finish('out.mp4', readEditor());
+};
+
+/** 驗收 + 顯示結果。cards 給了就一起提供 .srt 下載 */
+async function finish(fileName, cards) {
+  const { W, H, target, t0: start, names } = pending;
+  setStage('驗收…', 0.96, 0.04);
+  const data = await ffmpeg.readFile(fileName);
+  const blob = new Blob([data.buffer], { type: 'video/mp4' });
+  const url = URL.createObjectURL(blob);
+
+  const real = await new Promise(res => {
+    const v = document.createElement('video');
+    v.preload = 'metadata';
+    v.onloadedmetadata = () => res(v.duration);
+    v.onerror = () => res(NaN);
+    v.src = url;
+  });
+
+  setProg(1);
+  prev.src = url;
+  dl.onclick = () => saveFile(blob, `成品_${Math.round(target)}秒.mp4`);
+  $('saveHint').textContent = '';
+
+  const diff = Math.abs(real - target);
+  const ok = isFinite(real) && diff <= TOLERANCE;
+  verifyEl.innerHTML =
+    `長度 <b>${isFinite(real) ? real.toFixed(2) : '?'} 秒</b>（目標 ${target} 秒，差 ${isFinite(real) ? diff.toFixed(2) : '?'} 秒）` +
+    `${ok ? '' : ' <span style="color:#fbbf24">⚠ 秒數沒對上</span>'}<br>` +
+    `${W}×${H}　${(blob.size / 1024 / 1024).toFixed(1)} MB　耗時 ${Math.round((Date.now() - start) / 1000)} 秒` +
+    (cards && cards.length ? `<br>字幕 ${cards.length} 張${fileName === 'out.mp4' ? '（沒燒進畫面，只給檔案）' : ''}` : '');
+
+  if (cards && cards.length) {
+    const srtBlob = new Blob([toSRT(cards)], { type: 'text/plain;charset=utf-8' });
+    dlSrt.style.display = 'block';
+    dlSrt.onclick = () => saveFile(srtBlob, `字幕_${Math.round(target)}秒.srt`);
+  } else dlSrt.style.display = 'none';
+
+  doneEl.style.display = 'block';
+  progWrap.style.display = 'none';
+  doneEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  // 清掉虛擬硬碟，免得連續做幾支就爆記憶體
+  for (const n of [...(names || []), 'merged.mp4', 'trimmed.mp4', 'stretched.mp4', 'out.mp4', 'final.mp4', 'sub.ass']) {
+    try { await ffmpeg.deleteFile(n); } catch {}
+  }
+  go.disabled = items.length === 0;
+}
+
 go.onclick = async () => {
+  editWrap.style.display = 'none';
   errEl.style.display = 'none'; warnEl.style.display = 'none'; doneEl.style.display = 'none';
   progWrap.style.display = 'block'; go.disabled = true; planEl.textContent = '';
   t0 = Date.now(); logBuf = [];
@@ -408,9 +561,10 @@ go.onclick = async () => {
 
     // ── 最後一步：套用策略並輸出 ──
     // 有字幕的話剪輯只佔前段，後面要留給辨識和燒字幕
-    const EDIT_END = wantSub ? 0.42 : 1.0;
-    const encBase  = oneShot ? 0.12 : (wantSub ? 0.32 : 0.76);
-    setStage('輸出成品…', encBase, Math.max(0.05, EDIT_END - encBase - (wantSub ? 0 : 0.04)));
+    const needASR  = subMode === 'auto';            // 只有自動辨識要留後段的進度給它
+    const EDIT_END = needASR ? 0.42 : 1.0;
+    const encBase  = oneShot ? 0.12 : (needASR ? 0.32 : 0.76);
+    setStage('輸出成品…', encBase, Math.max(0.05, EDIT_END - encBase - (needASR ? 0 : 0.04)));
     const enc = ['-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '23', '-pix_fmt', 'yuv420p',
                  '-c:a', 'aac', '-b:a', '192k', '-ar', '48000'];
     const args = [];
@@ -437,9 +591,16 @@ go.onclick = async () => {
     args.push('-t', String(target), ...enc, 'out.mp4');
     await ffmpeg.exec(args);
 
-    // ── 字幕 ──
-    let finalName = 'out.mp4', srtBlob = null, cardCount = 0;
-    if (wantSub) {
+    // ── 字幕：先產生，然後停下來給人校對 ──
+    pending = { W, H, portrait, target, t0, names };
+
+    if (subMode === 'none') { await finish('out.mp4', null); return; }
+
+    let cards = [];
+    if (subMode === 'srt') {
+      setStage('讀取字幕檔…', 0.42, 0.04);
+      cards = parseSRT(await userSrt.text());
+    } else {
       // 先剪再辨識：這樣字幕時間一定對，不用因為變速去重算時間軸
       setStage('抽出聲音…', 0.42, 0.02);
       const audioURL = await extractAudio(ffmpeg, 'out.mp4');
@@ -448,84 +609,22 @@ go.onclick = async () => {
       const asr = await loadASR(quality, p => setProg(p));
 
       // 辨識本身不回報進度，用實測速率推一個預估進度，免得畫面像當掉
-      setStage('辨識語音…', 0.52, 0.28);
+      setStage('辨識語音…', 0.52, 0.40);
       const estMs = Math.max(3000, target * MODELS[quality].rate * 1000);
       const tick0 = Date.now();
       const tick = setInterval(() => setProg(Math.min(0.97, (Date.now() - tick0) / estMs)), 400);
       let segs;
       try { segs = await transcribe(asr, audioURL); } finally { clearInterval(tick); }
       setProg(1);
-
-      const cards = buildCards(segs, { maxChars: portrait ? 14 : 18, totalDur: target });
-      cardCount = cards.length;
-
-      if (cards.length) {
-        const ass = toASS(cards, { W, H, portrait });
-        await ffmpeg.writeFile('sub.ass', new TextEncoder().encode(ass));
-        // 這個 core 沒編 fontconfig，所以不能用字型名稱查，要把字型放進目錄再用 fontsdir 指
-        try { await ffmpeg.createDir('/fonts'); } catch {}
-        await ffmpeg.writeFile('/fonts/NotoSansTC-Bold.otf',
-          await fetchFile(new URL('./assets/NotoSansTC-Bold.otf', location.href).href));
-
-        setStage('把字幕燒進畫面…', 0.80, 0.16);
-        const burn = () => ffmpeg.exec(['-i', 'out.mp4', '-vf', 'subtitles=sub.ass:fontsdir=/fonts',
-          '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '23', '-pix_fmt', 'yuv420p',
-          '-c:a', 'copy', 'final.mp4']);
-        try { await burn(); }
-        catch (e) {
-          // 思源黑體載不進去時，退回舊字體（饅頭黑體）再燒一次，不要整支失敗
-          console.warn('思源黑體燒字幕失敗，改用饅頭黑體', e);
-          await ffmpeg.writeFile('/fonts/MantouSans-Regular.ttf',
-            await fetchFile(new URL('./assets/MantouSans-Regular.ttf', location.href).href));
-          await ffmpeg.writeFile('sub.ass', new TextEncoder().encode(ass.replace('Style: Default,Noto Sans TC,', 'Style: Default,Mantou Sans,')));
-          await burn();
-        }
-        finalName = 'final.mp4';
-
-        srtBlob = new Blob([toSRT(cards)], { type: 'text/plain;charset=utf-8' });
-      } else {
-        planEl.textContent += '\n（這段聲音辨識不出內容，沒有加字幕）';
-      }
+      cards = buildCards(segs, { maxChars: portrait ? 14 : 18, totalDur: target });
     }
 
-    // ── 驗收 ──
-    setStage('驗收…', 0.96, 0.04);
-    const data = await ffmpeg.readFile(finalName);
-    const blob = new Blob([data.buffer], { type: 'video/mp4' });
-    const url = URL.createObjectURL(blob);
-
-    const real = await new Promise(res => {
-      const v = document.createElement('video');
-      v.preload = 'metadata';
-      v.onloadedmetadata = () => res(v.duration);
-      v.onerror = () => res(NaN);
-      v.src = url;
-    });
-
-    setProg(1);
-    prev.src = url;
-    const outName = `成品_${Math.round(target)}秒.mp4`;
-    dl.onclick = () => saveFile(blob, outName);
-    $('saveHint').textContent = '';
-    const diff = Math.abs(real - target);
-    const ok = isFinite(real) && diff <= TOLERANCE;
-    verifyEl.innerHTML =
-      `長度 <b>${isFinite(real) ? real.toFixed(2) : '?'} 秒</b>（目標 ${target} 秒，差 ${isFinite(real) ? diff.toFixed(2) : '?'} 秒）` +
-      `${ok ? '' : ' <span style="color:#fbbf24">⚠ 秒數沒對上</span>'}<br>` +
-      `${W}×${H}　${(blob.size / 1024 / 1024).toFixed(1)} MB　耗時 ${Math.round((Date.now() - t0) / 1000)} 秒` +
-      (cardCount ? `<br>字幕 ${cardCount} 張` : '');
-    if (srtBlob) {
-      dlSrt.style.display = 'block';
-      dlSrt.onclick = () => saveFile(srtBlob, `字幕_${Math.round(target)}秒.srt`);
-    } else {
-      dlSrt.style.display = 'none';
+    if (!cards.length) {
+      planEl.textContent += subMode === 'srt' ? '\n（字幕檔讀不到內容）' : '\n（這段聲音辨識不出內容）';
+      await finish('out.mp4', null);
+      return;
     }
-    doneEl.style.display = 'block';
-    progWrap.style.display = 'none';
-    doneEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    // 清掉虛擬硬碟，免得連續做幾支就爆記憶體
-    for (const n of [...names, 'merged.mp4', 'trimmed.mp4', 'out.mp4', 'final.mp4', 'sub.ass']) { try { await ffmpeg.deleteFile(n); } catch {} }
+    showEditor(cards);
 
   } catch (e) {
     progWrap.style.display = 'none';
