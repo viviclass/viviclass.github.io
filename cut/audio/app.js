@@ -322,7 +322,7 @@ go.onclick = async () => {
       warnEl.style.display = 'block';
       warnEl.textContent = plan.sp > MAX_SPEEDUP
         ? `⚠ 要快轉 ${plan.sp.toFixed(2)} 倍才塞得進 ${target} 秒，講話會明顯變快。\n想避免的話：把目標改成 ${Math.ceil(curDur / MAX_SPEEDUP)} 秒以上，或先自己剪短一點。`
-        : `⚠ 要放慢到 ${plan.sp.toFixed(2)} 倍才填得滿 ${target} 秒，會明顯聽得出來。\n想避免的話：素材再多錄一點，或改選「調整停頓」。`;
+        : `⚠ 要放慢到 ${plan.sp.toFixed(2)} 倍才填得滿 ${target} 秒，會明顯聽得出來。\n想避免的話：素材再多錄一點，讓長度接近 ${target} 秒。`;
     }
     planEl.textContent = (planEl.textContent ? planEl.textContent + '\n' : '') + plan.note;
 
