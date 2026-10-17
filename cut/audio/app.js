@@ -6,34 +6,22 @@ import { MODELS, loadASR, transcribe, buildCards, toSRT } from '../subtitle.js';
 
 const MAX_SPEEDUP = 1.15;
 const TOLERANCE   = 0.15;
-const MIN_SILENCE = 0.8;
 
 const $ = id => document.getElementById(id);
 const drop=$('drop'), pick=$('pick'), fileList=$('files'), secsIn=$('secs'), go=$('go'),
       progWrap=$('progWrap'), stageEl=$('stage'), pbar=$('pbar'), ppct=$('ppct'), peta=$('peta'),
       planEl=$('plan'), warnEl=$('warn'), doneEl=$('done'), prev=$('prev'), dl=$('dl'),
       dlSrt=$('dlSrt'), verifyEl=$('verify'), errEl=$('err'), shortHint=$('shortHint'), subHint=$('subHint'),
-      bSlow=$('bSlow'), bPause=$('bPause'), bPad=$('bPad'), bSubOn=$('bSubOn'), bSubOff=$('bSubOff');
+      bSubOn=$('bSubOn'), bSubOff=$('bSubOff');
 
 let items = [];
-let fitMode = 'slow';
 let wantSrt = false;
 let ffmpeg = null, loaded = false;
 
-const FIT_HINT = {
-  slow:  '太長就快轉、太短就放慢。全程都有聲音，不會有空檔',
-  pause: '太長就砍掉停頓、太短就拉長停頓。說話速度不變，但中間會有安靜的片段',
-  pad:   '太短時結尾補靜音到指定秒數。補太多的話結尾會有一段沒聲音',
-};
-function pickFit(m, btn) {
-  fitMode = m;
-  [bSlow, bPause, bPad].forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  updateHint();
-}
-bSlow.onclick  = () => pickFit('slow', bSlow);
-bPause.onclick = () => pickFit('pause', bPause);
-bPad.onclick   = () => pickFit('pad', bPad);
+// 長度不符一律用變速：太長快轉、太短放慢。
+// 用途是學生交作業（規定秒數），第一優先是「秒數剛好 + 全程有聲音」，
+// 會產生沒說話片段的做法都不適合，所以不提供選項。
+const BASE_HINT = '長度不符的話：太長就快轉、太短就放慢。全程都有聲音，不會有空檔';
 bSubOn.onclick  = () => { wantSrt = true;  bSubOn.classList.add('on');  bSubOff.classList.remove('on'); updateHint(); };
 bSubOff.onclick = () => { wantSrt = false; bSubOff.classList.add('on'); bSubOn.classList.remove('on'); updateHint(); };
 secsIn.addEventListener('input', updateHint);
@@ -109,21 +97,15 @@ function render() {
 function updateHint() {
   const total = items.reduce((s, i) => s + i.dur, 0);
   const target = Math.max(1, parseFloat(secsIn.value) || 60);
-  let h = FIT_HINT[fitMode];
+  let h = BASE_HINT;
   if (total) {
     const sp = total / target;
-    if (total > target + 0.15) {
-      if (fitMode === 'slow' || sp <= MAX_SPEEDUP)
-        h += `　→ 這次會快轉 ${sp.toFixed(2)} 倍` + (sp > MAX_SPEEDUP ? '，講話會明顯變快' : '');
-      else h += '　→ 這次會先砍掉停頓再快轉';
-    } else if (total < target - 0.15) {
-      const need = target - total;
-      if (fitMode === 'slow')      h += `　→ 這次會放慢到 ${sp.toFixed(2)} 倍` + (sp < 0.85 ? '，會明顯聽得出來' : '');
-      else if (fitMode === 'pad')  h += `　→ 這次結尾會補 ${need.toFixed(0)} 秒靜音`;
-      else                         h += `　→ 這次要在停頓裡補 ${need.toFixed(0)} 秒`;
-    } else {
+    if (total > target + 0.15)
+      h += `　→ 這次會快轉 ${sp.toFixed(2)} 倍` + (sp > MAX_SPEEDUP ? '，講話會明顯變快' : '');
+    else if (total < target - 0.15)
+      h += `　→ 這次會放慢到 ${sp.toFixed(2)} 倍` + (sp < 0.85 ? '，會明顯聽得出來' : '');
+    else
       h += '　→ 長度剛好，不用調整';
-    }
   }
   shortHint.textContent = h;
   subHint.textContent = wantSrt
@@ -172,35 +154,6 @@ function atempoChain(sp) {
   return out.join(',');
 }
 
-/** 把要補的時間分散到最長的幾個停頓裡，說話速度完全不動 */
-function planStretch(silences, totalDur, needExtra, maxPauses = 6) {
-  const usable = silences.filter(s => s.end - s.start > 0.3)
-    .sort((a, b) => (b.end - b.start) - (a.end - a.start))
-    .slice(0, maxPauses).sort((a, b) => a.start - b.start);
-  if (!usable.length) return null;
-  const per = needExtra / usable.length;
-  const segs = []; let cur = 0;
-  for (const s of usable) {
-    if (s.start > cur + 0.05) segs.push({ start: cur, end: s.start, stretch: 1 });
-    const d = s.end - s.start;
-    segs.push({ start: s.start, end: s.end, stretch: (d + per) / d });
-    cur = s.end;
-  }
-  if (cur < totalDur - 0.05) segs.push({ start: cur, end: totalDur, stretch: 1 });
-  return segs;
-}
-
-function stretchFilter(segs) {
-  const parts = [], labels = [];
-  segs.forEach((s, i) => {
-    parts.push(`[0:a]atrim=${s.start.toFixed(3)}:${s.end.toFixed(3)},asetpts=PTS-STARTPTS` +
-               `${s.stretch === 1 ? '' : `,${atempoChain(1 / s.stretch)}`}[sa${i}]`);
-    labels.push(`[sa${i}]`);
-  });
-  parts.push(`${labels.join('')}concat=n=${segs.length}:v=0:a=1[a]`);
-  return parts.join(';');
-}
-
 go.onclick = async () => {
   errEl.style.display = 'none'; warnEl.style.display = 'none'; doneEl.style.display = 'none';
   progWrap.style.display = 'block'; go.disabled = true; planEl.textContent = '';
@@ -238,111 +191,31 @@ go.onclick = async () => {
       : items.map((_, i) => `[${i}:a]aresample=44100,aformat=sample_fmts=fltp:channel_layouts=stereo[a${i}]`).join(';')
         + ';' + items.map((_, i) => `[a${i}]`).join('') + `concat=n=${items.length}:v=0:a=1[a]`;
 
-    // ── 決定怎麼補 ──
+    // ── 長度一律用變速調整：太長快轉、太短放慢 ──
     const ratio = srcTotal / target;
-    let plan, oneShot = true;
-    if (Math.abs(srcTotal - target) <= TOLERANCE) {
-      plan = { kind: 'cut', note: '長度本來就剛好' };
-    } else if (srcTotal > target) {
-      if (fitMode === 'slow' || ratio <= MAX_SPEEDUP)
-        plan = { kind: 'speed', sp: ratio, note: `快轉 ${ratio.toFixed(3)} 倍` };
-      else { plan = { kind: 'trim' }; oneShot = false; }
-    } else {
-      const need = target - srcTotal;
-      if (fitMode === 'pad')       plan = { kind: 'pad', pad: need, note: `結尾補 ${need.toFixed(2)} 秒靜音` };
-      else if (fitMode === 'slow') plan = { kind: 'speed', sp: ratio, note: `放慢到 ${ratio.toFixed(3)} 倍` };
-      else { plan = { kind: 'stretch', need }; oneShot = false; }
-    }
-
-    let src = null, curDur = srcTotal;
-
-    if (!oneShot) {
-      setStage(`合併 ${items.length} 段…`, 0.10, 0.20);
-      await ffmpeg.exec([...inputs, '-filter_complex', catFilter, '-map', '[a]', ...ENC, 'merged.mp3']);
-      for (const n of names) { try { await ffmpeg.deleteFile(n); } catch {} }
-
-      setStage(plan.kind === 'stretch' ? '正在找說話之間的空檔…' : '太長了，正在找可以砍掉的停頓…', 0.30, 0.06);
-      logBuf = [];
-      const d = plan.kind === 'stretch' ? 0.35 : MIN_SILENCE;
-      await ffmpeg.exec(['-i', 'merged.mp3', '-af', `silencedetect=noise=-32dB:d=${d}`, '-f', 'null', '-']);
-      const text = logBuf.join('\n');
-      const starts = [...text.matchAll(/silence_start:\s*([\d.]+)/g)].map(m => +m[1]);
-      const ends   = [...text.matchAll(/silence_end:\s*([\d.]+)/g)].map(m => +m[1]);
-
-      if (plan.kind === 'stretch') {
-        const sil = starts.map((s, i) => ({ start: s, end: i < ends.length ? ends[i] : srcTotal }))
-                          .filter(x => x.end > x.start);
-        const segs = planStretch(sil, srcTotal, plan.need);
-        if (segs && segs.some(s => s.stretch > 1)) {
-          const n = segs.filter(s => s.stretch > 1).length;
-          planEl.textContent = `合併後 ${srcTotal.toFixed(2)} 秒\n在 ${n} 個停頓裡補上 ${plan.need.toFixed(1)} 秒，說話速度不變`;
-          setStage('拉長停頓…', 0.36, 0.20);
-          // ⚠ atempo 放慢靜音段時長度不會完全精確（實測差了 0.93 秒），
-          //   而 -t 只能截短不能補長。先用 apad 多墊一點再用 -t 切齊，長度才會準。
-          //   影片版沒這問題，因為有視訊軌把時間軸釘住。
-          await ffmpeg.exec(['-i', 'merged.mp3', '-filter_complex', stretchFilter(segs) + ';[a]apad=pad_dur=3[ao]',
-            '-map', '[ao]', '-t', String(target), ...ENC, 'stretched.mp3']);
-          try { await ffmpeg.deleteFile('merged.mp3'); } catch {}
-          src = 'stretched.mp3'; curDur = target;
-          plan = { kind: 'cut', note: `拉長了 ${n} 個停頓` };
-        } else {
-          planEl.textContent = `合併後 ${srcTotal.toFixed(2)} 秒\n找不到可以拉長的空檔，改成補靜音`;
-          src = 'merged.mp3';
-          plan = { kind: 'pad', pad: plan.need, note: `結尾補 ${plan.need.toFixed(2)} 秒靜音` };
-        }
-      } else {
-        const keep = []; let cursor = 0;
-        for (let i = 0; i < starts.length; i++) {
-          const s = starts[i], e = (i < ends.length ? ends[i] : srcTotal);
-          if (e - s < MIN_SILENCE + 0.2) continue;
-          if (s + 0.25 > cursor) keep.push([cursor, s + 0.25]);
-          cursor = Math.max(e - 0.1, cursor);
-        }
-        if (cursor < srcTotal) keep.push([cursor, srcTotal]);
-        const kept = keep.reduce((s, k) => s + (k[1] - k[0]), 0);
-        if (keep.length > 1 && kept < srcTotal - 0.3) {
-          planEl.textContent = `合併後 ${srcTotal.toFixed(2)} 秒\n砍掉 ${starts.length} 段停頓 → ${kept.toFixed(2)} 秒`;
-          const sel = keep.map(k => `between(t,${k[0].toFixed(3)},${k[1].toFixed(3)})`).join('+');
-          setStage('砍掉停頓…', 0.36, 0.20);
-          await ffmpeg.exec(['-i', 'merged.mp3', '-af', `aselect='${sel}',asetpts=N/SR/TB`, ...ENC, 'trimmed.mp3']);
-          try { await ffmpeg.deleteFile('merged.mp3'); } catch {}
-          src = 'trimmed.mp3'; curDur = kept;
-        } else {
-          planEl.textContent = `合併後 ${srcTotal.toFixed(2)} 秒\n沒有找到可以砍的停頓`;
-          src = 'merged.mp3';
-        }
-        const r2 = curDur / target;
-        plan = r2 > 1 ? { kind: 'speed', sp: r2, note: `快轉 ${r2.toFixed(3)} 倍` }
-             : r2 < 1 ? { kind: 'pad', pad: target - curDur, note: `結尾補 ${(target - curDur).toFixed(2)} 秒靜音` }
-                      : { kind: 'cut', note: '剛好' };
-      }
-    }
+    const plan = Math.abs(srcTotal - target) <= TOLERANCE
+      ? { kind: 'cut', note: '長度本來就剛好' }
+      : { kind: 'speed', sp: ratio,
+          note: ratio > 1 ? `快轉 ${ratio.toFixed(3)} 倍` : `放慢到 ${ratio.toFixed(3)} 倍` };
 
     if (plan.kind === 'speed' && (plan.sp > MAX_SPEEDUP || plan.sp < 0.85)) {
       warnEl.style.display = 'block';
       warnEl.textContent = plan.sp > MAX_SPEEDUP
-        ? `⚠ 要快轉 ${plan.sp.toFixed(2)} 倍才塞得進 ${target} 秒，講話會明顯變快。\n想避免的話：把目標改成 ${Math.ceil(curDur / MAX_SPEEDUP)} 秒以上，或先自己剪短一點。`
-        : `⚠ 要放慢到 ${plan.sp.toFixed(2)} 倍才填得滿 ${target} 秒，會明顯聽得出來。\n想避免的話：素材再多錄一點，讓長度接近 ${target} 秒。`;
+        ? `⚠ 要快轉 ${plan.sp.toFixed(2)} 倍才塞得進 ${target} 秒，講話會明顯變快。
+`
+          + `想避免的話：把目標改成 ${Math.ceil(srcTotal / MAX_SPEEDUP)} 秒以上，或先自己剪短一點。`
+        : `⚠ 要放慢到 ${plan.sp.toFixed(2)} 倍才填得滿 ${target} 秒，會明顯聽得出來。
+`
+          + `想避免的話：素材再多錄一點，讓長度接近 ${target} 秒。`;
     }
-    planEl.textContent = (planEl.textContent ? planEl.textContent + '\n' : '') + plan.note;
+    planEl.textContent = plan.note;
 
-    // ── 輸出 ──
-    setStage('輸出 MP3…', oneShot ? 0.10 : 0.56, oneShot ? (wantSrt ? 0.30 : 0.86) : (wantSrt ? 0.14 : 0.40));
-    const args = [];
-    if (oneShot) {
-      args.push(...inputs);
-      let fc = catFilter.replace(/\[a\]$/, '[ac]');
-      if (plan.kind === 'speed')    fc += `;[ac]${atempoChain(plan.sp)}[a]`;
-      else if (plan.kind === 'pad') fc += `;[ac]apad=pad_dur=${(plan.pad + 0.5).toFixed(3)}[a]`;
-      else                          fc += `;[ac]anull[a]`;
-      args.push('-filter_complex', fc, '-map', '[a]');
-    } else {
-      args.push('-i', src);
-      if (plan.kind === 'speed')    args.push('-af', atempoChain(plan.sp));
-      else if (plan.kind === 'pad') args.push('-af', `apad=pad_dur=${(plan.pad + 0.5).toFixed(3)}`);
-    }
-    args.push('-t', String(target), ...ENC, 'out.mp3');
-    await ffmpeg.exec(args);
+    // ── 合併和調整一次做完 ──
+    setStage('輸出 MP3…', 0.10, wantSrt ? 0.30 : 0.86);
+    let fc = catFilter.replace(/\[a\]$/, '[ac]');
+    fc += plan.kind === 'speed' ? `;[ac]${atempoChain(plan.sp)}[a]` : ';[ac]anull[a]';
+    await ffmpeg.exec([...inputs, '-filter_complex', fc, '-map', '[a]',
+      '-t', String(target), ...ENC, 'out.mp3']);
 
     // ── 字幕（選配）──
     let srtBlob = null, cardCount = 0;
@@ -394,7 +267,7 @@ go.onclick = async () => {
     progWrap.style.display = 'none';
     doneEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-    for (const n of [...names, 'merged.mp3', 'trimmed.mp3', 'stretched.mp3', 'out.mp3']) { try { await ffmpeg.deleteFile(n); } catch {} }
+    for (const n of [...names, 'out.mp3']) { try { await ffmpeg.deleteFile(n); } catch {} }
 
   } catch (e) {
     progWrap.style.display = 'none';
