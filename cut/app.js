@@ -310,6 +310,10 @@ async function finish(fileName, cards) {
     v.src = url;
   });
 
+  // 從 ffmpeg 的 log 抓最後回報的幀數。只看秒數會漏掉 fps 掉下來的問題。
+  const fm = [...logBuf.join(String.fromCharCode(10)).matchAll(/frame=\s*(\d+)/g)];
+  const frames = fm.length ? +fm[fm.length - 1][1] : null;
+
   setProg(1);
   prev.src = url;
   dl.onclick = () => saveFile(blob, `成品_${Math.round(target)}秒.mp4`);
@@ -320,7 +324,8 @@ async function finish(fileName, cards) {
   verifyEl.innerHTML =
     `長度 <b>${isFinite(real) ? real.toFixed(2) : '?'} 秒</b>（目標 ${target} 秒，差 ${isFinite(real) ? diff.toFixed(2) : '?'} 秒）` +
     `${ok ? '' : ' <span style="color:#fbbf24">⚠ 秒數沒對上</span>'}<br>` +
-    `${W}×${H}　${(blob.size / 1024 / 1024).toFixed(1)} MB　耗時 ${Math.round((Date.now() - start) / 1000)} 秒` +
+    `${W}×${H}　${frames && isFinite(real) ? (frames / real).toFixed(1) + ' fps　' : ''}` +
+    `${(blob.size / 1024 / 1024).toFixed(1)} MB　耗時 ${Math.round((Date.now() - start) / 1000)} 秒` +
     (cards && cards.length ? `<br>字幕 ${cards.length} 張${fileName === 'out.mp4' ? '（沒燒進畫面，只給檔案）' : ''}` : '');
 
   if (cards && cards.length) {
@@ -390,8 +395,11 @@ go.onclick = async () => {
     const needASR = wantSub;   // 要辨識的話，後段進度要留給它
     setStage('輸出成品…', 0.12, needASR ? 0.30 : 0.84);
     let fc = concatFilter(items.length, W, H);
+    // ⚠ setpts 後面一定要接 fps。它只是改時間戳，不會生出新的幀 ——
+    //   放慢的話幀數不變、時間變長，fps 就掉下來（45 秒 1350 幀放慢成 60 秒＝22.5 fps）。
+    //   秒數驗收看不出這個問題，要看「影格數 ÷ 時長」。
     fc += plan.kind === 'speed'
-      ? `;[vc]setpts=PTS/${plan.sp.toFixed(6)}[v];[ac]${atempoChain(plan.sp)}[a]`
+      ? `;[vc]setpts=PTS/${plan.sp.toFixed(6)},fps=${FPS}[v];[ac]${atempoChain(plan.sp)}[a]`
       : ';[vc]null[v];[ac]anull[a]';
     await ffmpeg.exec([...inputs, '-filter_complex', fc, '-map', '[v]', '-map', '[a]',
       '-t', String(target),
