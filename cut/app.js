@@ -59,7 +59,7 @@ function showEngineBadge() {
   if (!el) return;
   if (canUseMT()) {
     el.className = 'fast';
-    el.textContent = '⚡ 快速模式已啟用（15 秒內的素材會用，處理時畫面暫停幾秒）';
+    el.textContent = '⚡ 快速模式已啟用（處理時畫面會暫停回應，跳「無回應」請按等一下）';
   } else {
     el.className = '';
     const why = window.__coi || '這個瀏覽器不支援';
@@ -184,10 +184,15 @@ function setBusy(on, seconds) {
   if (on) {
     bar.classList.add('busy');
     freezeNote.style.display = 'block';
+    const sec = Math.max(3, Math.round(seconds));
     freezeNote.textContent =
-      `用快速模式處理中，大約 ${Math.max(3, Math.round(seconds))} 秒。
+      `用快速模式處理中，大約 ${sec} 秒。
 ` +
-      `這段時間畫面會暫停回應（捲動、按鈕都不會動），上面的長條還在跑就表示正常，請不要關掉分頁。`;
+      `這段時間畫面會暫停回應（捲動、按鈕都不會動），上面的長條還在跑就表示正常。
+` +
+      (sec > WARN_FREEZE
+        ? `⚠ 瀏覽器可能會跳出「網頁無回應」，那是正常的 —— 請按「等一下」，不要按「離開網頁」。`
+        : `請不要關掉分頁。`);
   } else {
     bar.classList.remove('busy');
     freezeNote.style.display = 'none';
@@ -231,10 +236,13 @@ async function saveFile(blob, name) {
 // ---------- 載入引擎 ----------
 // 單執行緒每 1 秒素材大約要這麼久（720p 實測：30 秒素材 18.4 秒）
 const ST_RATE = 0.62;
-// 多執行緒會凍住畫面。Chrome 大約凍結 5～10 秒就會跳「網頁無回應」，
-// 所以上限抓 4 秒 —— 超過就用單執行緒，寧可慢但有進度條、不會嚇到人。
-// （一開始訂 25 秒，ViVi 用一分鐘的素材就踩到警告了。）
-const FREEZE_LIMIT = 4;
+// 多執行緒會凍住畫面，Chrome 凍超過 5～10 秒就會跳「網頁無回應」。
+// 但為了躲那個對話框把上限壓到 4 秒的話，一分鐘的素材就享受不到加速了
+// ——ViVi 實測說那樣反而比舊版慢。所以上限放寬到 20 秒，
+// 改成「事先告訴使用者可能會跳框、按等一下就好」。
+const FREEZE_LIMIT = 20;
+// 超過這個秒數就會跳 Chrome 的無回應提示，要先打預防針
+const WARN_FREEZE = 5;
 
 /** 依這次的工作量挑引擎：夠短就用快的（會凍畫面），太長就用穩的 */
 function pickEngine(srcTotal) {
