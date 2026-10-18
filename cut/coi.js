@@ -57,7 +57,7 @@ if (typeof window === 'undefined') {
     window.__coi = '註冊中';
     (async () => {
       try {
-        await sw.register(new URL('./coi.js', import.meta.url), { scope: './' });
+        await sw.register('coi.js', { scope: './' });   // 相對於這一頁，等於 /cut/coi.js
         // ⚠ 不能只看 reg.active —— 剛註冊時它可能還在 installing，
         //   等 ready 才保證有 active 的那一份，不然會錯過重整的時機。
         await sw.ready;
@@ -76,8 +76,8 @@ if (typeof window === 'undefined') {
       } catch (err) {
         // 把原因寫進標籤，不然只能叫人去開 console
         const why = String(err && err.message || err)
-          .replace(/^Failed to register a ServiceWorker[^:]*:\s*/, '')
-          .slice(0, 70);
+          .replace(/^Failed to register a ServiceWorker.*?\)\s*:\s*/, '')
+          .slice(0, 90);
         window.__coi = '註冊失敗：' + why;
         console.warn('[coi] 註冊失敗，會用單執行緒跑（功能正常，只是慢一點）：', err);
       }
