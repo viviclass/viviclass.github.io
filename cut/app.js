@@ -53,6 +53,24 @@ function outputSize() {
   return portrait ? { W: short, H: base } : { W: base, H: short };
 }
 
+/** 讓人一眼看到這次會用哪個引擎，不用等跑完才知道 */
+function showEngineBadge() {
+  const el = $('engine');
+  if (!el) return;
+  if (canUseMT()) {
+    el.className = 'fast';
+    el.textContent = '⚡ 快速模式已啟用（處理時畫面會暫停回應幾秒）';
+  } else {
+    el.className = '';
+    const why = window.__coi || '這個瀏覽器不支援';
+    el.textContent = `標準模式　${why === '已啟用' ? '' : '（' + why + '）'}`;
+  }
+}
+// coi.js 可能還在註冊，等一下再確認一次
+showEngineBadge();
+setTimeout(showEngineBadge, 1500);
+setTimeout(showEngineBadge, 4000);
+
 function updateHint() {
   const m = MODELS[quality];
   const total = items.reduce((s, i) => s + i.dur, 0);

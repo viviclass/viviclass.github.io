@@ -46,22 +46,46 @@ if (typeof window === 'undefined') {
 
   if (new URLSearchParams(location.search).has(FLAG)) {
     // 逃生門：?nocoi=1 解除安裝，之後就一直用單執行緒
+    window.__coi = '已關閉（網址有 nocoi）';
     sw?.getRegistrations?.().then(rs => rs.forEach(r => r.unregister()))
-      .then(() => console.log('[coi] 已解除安裝'));
+      .then(() => { sessionStorage.removeItem('coi-reloaded'); console.log('[coi] 已解除安裝'); });
   } else if (window.crossOriginIsolated) {
+    window.__coi = '已啟用';
+    sessionStorage.removeItem('coi-reloaded');
     console.log('[coi] 已經是隔離狀態，可以用多執行緒');
   } else if (sw && window.isSecureContext) {
-    sw.register(new URL('./coi.js', import.meta.url), { scope: './' })
-      .then((reg) => {
-        // 第一次註冊時這一份頁面還沒被它管到，重整一次才會帶上標頭
-        if (reg.active && !sw.controller) {
-          console.log('[coi] 已註冊，重新整理以套用');
-          window.location.reload();
+    window.__coi = '註冊中';
+    (async () => {
+      try {
+        await sw.register(new URL('./coi.js', import.meta.url), { scope: './' });
+        // ⚠ 不能只看 reg.active —— 剛註冊時它可能還在 installing，
+        //   等 ready 才保證有 active 的那一份，不然會錯過重整的時機。
+        await sw.ready;
+        if (!sw.controller) {
+          // 這一份頁面還沒被 service worker 管到，重整一次才會帶上標頭。
+          // 用 sessionStorage 擋住無限重整（萬一標頭還是沒生效）。
+          if (!sessionStorage.getItem('coi-reloaded')) {
+            sessionStorage.setItem('coi-reloaded', '1');
+            console.log('[coi] 已註冊，重新整理以套用');
+            window.location.reload();
+          } else {
+            window.__coi = '重整後仍未生效';
+            console.warn('[coi] 重整過一次還是沒有隔離，用單執行緒跑');
+          }
         }
-      })
-      .catch(err => console.warn('[coi] 註冊失敗，會用單執行緒跑（功能正常，只是慢一點）：', err));
-    sw.addEventListener('controllerchange', () => window.location.reload());
+      } catch (err) {
+        window.__coi = '註冊失敗';
+        console.warn('[coi] 註冊失敗，會用單執行緒跑（功能正常，只是慢一點）：', err);
+      }
+    })();
+    sw.addEventListener('controllerchange', () => {
+      if (!sessionStorage.getItem('coi-reloaded')) {
+        sessionStorage.setItem('coi-reloaded', '1');
+        window.location.reload();
+      }
+    });
   } else {
+    window.__coi = sw ? '不是安全連線' : '瀏覽器不支援';
     console.log('[coi] 這個瀏覽器不支援，會用單執行緒跑');
   }
 }
