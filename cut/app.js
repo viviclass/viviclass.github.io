@@ -59,7 +59,7 @@ function showEngineBadge() {
   if (!el) return;
   if (canUseMT()) {
     el.className = 'fast';
-    el.textContent = '⚡ 快速模式已啟用（處理時畫面會暫停回應幾秒）';
+    el.textContent = '⚡ 快速模式已啟用（15 秒內的素材會用，處理時畫面暫停幾秒）';
   } else {
     el.className = '';
     const why = window.__coi || '這個瀏覽器不支援';
@@ -231,8 +231,10 @@ async function saveFile(blob, name) {
 // ---------- 載入引擎 ----------
 // 單執行緒每 1 秒素材大約要這麼久（720p 實測：30 秒素材 18.4 秒）
 const ST_RATE = 0.62;
-// 多執行緒會凍住畫面，超過這個秒數就不划算，寧可用慢的但有進度條
-const FREEZE_LIMIT = 25;
+// 多執行緒會凍住畫面。Chrome 大約凍結 5～10 秒就會跳「網頁無回應」，
+// 所以上限抓 4 秒 —— 超過就用單執行緒，寧可慢但有進度條、不會嚇到人。
+// （一開始訂 25 秒，ViVi 用一分鐘的素材就踩到警告了。）
+const FREEZE_LIMIT = 4;
 
 /** 依這次的工作量挑引擎：夠短就用快的（會凍畫面），太長就用穩的 */
 function pickEngine(srcTotal) {
