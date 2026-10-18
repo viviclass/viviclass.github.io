@@ -64,6 +64,7 @@ function showEngineBadge() {
     el.className = '';
     const why = window.__coi || '這個瀏覽器不支援';
     el.textContent = `標準模式　${why === '已啟用' ? '' : '（' + why + '）'}`;
+    el.title = '功能完全正常，只是處理時間比較長。' + (window.__coi || '');
   }
 }
 // coi.js 可能還在註冊，等一下再確認一次

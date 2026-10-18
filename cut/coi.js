@@ -74,7 +74,11 @@ if (typeof window === 'undefined') {
           }
         }
       } catch (err) {
-        window.__coi = '註冊失敗';
+        // 把原因寫進標籤，不然只能叫人去開 console
+        const why = String(err && err.message || err)
+          .replace(/^Failed to register a ServiceWorker[^:]*:\s*/, '')
+          .slice(0, 70);
+        window.__coi = '註冊失敗：' + why;
         console.warn('[coi] 註冊失敗，會用單執行緒跑（功能正常，只是慢一點）：', err);
       }
     })();
