@@ -80,6 +80,10 @@
   #progWrap{display:none}
   .bar{height:8px; background:#1c1c1c; border-radius:99px; overflow:hidden; margin:12px 0 8px}
   .bar i{display:block; height:100%; width:0; background:var(--pink); transition:width .25s}
+  .bar.busy i{width:35%!important; transition:none; animation:sweep 1.1s ease-in-out infinite alternate}
+  @keyframes sweep{from{transform:translateX(-12%)} to{transform:translateX(200%)}}
+  .freeze{display:none; font-size:13px; margin-top:10px; padding:11px; border-radius:8px;
+          background:#1a1526; border:1px solid #352a4d; color:#c3b5e0; line-height:1.6}
   .pmeta{display:flex; justify-content:space-between; font-size:12px; color:var(--dim); font-variant-numeric:tabular-nums}
   #plan{font-size:13px; margin-top:12px; padding:11px; background:#141414; border-radius:8px; white-space:pre-wrap}
   #warn{display:none; font-size:13px; margin-top:10px; padding:11px; border-radius:8px;
@@ -188,6 +192,7 @@
   <div class="pmeta"><span id="ppct">0%</span><span id="peta"></span></div>
   <div id="plan"></div>
   <div id="warn"></div>
+  <div id="freezeNote" class="freeze"></div>
 </div>
 
 <div class="card" id="editWrap">
@@ -235,6 +240,7 @@
   影片全程留在你的裝置上，沒有上傳、沒有伺服器
 </div>
 
+<script type="module" src="./coi.js"></script>
 <script type="module" src="./app.js"></script>
 </body>
 </html>

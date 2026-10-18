@@ -3,6 +3,7 @@
 import { FFmpeg } from './lib/ffmpeg/index.js';
 import { fetchFile } from './lib/util/index.js';
 import { MODELS, loadASR, extractAudio, transcribe, buildCards, toASS, toSRT } from './subtitle.js';
+import { FFmpegMT, canUseMT, MT_SPEEDUP } from './lib/mt.js';
 
 // ---------- 可調參數（跟本機版一致）----------
 const MAX_SPEEDUP = 1.15;   // 加速上限。超過會警告，因為講話會明顯變快
@@ -18,14 +19,14 @@ const drop=$('drop'), pick=$('pick'), fileList=$('files'), secsIn=$('secs'),
       verifyEl=$('verify'), errEl=$('err'), dlSrt=$('dlSrt'),
       bSubOn=$('bSubOn'), bSubOff=$('bSubOff'), subOpts=$('subOpts'), subHint=$('subHint'),
       bQBase=$('bQBase'), bQSmall=$('bQSmall'), shortHint=$('shortHint'),
-      editWrap=$('editWrap'), editHint=$('editHint'), subList=$('subList'),
+      editWrap=$('editWrap'), editHint=$('editHint'), subList=$('subList'), freezeNote=$('freezeNote'),
       burn=$('burn'), skipBurn=$('skipBurn');
 
 let items = [];        // {file, dur, w, h}
 let portrait = false;
 let wantSub = true;    // 預設自動上字幕
 let quality = 'base';
-let ffmpeg = null, loaded = false;
+let ffmpeg = null, loaded = false, engine = 'st';   // st 單執行緒（有進度條）／mt 多執行緒（快但會凍畫面）
 
 // 長度不符一律用變速：太長快轉、太短放慢。
 // 用途是學生交考試作業（規定秒數），所以第一優先是「秒數剛好 + 全程有聲音」，
@@ -157,6 +158,22 @@ function render() {
 // ---------- 進度 ----------
 let stageBase = 0, stageSpan = 1, t0 = 0;
 function setStage(txt, base, span) { stageEl.textContent = txt; stageBase = base; stageSpan = span; }
+
+/** 多執行緒會把畫面凍住，進度條沒辦法更新，改成純 CSS 的跑馬燈 */
+function setBusy(on, seconds) {
+  const bar = document.querySelector('.bar');
+  if (on) {
+    bar.classList.add('busy');
+    freezeNote.style.display = 'block';
+    freezeNote.textContent =
+      `用快速模式處理中，大約 ${Math.max(3, Math.round(seconds))} 秒。
+` +
+      `這段時間畫面會暫停回應（捲動、按鈕都不會動），上面的長條還在跑就表示正常，請不要關掉分頁。`;
+  } else {
+    bar.classList.remove('busy');
+    freezeNote.style.display = 'none';
+  }
+}
 function setProg(p) {
   // ffmpeg 的 progress 在 concat 時會超過 1（它用時長比例算，接片時總長判斷不準），
   // 不夾住的話整體進度會衝過該階段的上限，剩餘時間就估得太樂觀。
@@ -193,16 +210,45 @@ async function saveFile(blob, name) {
 }
 
 // ---------- 載入引擎 ----------
-async function ensureLoaded() {
-  if (loaded) return;
-  setStage('第一次使用，正在下載影片處理引擎（約 31 MB）…', 0, 0.08);
-  ffmpeg = new FFmpeg();
-  ffmpeg.on('log', ({ message }) => collectLog(message));
-  ffmpeg.on('progress', ({ progress }) => setProg(progress));
-  await ffmpeg.load({
-    coreURL: new URL('./lib/core/ffmpeg-core.js', location.href).href,
-    wasmURL: new URL('./lib/core/ffmpeg-core.wasm', location.href).href,
-  });
+// 單執行緒每 1 秒素材大約要這麼久（720p 實測：30 秒素材 18.4 秒）
+const ST_RATE = 0.62;
+// 多執行緒會凍住畫面，超過這個秒數就不划算，寧可用慢的但有進度條
+const FREEZE_LIMIT = 25;
+
+/** 依這次的工作量挑引擎：夠短就用快的（會凍畫面），太長就用穩的 */
+function pickEngine(srcTotal) {
+  if (!canUseMT()) return 'st';
+  return (srcTotal * ST_RATE / MT_SPEEDUP) <= FREEZE_LIMIT ? 'mt' : 'st';
+}
+
+async function ensureLoaded(srcTotal) {
+  const want = pickEngine(srcTotal);
+  if (loaded && engine === want) return;
+  if (loaded) { try { ffmpeg.terminate(); } catch {} loaded = false; }
+  engine = want;
+
+  setStage(engine === 'mt'
+    ? '第一次使用，正在下載快速引擎（約 32 MB）…'
+    : '第一次使用，正在下載影片處理引擎（約 31 MB）…', 0, 0.08);
+
+  if (engine === 'mt') {
+    ffmpeg = new FFmpegMT();
+    ffmpeg.on('log', d => collectLog(typeof d === 'string' ? d : d.message));
+    ffmpeg.on('progress', () => {});   // 畫面凍住時收不到，不用接
+    await ffmpeg.load({
+      coreURL: new URL('./lib/core-mt/ffmpeg-core.js', location.href).href,
+      wasmURL: new URL('./lib/core-mt/ffmpeg-core.wasm', location.href).href,
+      workerURL: new URL('./lib/core-mt/ffmpeg-core.worker.js', location.href).href,
+    });
+  } else {
+    ffmpeg = new FFmpeg();
+    ffmpeg.on('log', ({ message }) => collectLog(message));
+    ffmpeg.on('progress', ({ progress }) => setProg(progress));
+    await ffmpeg.load({
+      coreURL: new URL('./lib/core/ffmpeg-core.js', location.href).href,
+      wasmURL: new URL('./lib/core/ffmpeg-core.wasm', location.href).href,
+    });
+  }
   loaded = true;
 }
 
@@ -294,11 +340,17 @@ burn.onclick = async () => {
       await fetchFile(new URL('./assets/MantouSans-Regular.ttf', location.href).href));
 
     setStage('把字幕燒進畫面…', 0.80, 0.16);
+    if (engine === 'mt') {
+      setBusy(true, pending.target * ST_RATE / MT_SPEEDUP * 0.6);
+      await new Promise(r => setTimeout(r, 120));
+    }
     await ffmpeg.exec(['-i', 'out.mp4', '-vf', 'subtitles=sub.ass:fontsdir=/fonts',
       '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '23', '-pix_fmt', 'yuv420p',
       '-c:a', 'copy', 'final.mp4']);
+    setBusy(false);
     await finish('final.mp4', cards);
   } catch (e) {
+    setBusy(false);
     progWrap.style.display = 'none';
     showErr('燒字幕失敗：' + e);
   } finally {
@@ -375,7 +427,7 @@ go.onclick = async () => {
   const srcTotal = items.reduce((s, i) => s + i.dur, 0);
 
   try {
-    await ensureLoaded();
+    await ensureLoaded(srcTotal);
 
     // 把檔案寫進 wasm 的虛擬硬碟
     setStage('讀取影片…', 0.08, 0.04);
@@ -420,10 +472,15 @@ go.onclick = async () => {
     fc += plan.kind === 'speed'
       ? `;[vc]setpts=PTS/${plan.sp.toFixed(6)},fps=${FPS}[v];[ac]${atempoChain(plan.sp)}[a]`
       : ';[vc]null[v];[ac]anull[a]';
+    if (engine === 'mt') {
+      setBusy(true, srcTotal * ST_RATE / MT_SPEEDUP);
+      await new Promise(r => setTimeout(r, 120));   // 讓跑馬燈先畫出來再凍結
+    }
     await ffmpeg.exec([...inputs, '-filter_complex', fc, '-map', '[v]', '-map', '[a]',
       '-t', String(target),
       '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '23', '-pix_fmt', 'yuv420p',
       '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', 'out.mp4']);
+    setBusy(false);
 
     // ── 字幕：先產生，然後停下來給人校對 ──
     pending = { W, H, portrait, target, t0, names };
@@ -455,6 +512,7 @@ go.onclick = async () => {
     showEditor(cards);
 
   } catch (e) {
+    setBusy(false);
     progWrap.style.display = 'none';
     const msg = String(e);
     let hint = '';
