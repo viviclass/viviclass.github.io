@@ -122,9 +122,12 @@ const t2a = t => {
 
 /** 產生 ASS。字一律釘死在 \pos —— libass 的碰撞閃避會把時間有交集的字卡整張往上疊。 */
 export function toASS(cards, { W, H, portrait }) {
-  const fontSize = portrait ? 64 : 72;
-  const marginV  = portrait ? 150 : 70;
-  const outline  = portrait ? 3.5 : 4;
+  // 輸出解析度跟著素材走，不一定是 1080p，所以字級和邊距要按比例縮，
+  // 不然 720p 的成品字會大得誇張。以 1080 當基準。
+  const k = (portrait ? W : H) / 1080;
+  const fontSize = Math.max(16, Math.round((portrait ? 64 : 72) * k));
+  const marginV  = Math.max(10, Math.round((portrait ? 150 : 70) * k));
+  const outline  = Math.max(1, +((portrait ? 3.5 : 4) * k).toFixed(1));
   const posY = H - marginV;
   const head =
 `[Script Info]

@@ -37,6 +37,21 @@ bSubOff.onclick = () => { wantSub = false; bSubOff.classList.add('on'); bSubOn.c
 bQBase.onclick  = () => { quality = 'base';  bQBase.classList.add('on');  bQSmall.classList.remove('on'); updateHint(); };
 bQSmall.onclick = () => { quality = 'small'; bQSmall.classList.add('on'); bQBase.classList.remove('on');  updateHint(); };
 
+/** 輸出尺寸跟著素材走，不放大。
+ *  原本一律輸出 1080p，但素材是 720p 的話，放大只是多編碼一倍的像素，
+ *  畫質一點都不會變好（實測檔案只差 0.1 MB），時間卻多 3.6 倍（22.9 → 81.6 秒）。
+ *  取所有素材的最長邊當基準，上限 1920。 */
+function outputSize() {
+  const longest = items.length
+    ? Math.max(...items.map(i => Math.max(i.w, i.h)))
+    : 1920;
+  let base = Math.min(longest || 1920, 1920);
+  const even = n => Math.max(2, Math.round(n / 2) * 2);   // H.264 要偶數
+  const short = even(base * 9 / 16);
+  base = even(base);
+  return portrait ? { W: short, H: base } : { W: base, H: short };
+}
+
 function updateHint() {
   const m = MODELS[quality];
   const total = items.reduce((s, i) => s + i.dur, 0);
@@ -56,6 +71,10 @@ function updateHint() {
     else
       h += '　→ 長度剛好，不用調整';
   }
+  if (items.length) {
+    const { W, H } = outputSize();
+    h += `　／　輸出 ${W}×${H}`;
+  }
   shortHint.textContent = h;
 }
 secsIn.addEventListener('input', updateHint);
@@ -67,8 +86,8 @@ pick.onchange = e => addFiles([...e.target.files]);
 ['dragleave','drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
 drop.addEventListener('drop', e => addFiles([...e.dataTransfer.files].filter(f => f.type.startsWith('video/') || /\.(mp4|mov|m4v|webm|avi|mkv)$/i.test(f.name))));
 
-bLand.onclick = () => { portrait = false; bLand.classList.add('on'); bPort.classList.remove('on'); };
-bPort.onclick = () => { portrait = true;  bPort.classList.add('on'); bLand.classList.remove('on'); };
+bLand.onclick = () => { portrait = false; bLand.classList.add('on'); bPort.classList.remove('on'); updateHint(); };
+bPort.onclick = () => { portrait = true;  bPort.classList.add('on'); bLand.classList.remove('on'); updateHint(); };
 
 // 用瀏覽器原生讀 metadata 拿長度和解析度 —— 比丟進 ffmpeg 快非常多
 function probe(file) {
@@ -352,7 +371,7 @@ go.onclick = async () => {
   t0 = Date.now(); logBuf = [];
 
   const target = Math.max(1, parseFloat(secsIn.value) || 60);
-  const W = portrait ? 1080 : 1920, H = portrait ? 1920 : 1080;
+  const { W, H } = outputSize();
   const srcTotal = items.reduce((s, i) => s + i.dur, 0);
 
   try {
