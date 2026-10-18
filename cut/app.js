@@ -61,8 +61,7 @@ function showEngineBadge() {
     el.className = 'fast';
     el.textContent = '⚡ 快速模式已啟用（處理時畫面會暫停回應，跳「無回應」請按等一下）';
   } else if (!MT_ENABLED) {
-    el.className = '';
-    el.textContent = '標準模式　（快速模式檢修中）';
+    el.style.display = 'none';   // 只有一種模式，標籤沒有意義
   } else {
     el.className = '';
     const why = window.__coi || '這個瀏覽器不支援';
