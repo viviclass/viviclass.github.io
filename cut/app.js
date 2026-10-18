@@ -57,9 +57,12 @@ function outputSize() {
 function showEngineBadge() {
   const el = $('engine');
   if (!el) return;
-  if (canUseMT()) {
+  if (MT_ENABLED && canUseMT()) {
     el.className = 'fast';
     el.textContent = '⚡ 快速模式已啟用（處理時畫面會暫停回應，跳「無回應」請按等一下）';
+  } else if (!MT_ENABLED) {
+    el.className = '';
+    el.textContent = '標準模式　（快速模式檢修中）';
   } else {
     el.className = '';
     const why = window.__coi || '這個瀏覽器不支援';
@@ -244,9 +247,13 @@ const FREEZE_LIMIT = 20;
 // 超過這個秒數就會跳 Chrome 的無回應提示，要先打預防針
 const WARN_FREEZE = 5;
 
-/** 依這次的工作量挑引擎：夠短就用快的（會凍畫面），太長就用穩的 */
+/** 依這次的工作量挑引擎。
+ *  ⚠ 2026-10-18 多執行緒暫時停用：ViVi 用一分鐘的素材實測會整個卡死
+ *  （進度停在 12%、跑了 11 分鐘沒結束），不是慢而是根本回不來。
+ *  原因還沒查清楚，先一律走單執行緒 —— 慢但穩，而且本來就能用。 */
+const MT_ENABLED = false;
 function pickEngine(srcTotal) {
-  if (!canUseMT()) return 'st';
+  if (!MT_ENABLED || !canUseMT()) return 'st';
   return (srcTotal * ST_RATE / MT_SPEEDUP) <= FREEZE_LIMIT ? 'mt' : 'st';
 }
 
