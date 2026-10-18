@@ -6,6 +6,12 @@ import { MODELS, loadASR, extractAudio, transcribe, buildCards, toASS, toSRT } f
 import { FFmpegMT, canUseMT, MT_SPEEDUP } from './lib/mt.js';
 
 // ---------- 可調參數（跟本機版一致）----------
+// ⚠ 多執行緒暫時停用：ViVi 用一分鐘的素材實測會整個卡死
+//   （進度停在 12%、跑了 11 分鐘沒結束），不是慢而是根本回不來。
+//   這個宣告一定要放在檔案最前面 —— const 有暫時性死區，
+//   showEngineBadge() 在上面幾行就會用到它，放後面會讓整支檔案中斷執行。
+const MT_ENABLED = false;
+
 const MAX_SPEEDUP = 1.15;   // 加速上限。超過會警告，因為講話會明顯變快
 const TOLERANCE   = 0.15;   // 成品秒數容許誤差
 const FPS         = 30;
@@ -246,11 +252,7 @@ const FREEZE_LIMIT = 20;
 // 超過這個秒數就會跳 Chrome 的無回應提示，要先打預防針
 const WARN_FREEZE = 5;
 
-/** 依這次的工作量挑引擎。
- *  ⚠ 2026-10-18 多執行緒暫時停用：ViVi 用一分鐘的素材實測會整個卡死
- *  （進度停在 12%、跑了 11 分鐘沒結束），不是慢而是根本回不來。
- *  原因還沒查清楚，先一律走單執行緒 —— 慢但穩，而且本來就能用。 */
-const MT_ENABLED = false;
+/** 依這次的工作量挑引擎（多執行緒停用中，見檔案開頭的 MT_ENABLED） */
 function pickEngine(srcTotal) {
   if (!MT_ENABLED || !canUseMT()) return 'st';
   return (srcTotal * ST_RATE / MT_SPEEDUP) <= FREEZE_LIMIT ? 'mt' : 'st';
