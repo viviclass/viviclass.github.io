@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#fae8f1">
-  <meta name="description" content="薇光 AI 課堂圖片與 10 秒口播影片提示詞產生器；選素材庫、自訂欄位、產生情境口播、複製或下載 TXT。">
-  <title>薇光 AI 課堂｜圖片 × 10 秒口播提示詞產生器</title>
+  <meta name="description" content="薇光 AI 課堂圖片與 10 秒口播影片提示詞產生器。">
+  <title>薇光 AI 課堂｜提示詞產生器</title>
   <style>
     :root{--pink:#e73586;--pink2:#feecf4;--pink3:#fff7fa;--rose:#ad2763;--ink:#25202d;--muted:#706a76;--line:#efd9e4;--white:#fff;--shadow:0 13px 35px rgba(171,48,112,.09)}
     *{box-sizing:border-box} html{scroll-behavior:smooth}
@@ -43,6 +43,10 @@
     @media(max-width:1100px){.fields{grid-template-columns:1fr}.field.wide{grid-column:auto}}
     @media(max-width:840px){.wrap{padding:12px}.hero{padding:20px;align-items:flex-start}.hero-brand{display:none}.builder-grid{grid-template-columns:1fr}.fields{grid-template-columns:repeat(2,minmax(0,1fr))}.field.wide{grid-column:1/-1}.mobile-tabs{display:flex;gap:9px;margin:15px 0}.mobile-tabs button{flex:1;border-radius:11px;padding:11px 6px;border:1px solid #ebbbd3;background:#fff;color:#7b3355;font-weight:800}.mobile-tabs button.on{background:var(--pink);color:#fff}.pane.mobile-hidden{display:none}}
     @media(max-width:540px){.hero h1{font-size:23px}.pane{padding:14px}.pane h2{font-size:21px}.fields{grid-template-columns:1fr}.field.wide{grid-column:auto}.presets{padding:14px}.preset{font-size:12px;padding:9px}.action-row .btn{flex:1}.pane-head{align-items:center}.pill{font-size:11px}.hero{padding:18px}}
+    .builder-grid{grid-template-columns:minmax(0,860px);justify-content:center}
+    .pagenav{display:flex;gap:9px;flex-wrap:wrap;margin:16px 0 0}.pagenav a{text-decoration:none;border:1px solid #ebbbd3;background:#fff;color:#7b3355;font-weight:800;font-size:13px;padding:9px 13px;border-radius:11px}.pagenav a.on{background:var(--pink);color:#fff;border-color:var(--pink)}
+    .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:20px}.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);border-radius:23px;box-shadow:var(--shadow);padding:26px}.card h2{margin:0 0 6px;font-size:24px}.card p{margin:0 0 14px;color:var(--muted)}.card .go{display:inline-block;background:var(--pink);color:#fff;font-weight:800;border-radius:11px;padding:10px 14px}
+    @media(max-width:700px){.cards{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -51,204 +55,19 @@
     <div>
       <div class="eyebrow">ViVi 老師 · 薇光 AI 課堂</div>
       <h1>🎬 一張照片，變成你的品牌故事</h1>
-      <p>先做圖片，再做 10 秒口播影片。點選素材庫或自己寫，台詞會依人物、產業、場景及商品自動變化，也可以手動改寫。</p>
+      <p>選擇你要做的：圖片主視覺，或 10 秒口播影片。</p>
+      <nav class="pagenav"><a href="./" class="on">🏠 首頁</a><a href="image.html">🖼️ 圖片提示詞</a><a href="video.html">🎥 10 秒影片提示詞</a></nav>
     </div>
     <div class="hero-brand">薇光 AI 課堂<span>用 AI，替生活留一點光。</span></div>
   </header>
 
-  <section class="presets" aria-label="課堂快速範例">
-    <div class="sectionline"><div><h2>✨ 課堂快速範例</h2><p>「沒想法」預設改成 ViVi 專屬品牌；其他學員也能選自己的產業。</p></div><button type="button" class="btn dark" id="downloadBoth">⬇ 下載兩份 TXT</button></div>
-    <div class="preset-grid" id="presetButtons"></div>
-    <div class="hint-strip">📌 課堂流程：① 套用範例或選素材 → ② 產生圖片提示詞 → ③ 將生成的圖片作為影片首幀 → ④ 調整口播 → ⑤ 複製／下載影片提示詞。程式只產生文字，不直接生成照片、影片或聲音。</div>
-  </section>
-
-  <nav class="mobile-tabs" aria-label="手機工作區切換"><button type="button" id="tabImage" class="on">🖼️ 圖片</button><button type="button" id="tabVideo">🎥 10 秒影片</button></nav>
-
-  <main class="builder-grid">
-    <section class="pane" id="imagePane" aria-labelledby="imgTitle">
-      <div class="pane-head"><div><h2 id="imgTitle">🖼️ 圖片提示詞</h2><p class="sub">圖生圖 · 高級商業主視覺</p></div><span class="pill">第一步</span></div>
-      <div class="fields" id="imgFields"></div>
-      <div class="section-label">✍️ 自由補充</div>
-      <label class="label" for="img_extra">畫面、穿搭、品牌元素或其他要求（可留空）</label>
-      <textarea id="img_extra" placeholder="例如：粉色西裝、溫暖柔光、背景不出現亂碼文字。"></textarea>
-      <div class="action-row"><button type="button" class="btn primary" id="genImage">✨ 更新圖片提示詞</button><button type="button" class="btn" id="copyImage">複製</button><button type="button" class="btn dark" id="dlImage">下載 TXT</button></div>
-      <label for="img_output" class="outlabel">完整圖片提示詞（可直接修改）</label>
-      <textarea class="output" id="img_output" aria-label="圖片提示詞輸出"></textarea><div class="feedback" id="img_feedback" aria-live="polite"></div>
-    </section>
-
-    <section class="pane" id="videoPane" aria-labelledby="vidTitle">
-      <div class="pane-head"><div><h2 id="vidTitle">🎥 10 秒影片提示詞</h2><p class="sub">圖生影片 · 人物親自口播</p></div><span class="pill">第二步</span></div>
-      <button type="button" class="btn" id="copyFields">↘ 用圖片設定帶入</button>
-      <div class="fields" id="vidFields"></div>
-      <div class="voice-card">
-        <div class="voice-top"><span class="voice-title">🎤 第 8 格｜人物口播台詞</span><div class="voice-controls"><button type="button" class="mini" id="nextSpeech">換一句 ↻</button><button type="button" class="mini" id="resetSpeech">重新自動生成</button></div></div>
-        <label class="switch" for="autoSpeech"><input type="checkbox" id="autoSpeech" checked>前面欄位變動時，自動改寫口播</label>
-        <div style="margin:10px 0"><label class="label" for="voiceTone">口播語氣</label><select id="voiceTone"><option>親切自然</option><option>專業俐落</option><option>甜美輕快</option><option>溫柔有故事感</option></select></div>
-        <label class="label" for="vid_speech">台詞（可直接手動改，修改後會停止自動覆蓋）</label>
-        <textarea id="vid_speech" rows="3" placeholder="點選產業素材後自動產生"></textarea>
-        <div class="speech-meta" id="speechMeta" aria-live="polite"></div>
-      </div>
-      <div class="section-label">✍️ 自由補充</div>
-      <label class="label" for="vid_extra">音效、運鏡、轉場、燈光等要求（可留空）</label>
-      <textarea id="vid_extra" placeholder="例如：台灣標準華語、口型同步、最後 1 秒品牌定格。"></textarea>
-      <div class="action-row"><button type="button" class="btn primary" id="genVideo">✨ 更新影片提示詞</button><button type="button" class="btn" id="copyVideo">複製</button><button type="button" class="btn dark" id="dlVideo">下載 TXT</button></div>
-      <label for="vid_output" class="outlabel">完整 10 秒影片提示詞（可直接修改）</label>
-      <textarea class="output" id="vid_output" aria-label="影片提示詞輸出"></textarea><div class="feedback" id="vid_feedback" aria-live="polite"></div>
-    </section>
-  </main>
-
-  <div class="guide"><strong>教學提醒：</strong>口播是依素材庫的語意規則自動組合，不是連線 AI 即時創作。尺寸只影響影像構圖，不會硬塞進台詞。自填特殊商品或長句時，請確認是否自然、是否能在 10 秒內講完。口型同步也取決於所用影片生成模型。</div>
+  <div class="cards">
+    <a class="card" href="image.html"><h2>🖼️ 圖片提示詞</h2><p>第一步：產生圖生圖的高級商業主視覺提示詞，保留你的真實樣貌。</p><span class="go">開始做圖片 →</span></a>
+    <a class="card" href="video.html"><h2>🎥 10 秒影片提示詞</h2><p>第二步：產生人物親自口播的 10 秒圖生影片提示詞，含自動台詞。</p><span class="go">開始做影片 →</span></a>
+  </div>
+  <div class="guide"><strong>教學提醒：</strong>兩個工具各自獨立，可以只用其中一個。本站只產生文字提示詞，不會上傳照片、不需帳號，也沒有任何追蹤。</div>
   <footer class="footer">薇光 AI 課堂 · ViVi 老師｜晚上是三寶媽，白天是 AI 生活導演。 · 本工具可離線使用，無須帳號。</footer>
 </div>
-<script>
-'use strict';
-const $=id=>document.getElementById(id);
-const DEFAULT_SPEECH='用 HowAI，把生活拍成光！一張照片，也能拍出品牌感！';
-const LIB={
- identity:['AI 生活導演','AI 講師','咖啡店老闆','房仲顧問','保險顧問','健身教練','美業老師','餐飲品牌主理人','品牌代言人','個人品牌講師'],
- industry:['AI 教學','個人品牌','咖啡廳','房地產','保險','健身','醫美','電商','餐飲','精品品牌'],
- scene:['粉色科技攝影棚','明亮教學工作室','咖啡廳門市','房屋展示間','專業辦公室','健身房','高級美學工作室','餐廳','品牌展示空間','城市街景'],
- action:['看鏡頭自然口播','微笑介紹商品','操作設備','展示課程','沖煮咖啡','介紹房屋','與客戶互動','走路入鏡','整理文件','展示保養品'],
- product:['HowAI 影片創作','AI 教學課程','咖啡','房屋銷售','保險方案','健身方案','保養品','個人品牌顧問服務','精品商品','餐點'],
- style:['粉色時尚品牌廣告','高級商業廣告','品牌形象','電影感','暖色自然光','專業乾淨','現代簡約','未來極簡','精品品牌感'],
- ratio:['9:16','4:5','1:1','16:9']
-};
-const FIELDS=[['identity','① 人物身份'],['industry','② 產業類型'],['scene','③ 場景'],['action','④ 人物動作'],['product','⑤ 商品／服務'],['style','⑥ 風格／氛圍'],['ratio','⑦ 畫面比例']];
-const data={
- vivi:{label:'🌸 ViVi｜AI 生活導演（沒想法先用這組）',vivi:true, tone:'親切自然',speech:DEFAULT_SPEECH,values:['AI 生活導演','AI 教學','粉色科技攝影棚','看鏡頭自然口播','HowAI 影片創作','粉色時尚品牌廣告','9:16'],imgExtra:'人物為 ViVi 的個人品牌形象：以實際上傳照片為準，若照片相符，延續棕色長波浪髮、粉色西裝、粉色花朵耳環、銀色愛心項鍊；粉白光影與精緻科技元素，人物臉型、膚色與年齡感不變。',vidExtra:'台灣標準華語，甜美自然、帶專業感。粉色柔光、畫面乾淨。最後定格可作為宣傳封面。'},
- viviCourse:{label:'🎓 ViVi｜HowAI 課程招生',vivi:true,tone:'甜美輕快',speech:'不會拍片也沒關係！用 HowAI，一張照片就能開始創作！',values:['AI 講師','AI 教學','明亮教學工作室','看鏡頭自然口播','HowAI 影片創作課程','明亮親切的品牌形象','9:16'],imgExtra:'明亮的粉白教學空間，畫面可加入筆電與影片作品展示；保留上傳人物真實外貌。',vidExtra:'人物親切微笑，強調學員看完就想動手試試；結尾停留完整清晰的人物品牌畫面。'},
- viviLife:{label:'🏡 ViVi｜三寶媽的 AI 生活',vivi:true,tone:'溫柔有故事感',speech:'白天是 AI 生活導演，晚上是三寶媽。用 AI，替生活留一點光。',values:['三寶媽 AI 生活導演','個人品牌','溫暖居家創作工作室','微笑介紹商品','AI 生活創作','暖色自然光','9:16'],imgExtra:'像真實生活的療癒感品牌主視覺，穿搭乾淨有質感，保留本人樣貌。',vidExtra:'輕柔日常音樂與自然手勢，真誠、生活化、不誇張。'},
- cafe:{label:'☕ 咖啡店老闆',values:['咖啡店老闆','咖啡廳','咖啡廳門市','沖煮咖啡','手沖咖啡','暖色自然光','9:16'],imgExtra:'木質空間，咖啡機與咖啡香氣般的暖色蒸氣。',vidExtra:'保留沖煮動作與咖啡細節，手部自然。'},
- realtor:{label:'🏠 房仲顧問',values:['房仲顧問','房地產','房屋展示間','介紹房屋','精選房源','專業乾淨','9:16'],imgExtra:'高級住宅展示間，光線明亮，強調專業可信任。',vidExtra:'專業穩定的鏡頭，交代空間格局，避免誇張置入。'},
- beauty:{label:'💄 美業老師',values:['美業老師','醫美','高級美學工作室','展示保養品','保養品','精品品牌感','9:16'],imgExtra:'柔和柔焦光影，乾淨品牌陳列架。',vidExtra:'產品與人物同框，不誇大功效。'},
- fitness:{label:'💪 健身教練',values:['健身教練','健身','健身房','操作設備','健身方案','高級商業廣告','9:16'],imgExtra:'現代明亮健身房，充滿健康能量的質感。',vidExtra:'動作標準自然，避免任何不合理關節或器材變形。'},
- luxury:{label:'💎 精品品牌代言',values:['品牌代言人','精品品牌','品牌展示空間','微笑介紹商品','精品商品','精品品牌感','16:9'],imgExtra:'極簡品牌陳列與高級光影，勿產生未知品牌 Logo。',vidExtra:'以高級精品感為主，限制無關炫技效果。'}
-};
-let activePreset='vivi',variantIndex=0,isApplying=false,editingSpeech=false;
-function makeField(prefix,key,label){
- const d=document.createElement('div'); d.className='field'+(key==='product'?' wide':'');
- const l=document.createElement('label');l.className='label';l.htmlFor=prefix+'_'+key;l.textContent=label;
- const inp=document.createElement('input'); inp.type='text'; inp.className='text-input';inp.id=prefix+'_'+key;inp.autocomplete='off';inp.placeholder='點選下方素材，或自己輸入';
- const chips=document.createElement('div');chips.className='chips';
- for(const v of LIB[key]){
-   const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=v;
-   b.addEventListener('click',()=>{inp.value=v;fieldChanged(prefix,key)});chips.appendChild(b);
- }
- inp.addEventListener('input',()=>fieldChanged(prefix,key));
- d.append(l,inp,chips);return d;
-}
-for(const [key,label] of FIELDS){$('imgFields').appendChild(makeField('img',key,label));$('vidFields').appendChild(makeField('vid',key,label));}
-for(const [key,p] of Object.entries(data)){
- const b=document.createElement('button');b.type='button';b.className='preset'+(p.vivi?' vivi':'');b.textContent=p.label;b.dataset.preset=key;b.addEventListener('click',()=>applyPreset(key));$('presetButtons').appendChild(b);
-}
-function val(prefix,key){return $(prefix+'_'+key).value.trim()}
-function clean(s){return String(s||'').trim()}
-function describe(s,defaultText){return clean(s)||defaultText}
-function form(prefix){return Object.fromEntries(FIELDS.map(([k])=>[k,val(prefix,k)]))}
-function fieldChanged(prefix,key){
- if(!isApplying && prefix==='vid'){
-   activePreset=null;variantIndex=0;
-   if($('autoSpeech').checked) updateSpeech();
- }
- highlightChips(prefix,key); updateOutputs();
-}
-function highlightChips(prefix,key){
- const par=$(prefix+'_'+key).parentElement;par.querySelectorAll('.chip').forEach(b=>b.classList.toggle('active',b.textContent===val(prefix,key)));
-}
-function refreshChips(){for(const prefix of ['img','vid'])for(const [key] of FIELDS)highlightChips(prefix,key)}
-function applyPreset(key){
- const p=data[key];if(!p)return;isApplying=true;activePreset=key;variantIndex=0;
- for(const prefix of ['img','vid']) FIELDS.forEach(([k],i)=>$(prefix+'_'+k).value=p.values[i]);
- $('img_extra').value=p.imgExtra||'';$('vid_extra').value=p.vidExtra||'';$('voiceTone').value=p.tone||'親切自然';
- $('autoSpeech').checked=true;isApplying=false;
- updateSpeech();refreshChips();updateOutputs();
- document.querySelectorAll('[data-preset]').forEach(b=>b.classList.toggle('selected',b.dataset.preset===key));
-}
-function identifyType(f){
- const s=[f.industry,f.identity,f.product].join(' ');
- if(/咖啡/.test(s))return'cafe';
- if(/房|仲介|不動產|建案/.test(s))return'realtor';
- if(/保險|保單/.test(s))return'insurance';
- if(/健身|運動|教練|體能/.test(s))return'fitness';
- if(/醫美|保養|美容|美業|美甲/.test(s))return'beauty';
- if(/餐飲|餐點|主廚|料理/.test(s))return'food';
- if(/精品|代言|珠寶|精品商品/.test(s))return'luxury';
- if(/AI|HowAI|講師|課程|數位|個人品牌/.test(s))return'ai';
- return'general';
-}
-function voiceParts(f){
- const p=describe(f.product,'這項服務');const sc=describe(f.scene,'現場');const id=describe(f.identity,'品牌主理人');const act=describe(f.action,'介紹');
- const type=identifyType(f);
- switch(type){
- case'cafe': return [`在${sc}，我想分享這份${p}的美好滋味！`,`我是${id}，今天帶你體驗${p}的香氣與溫度。`,`跟著我一起${act}，讓${p}成為今天的小幸福。`];
- case'realtor':return [`來到${sc}，一起看看${p}，找到家的新可能！`,`我是${id}，從每個細節，帶你認識理想的家。`,`今天一起${act}，讓你更靠近喜歡的生活！`];
- case'insurance':return [`在${sc}，我來介紹${p}，陪你把保障想清楚。`,`我是${id}，好的保障，從了解你的需要開始。`,`今天一起${act}，把重要的選擇說明白。`];
- case'fitness':return [`在${sc}，透過${p}，一起練出更好的自己！`,`我是${id}，健康的改變，就從今天這一步開始。`,`跟我一起${act}，建立你的運動好習慣！`];
- case'beauty':return [`在${sc}，一起認識${p}，找回日常的自信光采！`,`我是${id}，分享我喜歡的${p}與美感日常。`,`跟我一起${act}，讓美麗從日常細節開始！`];
- case'food':return [`在${sc}，帶你品嚐${p}，把美味留在今天！`,`我是${id}，每一道${p}，都藏著認真做好的心意。`,`跟我一起${act}，感受剛剛好的幸福滋味！`];
- case'luxury':return [`在${sc}，讓${p}展現獨特的品牌風格。`,`我是${id}，今天帶你欣賞${p}的細膩設計。`,`透過${act}，一起感受${p}的質感魅力。`];
- case'ai':{
-  const tool=/HowAI/i.test(p)?'HowAI':'AI';
-  return [`在${sc}，用${tool}把靈感變成作品，一起試試吧！`,`我是${id}，從${p}開始，拍出你的品牌故事！`,`今天一起${act}，用${tool}把生活拍成光！`];
- }
- default:return [`在${sc}，一起認識${p}，發現更多可能！`,`我是${id}，今天帶你看看${p}有什麼特色。`,`跟我一起${act}，讓${p}成為你的新選擇！`];
- }
-}
-function scriptByContext(){
- if(activePreset && data[activePreset]?.speech){
-  if(variantIndex===0)return data[activePreset].speech;
-  return voiceParts(form('vid'))[(variantIndex-1)%3];
- }
- return voiceParts(form('vid'))[variantIndex%3];
-}
-function updateSpeech(){
- if(!$('autoSpeech').checked)return;
- editingSpeech=true;$('vid_speech').value=scriptByContext();editingSpeech=false;updateSpeechMeta();
-}
-function updateSpeechMeta(){
- const s=clean($('vid_speech').value);const count=[...s.replace(/[\s，。！？、：；,.!?:;「」]/g,'')].length;
- const warning=count>31;
- $('speechMeta').textContent=`${$('autoSpeech').checked?'自動模式':'手動模式'} · 約 ${count} 字元（含英文字母）${warning?' · 可能超過 10 秒，建議精簡':' · 請以實際發音試讀確認時長'}`;
- $('speechMeta').classList.toggle('warning',warning);
-}
-$('vid_speech').addEventListener('input',()=>{
- if(!editingSpeech){$('autoSpeech').checked=false;activePreset=null;}updateSpeechMeta();updateOutputs();
-});
-$('autoSpeech').addEventListener('change',()=>{if($('autoSpeech').checked){variantIndex=0;updateSpeech();}else updateSpeechMeta();updateOutputs();});
-$('voiceTone').addEventListener('change',()=>updateOutputs());
-$('nextSpeech').addEventListener('click',()=>{variantIndex++;$('autoSpeech').checked=true;updateSpeech();updateOutputs();});
-$('resetSpeech').addEventListener('click',()=>{variantIndex=0;$('autoSpeech').checked=true;updateSpeech();updateOutputs();});
-function makeImagePrompt(){
- const f=form('img'),extra=clean($('img_extra').value);
- return `【薇光 AI 課堂｜人物商業主視覺】\n\n請使用上傳人物照片作為唯一人物參考，保留真實臉型、五官比例、膚色、髮型、年齡感與原本氣質；不可換臉、不可幼化、不可過度磨皮或美化失真。\n\n生成一張 ${describe(f.ratio,'9:16')} 的高級商業品牌主視覺。主角身份為「${describe(f.identity,'品牌主理人')}」，產業為「${describe(f.industry,'個人品牌')}」，站在「${describe(f.scene,'品牌展示空間')}」，自然進行「${describe(f.action,'看向鏡頭微笑')}」。\n\n畫面自然呈現「${describe(f.product,'品牌服務')}」作為內容重點，整體氛圍為「${describe(f.style,'高級商業廣告')}」。人物始終是主角，光影分明、構圖乾淨有張力，材質細緻、品牌感強、畫面清晰，為下一步 10 秒圖生影片準備穩定首幀。\n\n請預留合適安全區，避免額外生成無意義 Logo、亂碼字幕或假品牌文字。${extra?'\n\n【個人補充】\n'+extra:''}`;
-}
-function makeVideoPrompt(){
- const f=form('vid'),extra=clean($('vid_extra').value),speech=clean($('vid_speech').value);
- return `【薇光 AI 課堂｜10 秒人物口播商業影片】\n\n使用上傳圖片作為影片首幀與唯一人物身份參考。全程維持人物臉型、五官比例、膚色、髮型、年齡感、服裝與配件一致，不換臉、不幼化、不任意更換人物。\n\n【影片基本設定】\n片長：10 秒；比例：${describe(f.ratio,'9:16')}。\n人物身份：${describe(f.identity,'品牌主理人')}。\n產業類型：${describe(f.industry,'個人品牌')}。\n場景：${describe(f.scene,'品牌空間')}。\n主要動作：${describe(f.action,'自然面對鏡頭')}。\n商品或服務：${describe(f.product,'品牌服務')}。\n畫面風格：${describe(f.style,'高級商業廣告')}。\n\n【人物口播｜必須由畫面中的本人親自說】\n「${speech||'（未填寫台詞，請自行補充）'}」\n口播語氣：${$('voiceTone').value}；台灣標準華語、自然語速、吐字清楚。保留人物面部與嘴唇可見，音畫同步，不要旁白取代人物講話，不擅自增加台詞。背景音樂在人物說話時降低音量。\n\n【0–1 秒｜品牌登場】\n從首幀的中近景切入。人物自然看鏡頭，${describe(f.scene,'場景')}的光影亮起，清楚建立主角與品牌感。\n\n【1–4 秒｜口播開始】\n人物親自開口說指定台詞前半段，正面鏡頭緩慢推近，五官與嘴型清楚可見，搭配自然且克制的手勢。\n\n【4–7 秒｜口播與品牌內容】\n人物接著說指定台詞後半段，同框自然展示「${describe(f.product,'品牌內容')}」；鏡頭可緩慢側移或切換景深，但說話期間不遮臉、不切成只有商品的畫面。\n\n【7–8 秒｜完整說完】\n以人物正面中近景完成台詞，保持口型同步與自然停頓，不裁切最後一句。\n\n【8–9 秒｜品牌英雄畫面】\n口播結束後才加入一次精緻光影掃過或小幅運鏡，人物與商品在${describe(f.scene,'場景')}形成完整的品牌構圖。\n\n【9–10 秒｜定格】\n鏡頭穩住，留下可作為封面或商業主視覺的結尾。\n\n【全片品質】\n電影感光影、節奏俐落、自然動作、品牌展示清晰；不生成多餘人物、不出現奇怪手指、不要過度科幻或搶戲特效、不擅自出現字幕與亂碼。若口播實際超時，請先縮短台詞再生成，勿以極快語速強塞。${extra?'\n\n【個人補充】\n'+extra:''}`;
-}
-function updateOutputs(){$('img_output').value=makeImagePrompt();$('vid_output').value=makeVideoPrompt();}
-$('img_extra').addEventListener('input',updateOutputs);$('vid_extra').addEventListener('input',updateOutputs);
-$('genImage').addEventListener('click',()=>{ $('img_output').value=makeImagePrompt();notify('img_feedback','已更新圖片提示詞');});
-$('genVideo').addEventListener('click',()=>{ $('vid_output').value=makeVideoPrompt();notify('vid_feedback','已更新影片提示詞');});
-$('copyFields').addEventListener('click',()=>{isApplying=true;for(const [key] of FIELDS)$('vid_'+key).value=val('img',key);isApplying=false;activePreset=null;variantIndex=0;if($('autoSpeech').checked)updateSpeech();refreshChips();updateOutputs();notify('vid_feedback','已帶入圖片設定，口播同步更新');});
-function notify(id,msg){$(id).textContent=msg;}
-async function copyOutput(id,feedback){
- const content=$(id).value; if(!content){notify(feedback,'沒有內容可複製');return;}
- try{if(!navigator.clipboard?.writeText)throw new Error('clipboard unavailable');await navigator.clipboard.writeText(content);notify(feedback,'✓ 已複製');}
- catch(e){const area=$(id);area.focus();area.select();const ok=document.execCommand('copy');notify(feedback,ok?'✓ 已複製':'請長按文字後複製');}
-}
-$('copyImage').addEventListener('click',()=>copyOutput('img_output','img_feedback'));
-$('copyVideo').addEventListener('click',()=>copyOutput('vid_output','vid_feedback'));
-function downloadText(filename,body){
- const blob=new Blob(['\ufeff',body],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
-}
-function safeFile(s){return (clean(s)||'品牌').replace(/[\\/:*?"<>|\s]/g,'_').slice(0,20)}
-$('dlImage').addEventListener('click',()=>{downloadText('薇光AI_圖片提示詞_'+safeFile(val('img','identity'))+'.txt',$('img_output').value);notify('img_feedback','✓ 已產生圖片 TXT 下載');});
-$('dlVideo').addEventListener('click',()=>{downloadText('薇光AI_影片提示詞_'+safeFile(val('vid','identity'))+'.txt',$('vid_output').value);notify('vid_feedback','✓ 已產生影片 TXT 下載');});
-$('downloadBoth').addEventListener('click',()=>{ $('dlImage').click();setTimeout(()=>$('dlVideo').click(),200); });
-function showMobile(which){const im=which==='img';$('imagePane').classList.toggle('mobile-hidden',!im);$('videoPane').classList.toggle('mobile-hidden',im);$('tabImage').classList.toggle('on',im);$('tabVideo').classList.toggle('on',!im);}
-$('tabImage').addEventListener('click',()=>showMobile('img'));$('tabVideo').addEventListener('click',()=>showMobile('vid'));
-applyPreset('vivi');
-</script>
+
 </body>
 </html>
