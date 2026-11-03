@@ -13,10 +13,12 @@ const LIB = {
 };
 const LABEL = {identity:"人物身份",industry:"產業類型",scene:"場景",action:"人物動作",product:"商品／服務",style:"風格／氛圍",ratio:"畫面比例"};
 const KEYS = Object.keys(LABEL);
+const GENDERS = [{value:"reference",label:"依上傳照片（預設）"},{value:"male",label:"男生"},{value:"female",label:"女生"}];
 const PRESETS = [
-{id:"vivi",name:"🌸 ViVi｜AI 生活導演",data:{identity:"AI 生活導演",industry:"AI 教學",scene:"粉色科技攝影棚",action:"看鏡頭自然口播",product:"HowAI 影片創作",style:"粉色時尚品牌廣告",ratio:"9:16",extra:"以本人上傳照片為唯一身分參考；延續照片中真實的棕色長波浪髮、粉色西裝、花朵耳環與銀色愛心項鍊。保持真實五官、膚色、年齡感，不過度美化。"},speech:["用 HowAI，把生活拍成光！一張照片，也能拍出品牌感！","跟著 ViVi，把生活拍成光！一張照片，開啟你的創作！","用 AI，替生活留一點光。讓每個靈感變成好作品！"]},
-{id:"course",name:"🎓 ViVi｜課程招生",data:{identity:"AI 講師 ViVi",industry:"AI 教學",scene:"明亮教學空間",action:"看鏡頭介紹 AI 影片課程",product:"HowAI 影片創作課程",style:"奶油粉與玫瑰粉、明亮親切的商業廣告",ratio:"9:16",extra:"講師面向鏡頭，教學介面有設計感但避免亂碼，人物始終為主角。"},speech:["不會拍影片，也能先從一張照片開始。跟著 ViVi 學 AI！","用 HowAI，從一張照片開始，把創意做成自己的影片！","沒學過 AI 也可以！跟著 ViVi，一起做出第一支短片！"]},
-{id:"life",name:"💗 ViVi｜生活故事",data:{identity:"三寶媽 ViVi、AI 生活導演",industry:"個人品牌",scene:"溫暖明亮的居家創作工作室",action:"面對鏡頭自然分享生活",product:"AI 生活創作",style:"奶油粉、溫暖自然光、親切生活紀錄感",ratio:"9:16",extra:"有溫暖真實的生活感，不加入未經提供的家庭成員；保留本人照片真實面貌。"},speech:["白天是 AI 生活導演，晚上是三寶媽。用 AI，替生活留一點光。","把日常的小靈感，慢慢拍成光。這就是我的 AI 生活。","跟著 ViVi，把生活拍成光。每張照片，都有自己的故事！"]},
+{id:"vivi",name:"🌸 ViVi｜AI 生活導演",data:{gender:"female",identity:"AI 生活導演",industry:"AI 教學",scene:"粉色科技攝影棚",action:"看鏡頭自然口播",product:"HowAI 影片創作",style:"粉色時尚品牌廣告",ratio:"9:16",extra:"以本人上傳照片為唯一身分參考；延續照片中真實的棕色長波浪髮、粉色西裝、花朵耳環與銀色愛心項鍊。保持真實五官、膚色、年齡感，不過度美化。"},speech:["用 HowAI，把生活拍成光！一張照片，也能拍出品牌感！","跟著 ViVi，把生活拍成光！一張照片，開啟你的創作！","用 AI，替生活留一點光。讓每個靈感變成好作品！"]},
+{id:"course",name:"🎓 ViVi｜課程招生",data:{gender:"female",identity:"AI 講師 ViVi",industry:"AI 教學",scene:"明亮教學空間",action:"看鏡頭介紹 AI 影片課程",product:"HowAI 影片創作課程",style:"奶油粉與玫瑰粉、明亮親切的商業廣告",ratio:"9:16",extra:"講師面向鏡頭，教學介面有設計感但避免亂碼，人物始終為主角。"},speech:["不會拍影片，也能先從一張照片開始。跟著 ViVi 學 AI！","用 HowAI，從一張照片開始，把創意做成自己的影片！","沒學過 AI 也可以！跟著 ViVi，一起做出第一支短片！"]},
+{id:"life",name:"💗 ViVi｜生活故事",data:{gender:"female",identity:"三寶媽 ViVi、AI 生活導演",industry:"個人品牌",scene:"溫暖明亮的居家創作工作室",action:"面對鏡頭自然分享生活",product:"AI 生活創作",style:"奶油粉、溫暖自然光、親切生活紀錄感",ratio:"9:16",extra:"有溫暖真實的生活感，不加入未經提供的家庭成員；保留本人照片真實面貌。"},speech:["白天是 AI 生活導演，晚上是三寶媽。用 AI，替生活留一點光。","把日常的小靈感，慢慢拍成光。這就是我的 AI 生活。","跟著 ViVi，把生活拍成光。每張照片，都有自己的故事！"]},
+{id:"vivi_male",name:"🧑‍💼 男性版｜AI 生活導演",data:{gender:"male",identity:"AI 生活導演",industry:"AI 教學",scene:"粉白科技攝影棚",action:"看鏡頭自然口播",product:"HowAI 影片創作",style:"專業時尚品牌廣告、奶油粉與白色柔光",ratio:"9:16",extra:"以學員本人上傳的男性照片為唯一人物參考，保留真實臉型、五官比例、膚色、髮型、年齡感、服裝與原有配件。延續薇光 AI 課堂的粉白品牌感；不可套用 ViVi 女性範本的長波浪髮、花朵耳環與項鍊。"},speech:["用 HowAI，把生活拍成光！一張照片，也能拍出品牌感！","你的品牌短片，從一張照片開始。跟我一起試試！","一張照片，也能拍出專業品牌感！用 HowAI 開始創作！"]},
 {id:"lecturer",name:"👩‍🏫 個人品牌講師",data:{identity:"個人品牌講師",industry:"個人品牌",scene:"專業明亮的創作者工作室",action:"看鏡頭介紹課程",product:"課程服務",style:"專業乾淨、自然光、品牌形象",ratio:"9:16",extra:"呈現親切可信的講師個人形象。"}},
 {id:"luxury",name:"💎 精品代言",data:{identity:"品牌代言人",industry:"精品品牌",scene:"品牌展示空間",action:"看鏡頭展示商品",product:"精品商品",style:"高級商業廣告、精品品牌感",ratio:"4:5",extra:"精緻展示台與攝影棚燈光襯托人物。"}},
 {id:"cafe",name:"☕ 咖啡店老闆",data:{identity:"咖啡店老闆",industry:"咖啡廳",scene:"木質咖啡廳門市",action:"看鏡頭介紹咖啡",product:"手沖咖啡",style:"溫暖自然光、電影感",ratio:"9:16",extra:"保留咖啡職人的自然動作，咖啡杯與器具造型一致。"}},
@@ -45,7 +47,7 @@ function fieldValue(key) {
  const p=inputs[key];return (p.custom.value.trim() || p.select.value.trim() || "").trim();
 }
 function values() {
- const obj={};KEYS.forEach(k=>obj[k]=fieldValue(k));obj.extra=(inputs.extra.value||"").trim();return obj;
+ const obj={};KEYS.forEach(k=>obj[k]=fieldValue(k));obj.gender=inputs.gender.value;obj.extra=(inputs.extra.value||"").trim();return obj;
 }
 function setValues(data) {
  KEYS.forEach(k=>{
@@ -54,6 +56,7 @@ function setValues(data) {
    else {inputs[k].select.value="";inputs[k].custom.value=value;}
  });
  inputs.extra.value=data.extra||"";
+ inputs.gender.value=GENDERS.some(o=>o.value===data.gender)?data.gender:"reference";
 }
 function markActive() {
  document.querySelectorAll(".preset").forEach(btn=>btn.classList.toggle("active",btn.dataset.id===activePreset));
@@ -100,11 +103,22 @@ function refreshSpeech(force) {
  if(force||speechMode==="auto"){speechInfo.node.value=selectedSpeech();updateCount();}
 }
 function setCustom() {activePreset="";variant=0;markActive();if(speechMode==="auto")refreshSpeech(true);renderOutput();}
+function genderInstruction(gender) {
+ if(gender==="male")return "人物呈現設定：男生。以實際上傳的男性人物照片為唯一身份依據，保持原本的五官、髮型與穿著，不套用女性專屬造型或配件，也不可換臉。";
+ if(gender==="female")return "人物呈現設定：女生。以實際上傳的女性人物照片為唯一身份依據，保持原本的五官、髮型與穿著，不套用男性專屬造型或配件，也不可換臉。";
+ return "人物呈現設定：依上傳照片為準，不預設性別，不擅自更改照片中人物的外貌特徵、服飾或身份。";
+}
+function voiceInstruction(gender) {
+ if(gender==="male")return "使用自然清楚的成年男性聲線，以台灣標準華語口播。";
+ if(gender==="female")return "使用自然清楚的成年女性聲線，以台灣標準華語口播。";
+ return "使用自然清楚的成年人物聲線，以台灣標準華語口播；未指定聲線性別，不要擅自強制套用男聲或女聲。";
+}
 function imagePrompt(d) {
  return ["【薇光 AI 課堂｜人物商業主視覺】","",
  "請使用上傳的成年人物照片作為唯一人物身份參考，保留真實臉型、五官比例、膚色、髮型與年齡感，不換臉、不幼化、不過度美化失真。","",
  "生成一張 "+escapeValue(d.ratio,"9:16")+" 比例的高質感商業品牌主視覺。",
  "人物身份："+escapeValue(d.identity,"品牌主角")+"；產業："+escapeValue(d.industry,"個人品牌")+"。",
+ genderInstruction(d.gender),
  "場景："+escapeValue(d.scene,"明亮的商業空間")+"。",
  "人物姿態與動作："+escapeValue(d.action,"自然看向鏡頭")+"。",
  "商品或服務："+escapeValue(d.product,"品牌服務")+"。",
@@ -123,11 +137,12 @@ function videoPrompt(d,speech) {
  "使用上傳圖片作為影片首幀及唯一人物身份參考；保持臉型、五官比例、膚色、髮型、年齡感、服裝與整體氣質一致。不可換臉、幼化或突然更換人物。","",
  "生成 10 秒、"+escapeValue(d.ratio,"9:16")+" 比例的人物品牌短片。",
  "人物身份："+escapeValue(d.identity,"品牌主角")+"；產業："+escapeValue(d.industry,"個人品牌")+"。",
+ genderInstruction(d.gender),
  "場景："+scene+"；動作："+action+"。",
  "展示商品／服務："+p+"；視覺風格："+style+"。","",
  "【人物親自口播｜逐字照念】",
  "「"+speech+"」",
- "聲音為自然清楚的台灣標準華語，由畫面人物本人開口說話，嘴型與語音同步；不是畫外旁白。不得新增台詞或自行修改。說話時背景音樂降低音量，不要用轉場遮住口型。","",
+ voiceInstruction(d.gender)+"由畫面人物本人開口說話，嘴型與語音同步；不是畫外旁白。不得新增台詞或自行修改。說話時背景音樂降低音量，不要用轉場遮住口型。","",
  "【0–1 秒｜登場】",
  "以中近景建立主角，人物面向鏡頭，"+scene+"的光線及空間層次柔和展開。","",
  "【1–4 秒｜口播前段】",
@@ -170,16 +185,33 @@ function render() {
  const hero=el("header","hero");wrap.appendChild(hero);
  hero.appendChild(el("div","eyebrow","ViVi 老師・薇光 AI 課堂"));
  hero.appendChild(el("h1","",isVideo?"🎬 10 秒口播影片提示詞產生器":"🖼️ 人物商業圖片提示詞產生器"));
- hero.appendChild(el("p","",isVideo?"選素材、改台詞、產出 10 秒影片提示詞。人物開口說話，依行業自動換口播。":"從人物到場景，七個選填欄位完成商業主視覺提示詞。也能一鍵帶入影片頁。"));
+ hero.appendChild(el("p","",isVideo?"先選人物設定，再選素材與口播，產出 10 秒影片提示詞。依行業自動換口播及男女聲線設定。":"先選男生、女生或依照片，再填七個欄位完成商業主視覺提示詞。也能一鍵帶入影片頁。"));
  const presets=el("section","card presets");wrap.appendChild(presets);
  presets.appendChild(el("h2","","✨ 一鍵帶入參考範例"));
- presets.appendChild(el("p","","前 3 組是 ViVi 專屬範例；其他是學員常見產業。選完仍可修改每個欄位。"));
+ presets.appendChild(el("p","","薇光品牌範例包含 ViVi 女性版及男性版，其他是常見學員產業；選完仍可修改所有欄位。"));
  const pgrid=el("div","preset-grid");presets.appendChild(pgrid);
  PRESETS.forEach(p=>{const b=addButton(pgrid,p.name,"preset",()=>applyPreset(p.id));b.dataset.id=p.id;});
  const main=el("section","main");wrap.appendChild(main);
  const form=el("div","card form-card");main.appendChild(form);
  form.appendChild(el("h2","","① 選素材或自行填寫"));
- form.appendChild(el("p","sub","左邊選素材庫，右邊可以自行輸入；輸入的內容優先套用。"));
+ form.appendChild(el("p","sub","先選人物呈現，接著使用原本七個素材庫欄位；右側可自由輸入，手動輸入優先套用。"));
+ const genderField=el("div","field");form.appendChild(genderField);
+ genderField.appendChild(el("label","","人物呈現（新增選填）"));
+ const genderSelect=el("select");genderSelect.setAttribute("aria-label","人物呈現：依照片、男生或女生");
+ GENDERS.forEach(g=>{const o=el("option","",g.label);o.value=g.value;genderSelect.appendChild(o);});
+ genderField.appendChild(genderSelect);
+ genderField.appendChild(el("span","hint","依照片最通用；選男生或女生時，圖片會保留本人外貌，影片會使用對應的自然成年聲線。"));
+ inputs.gender=genderSelect;
+ genderSelect.addEventListener("change",()=>{
+   const extra=inputs.extra.value;
+   if(genderSelect.value==="male" && extra.includes("棕色長波浪髮、粉色西裝、花朵耳環")) {
+     inputs.extra.value="以學員本人上傳的男性照片為唯一人物參考，保留真實五官、髮型、服裝及配件，不套用女性範本的長髮或花朵耳環。保留薇光 AI 課堂的粉白品牌視覺。";
+   }
+   if(genderSelect.value==="female" && extra.includes("以學員本人上傳的男性照片")) {
+     inputs.extra.value="以學員本人上傳的女性照片為唯一人物參考，保留真實五官、髮型、服裝及配件，不套用其他範本的固定造型。保留薇光 AI 課堂的粉白品牌視覺。";
+   }
+   setCustom();
+ });
  KEYS.forEach(key=>{
    const field=el("div","field");form.appendChild(field);
    const label=el("label","",LABEL[key]);field.appendChild(label);
