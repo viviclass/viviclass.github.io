@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>ChatGPT 介面模擬教室｜ViVi 老師 V9 · 試玩版</title><style>
+:root{--bg:#fff;--sidebar:#f9f9f9;--surface:#f4f4f4;--hover:#ededed;--text:#191919;--muted:#747474;--line:#ececec;--accent:#222;--bubble:#f4f4f4;--panel:#fff;--shadow:0 10px 40px #00000014}*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC",sans-serif;font-size:14px;color:var(--text);background:#f1f1f1}button,input,textarea{font:inherit}button{cursor:pointer;touch-action:manipulation}button:focus-visible,input:focus-visible{outline:2px solid #7a7a7a;outline-offset:2px}.app{height:100dvh;min-height:570px;background:var(--bg);display:flex;overflow:hidden}.sidebar{width:256px;background:var(--sidebar);display:flex;flex-direction:column;flex:none;border-right:1px solid #f2f2f2;z-index:5;transition:transform .18s}.side-top{padding:15px 11px 4px}.brand{height:35px;display:flex;align-items:center;justify-content:space-between;padding:0 8px;font-size:18px;letter-spacing:-.6px;font-weight:650}.brand .brandleft{display:flex;align-items:center;gap:8px}.round-logo{display:grid;place-items:center;width:24px;height:24px;border:2px solid #282828;border-radius:50%;font-size:14px;font-weight:800;line-height:1}.sidegroup{padding:9px 10px 0}.nav{width:100%;height:36px;border:0;border-radius:8px;background:transparent;color:var(--text);display:flex;align-items:center;gap:10px;text-align:left;padding:0 10px;font-size:13.5px}.nav .sym{width:19px;display:inline-flex;align-items:center;justify-content:center;opacity:.9}.nav:hover,.nav.active{background:#ececec}.nav small{color:#8b8b8b;margin-left:auto}.groupname{font-size:12px;color:#666;font-weight:650;padding:16px 12px 5px}.side-scroll{overflow:auto;min-height:0;flex:1;scrollbar-width:thin}.profile{flex:none;padding:10px 11px;border-top:1px solid #eaeaea}.avatar{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;background:#d5d0df;color:#3c3253;font-size:12px}.main{flex:1;min-width:0;display:flex;flex-direction:column;position:relative}.top{height:59px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 23px;gap:12px}.top-left,.top-right{display:flex;align-items:center;gap:10px}.top-label{font-size:17px;font-weight:620;letter-spacing:-.5px}.top button,.plain-icon{background:transparent;border:0;border-radius:9px;padding:7px;display:grid;place-items:center;color:#333}.top button:hover,.plain-icon:hover{background:var(--hover)}.toggle{display:flex;align-items:center;padding:3px;background:#f3f3f3;border-radius:30px;gap:2px}.toggle button{border-radius:30px;min-width:53px;padding:7px 14px;font-size:13px;font-weight:550}.toggle button.selected{background:#fff;box-shadow:0 1px 4px #0002}.teacher-label{font-size:10px;color:#777;border:1px solid #dfdfdf;border-radius:12px;padding:4px 8px;white-space:nowrap}.center{flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 25px 34px}.home{width:min(720px,100%);margin:auto;text-align:center}.home h1{font-size:29px;font-weight:550;letter-spacing:-1.2px;margin:0 0 33px}.compose{border:1px solid #ededed;border-radius:25px;box-shadow:0 2px 11px #00000013;text-align:left;background:#fff;padding:16px 14px 12px}.compose textarea{width:100%;min-height:52px;resize:none;border:0;outline:0;color:var(--text);font-size:14px;line-height:1.5;background:transparent}.compose textarea::placeholder{color:#969696}.compose .tools{display:flex;justify-content:space-between;align-items:center;gap:6px}.tools .left,.tools .right{display:flex;align-items:center;gap:7px}.mini-round{border:0;border-radius:50%;height:32px;width:32px;background:transparent;display:grid;place-items:center;color:#333}.mini-round:hover{background:#f0f0f0}.mini-round.dark{background:#222;color:#fff}.toolchip{border:0;background:#f7f7f7;border-radius:20px;padding:7px 9px;color:#5f5f5f;font-size:12px}.subchips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:15px}.subchips button{border:1px solid #eee;border-radius:20px;background:#fff;color:#595959;padding:7px 11px;font-size:12px}.subchips button:hover{background:#f6f6f6}.footer{flex:none;text-align:center;color:#9b9b9b;font-size:11px;padding:0 15px 13px;line-height:1.4}.view{width:min(750px,100%);align-self:center;margin:auto;padding:2px 0 10px}.view h2{font-size:25px;font-weight:610;letter-spacing:-.6px;margin:0 0 10px}.view .subtitle{color:#777;font-size:14px;line-height:1.7;margin:0 0 22px}.itemrow{border-bottom:1px solid #eee;padding:15px 12px;display:flex;gap:12px;align-items:center;cursor:pointer;border-radius:9px}.itemrow:hover{background:#f7f7f7}.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.tile{border:1px solid #e8e8e8;border-radius:14px;min-height:132px;padding:17px;text-align:left;background:#fff;display:flex;flex-direction:column;gap:9px}.tile:hover{background:#fafafa}.tile h3{font-size:14px;margin:0}.tile p{font-size:12px;color:#777;margin:0;line-height:1.6}.tile .largeicon{font-size:22px}.mock-chat{width:min(750px,100%);margin:auto;align-self:center;display:flex;flex-direction:column;gap:22px}.bubble-user{border-radius:18px;background:#f4f4f4;padding:12px 17px;align-self:flex-end;max-width:84%;font-size:14px}.bubble-assistant{align-self:stretch;font-size:14px;line-height:1.9}.bubble-assistant h3{margin:8px 0 6px;font-size:17px}.tipbox{background:#f8f8f8;border:1px solid #ededed;border-radius:13px;padding:13px 15px;margin-top:12px;color:#4f4f4f}.coach{position:absolute;right:21px;bottom:68px;background:var(--panel);width:min(335px,calc(100% - 40px));border:1px solid #e7e7e7;box-shadow:var(--shadow);border-radius:17px;z-index:8;overflow:hidden}.coach-head{display:flex;align-items:center;gap:8px;padding:13px 15px;border-bottom:1px solid #f0f0f0;font-weight:650;font-size:13px}.coach-head .dot{width:20px;height:20px;border-radius:6px;background:#252525;color:#fff;display:grid;place-items:center;font-size:12px}.coach-head button{margin-left:auto;border:0;background:none;font-size:19px;color:#777}.coach-body{padding:15px}.coach-title{font-size:16px;font-weight:650;margin:0 0 8px}.coach-desc{font-size:13px;line-height:1.75;margin:0;color:#4b4b4b}.coach-example{font-size:12px;color:#5b5b5b;background:#f7f7f7;padding:10px;border-radius:10px;margin-top:12px;line-height:1.7}.coach-actions{display:flex;justify-content:space-between;align-items:center;margin-top:13px}.coach-actions button{border:1px solid #e4e4e4;background:#fff;border-radius:10px;padding:7px 10px;color:#494949;font-size:12px}.coach-actions .count{font-size:11px;color:#888}.shade{position:fixed;inset:0;background:#0002;z-index:10;display:flex;align-items:flex-start;justify-content:center;padding:12vh 18px 15px}.searchmodal{background:#fff;border-radius:18px;box-shadow:0 22px 65px #0003;width:min(540px,100%);padding:10px}.searchbar{height:48px;display:flex;align-items:center;gap:10px;padding:0 10px;border-bottom:1px solid #eee}.searchbar input{border:0;outline:0;flex:1;min-width:0;color:#222}.searchresults{padding:12px;max-height:320px;overflow-y:auto}.searchresults button{display:block;width:100%;text-align:left;background:transparent;border:0;border-radius:9px;padding:12px;font-size:13px}.searchresults button:hover{background:#f4f4f4}.searchresults div{color:#8c8c8c;font-size:12px;margin-bottom:7px}.menubg{position:fixed;inset:0;background:#0004;z-index:4}.hidden{display:none!important}.mobile-trigger{display:none!important}.badge-p{font-size:10px;color:#777;margin-top:5px}.lesson-pill{position:absolute;bottom:20px;left:20px;padding:6px 9px;border-radius:10px;font-size:11px;background:#fff;border:1px solid #e7e7e7;color:#666;z-index:2}.closeable{max-width:90%}
+@media(max-width:820px){.sidebar{position:absolute;left:0;top:0;bottom:0;transform:translateX(-105%);box-shadow:6px 0 20px #0002}.sidebar.open{transform:translateX(0)}.mobile-trigger{display:grid!important}.top{padding:0 13px;height:56px}.top-label{font-size:16px}.teacher-label{display:none}.toggle button{min-width:45px;padding:6px 10px}.center{padding:16px 17px 25px}.home h1{font-size:24px;margin-bottom:20px}.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.view h2{font-size:22px}.coach{bottom:60px;right:9px;width:min(365px,calc(100% - 18px))}.coach-body{padding:12px}.lesson-pill{bottom:9px;left:9px}.footer{font-size:10px;padding-bottom:8px}}
+@media(max-width:390px){.toggle button{min-width:39px;padding:5px 7px}.top-left{gap:4px}.top-right{gap:2px}.teacher-label{display:none}.tiles{grid-template-columns:1fr 1fr}.tile{min-height:130px;padding:12px}}
+
+/* ViVi pink palette; original ChatGPT-like layout retained */
+:root{--bg:#fff;--sidebar:#fff3f8;--surface:#fff3f8;--hover:#ffebf3;--line:#f0dce6;--accent:#d82d78;--bubble:#fff0f6;--panel:#fff;--shadow:0 12px 36px #b865921c}
+body{background:#fff9fc;color:#292128}
+.app{background:#fffafd}
+.sidebar{border-right:1px solid #f0dce6}
+.nav:hover,.nav.active{background:#ffe6f1}
+.groupname{color:#8d6179}
+.top{background:#fffafd;border-bottom:1px solid #f6e8ef}
+.toggle{background:#ffe9f2}.toggle button.selected{background:#fff;box-shadow:0 1px 4px #9e55742b}
+.compose{border-color:#efccdd;box-shadow:0 2px 12px #b3537921}
+.toolchip,.subchips button{background:#fff6fa;border-color:#f1dce6}
+.mini-round.dark{background:#b7296c}
+.tile{border-color:#efdae3;background:#fff}
+.tile:hover{background:#fff4f9}
+.tile .largeicon{color:#c52f73}
+.bubble-user{background:#ffe6f0}
+.tipbox,.coach-example{background:#fff6fa;border-color:#efd5e2}
+.coach-head{border-bottom-color:#f1dae5}.coach-head .dot{background:#cc2f79}
+.coach-actions button{border-color:#ecd4e0}
+.footer{background:#fffafd}.teacher-label{color:#985b76;border-color:#ebcbda}
+.searchmodal{border:1px solid #edd3df}.searchresults button:hover{background:#ffebf4}
+.main-body{flex:1;display:flex;min-height:0;position:relative}
+.right-rail{width:246px;flex:none;background:#fff7fb;border-left:1px solid #f2e0e9;padding:17px 14px;overflow-y:auto;z-index:4}
+.rail-header{display:flex;align-items:center;justify-content:space-between;margin:4px 1px 12px}
+.rail-header h3{font-size:14px;margin:0;letter-spacing:.01em}
+.rail-kicker{font-size:11px;color:#925e78;margin:0 1px 10px;line-height:1.7}
+.project-entry{width:100%;border:1px solid #e9b9d1;border-radius:16px;background:#fff;text-align:left;padding:15px 14px;cursor:pointer;box-shadow:0 5px 20px #be548412;display:flex;flex-direction:column;gap:7px}
+.project-entry:hover,.project-entry:focus-visible{background:#fff2f8;outline-offset:2px}
+.project-entry.active{border-color:#d94385;background:#fff2f8}
+.project-entry .project-icon{display:grid;place-items:center;background:#fff0f6;color:#bb2d6c;border-radius:11px;height:37px;width:37px;font-size:19px}
+.project-entry strong{font-size:14px}.project-entry span:last-child{font-size:12px;line-height:1.55;color:#886477}
+.rail-note{margin-top:14px;font-size:11px;color:#a17e90;line-height:1.7}
+.right-dim{display:none}
+.mobile-project{display:none!important}
+.notion-view{width:min(720px,100%);margin:auto;align-self:center;padding:4px 0 22px}
+.notion-view .eyebrow{font-size:11px;color:#ad4177;font-weight:700;letter-spacing:.08em;margin:0 0 11px}
+.notion-view h2{font-size:25px;font-weight:630;margin:0 0 10px}
+.notion-view .subtitle{line-height:1.7;color:#816c77;margin:0 0 15px}
+.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:15px 0 20px}
+.step-indicator{height:5px;background:#f0d9e5;border-radius:5px}
+.step-indicator.done{background:#d8327c}
+.auth-card{background:#fff;border:1px solid #ecd5e0;border-radius:18px;padding:22px;box-shadow:0 6px 24px #a8597920}
+.auth-brand{display:flex;align-items:center;gap:10px;font-weight:650;font-size:15px;margin-bottom:20px}
+.auth-logo{height:34px;width:34px;display:grid;place-items:center;border:1px solid #d8c3cf;border-radius:10px;background:#fff7fb;font-size:20px}
+.auth-title{font-size:20px;margin:0 0 9px}.auth-desc{font-size:13px;line-height:1.8;color:#6c5a65}
+.auth-option{display:flex;align-items:center;gap:12px;border:1px solid #edd6e1;border-radius:12px;padding:13px;margin:8px 0;background:#fff9fc}
+.auth-option input{accent-color:#c62f73}
+.auth-option .little{color:#8d7c85;font-size:11px}
+.auth-actions{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:23px}
+.auth-button{border:0;border-radius:11px;background:#c62f73;color:#fff;font-size:13px;padding:11px 17px;cursor:pointer}
+.auth-button.secondary{background:#fff;border:1px solid #edcbdc;color:#7b5367}
+.auth-button:disabled{opacity:.55;cursor:not-allowed}
+.auth-status{margin-top:17px;border:1px solid #ead4df;background:#fff5fa;border-radius:12px;padding:12px 13px;font-size:12px;line-height:1.7;color:#724e60}
+.sim-label{font-size:11px;color:#a26f87;margin-top:14px}
+@media(max-width:1090px){.right-rail{width:210px}.right-rail{padding:12px 10px}}
+@media(max-width:820px){
+ .main{overflow:visible}
+ .right-rail{position:fixed;right:0;top:0;bottom:0;width:min(300px,86vw);transform:translateX(105%);transition:transform .2s;box-shadow:-7px 0 24px #9d426229;z-index:8;padding:20px 16px}
+ .right-rail.open{transform:translateX(0)}
+ .right-dim{display:block;position:fixed;inset:0;background:#0004;z-index:7}
+ .right-dim.hidden{display:none}
+ .mobile-project{display:grid!important;color:#bf2a71!important}
+ .center{padding:16px 15px 28px}
+ .auth-card{padding:15px}
+ .notion-view h2{font-size:22px}
+ .auth-actions{flex-wrap:wrap}
+ .home h1{font-size:23px}
+}
+@media(max-width:400px){.notion-view{padding-top:2px}.auth-card{padding:12px}.auth-option{padding:10px}.coach{bottom:50px}}
+
+/* V6: same V5 interface structure; compact instructional controls */
+.center.tall-view{justify-content:flex-start}
+.center.tall-view .view,.center.tall-view .notion-view{margin:0 auto;flex:none}
+@media(max-width:820px){.coach.compact{width:auto;max-width:156px;bottom:42px;right:9px}.coach.compact .coach-body{display:none}.coach.compact .coach-head{padding:8px 9px;font-size:11px}.coach.compact .coach-head .dot{height:15px;width:15px;font-size:9px}.coach.compact .coach-head button{font-size:11px;padding:3px}.coach.compact .coach-head button:last-child{font-size:16px}}
+:root{--accent:#d52d79}
+.header-notion{display:inline-flex!important;align-items:center;gap:6px;border:1px solid #e4afc9!important;background:#fff0f7!important;color:#a62263!important;border-radius:11px!important;padding:7px 11px!important;font-weight:650;font-size:12px}
+.header-notion:hover{background:#ffe4f0!important}
+.nav.special{background:#fff0f6;border:1px solid #f0c7da;font-weight:600;margin:5px 0 0}
+.compose{position:relative}
+.compose .tools{align-items:flex-start;flex-wrap:wrap;row-gap:8px}
+.compose .toolchip.markup{min-width:34px;font-weight:800;font-size:15px;background:#fff0f6;border:1px solid #efccdf;color:#bb2b6e}
+.compose .toolchip.markup:hover{background:#ffe0ee}
+.compose .toolhint{margin:5px 2px 0;font-size:11px;line-height:1.55;color:#a06382}
+.cmd-pop{position:absolute;left:12px;right:12px;bottom:calc(100% + 8px);background:#fff;border:1px solid #ecc9dd;border-radius:16px;box-shadow:0 12px 38px #a858812a;z-index:7;padding:11px;text-align:left;max-height:270px;overflow:auto}
+.cmd-pop .cmd-header{display:flex;justify-content:space-between;gap:7px;align-items:center;padding:5px 6px 10px;border-bottom:1px solid #f1e2e9}
+.cmd-pop .cmd-header strong{font-size:13px;color:#952b62}
+.cmd-pop .cmd-header button{border:0;background:transparent;color:#8a6779;cursor:pointer;font-size:16px}
+.cmd-pop .cmd-row{border:0;background:#fff;width:100%;display:block;text-align:left;padding:10px 9px;border-radius:10px;cursor:pointer}
+.cmd-pop .cmd-row:hover{background:#fff0f6}
+.cmd-pop .cmd-row strong{font-size:12px;display:block;color:#3b2c36}
+.cmd-pop .cmd-row small{display:block;font-size:11px;color:#8d7080;line-height:1.5;margin-top:3px}
+.cmd-pop .cmd-foot{font-size:10.5px;color:#997789;padding:8px 6px 3px;line-height:1.6}
+.notionsubnav{display:flex;gap:7px;margin:10px 0 18px;flex-wrap:wrap}
+.notionsubnav button{border:1px solid #ebcbdc;border-radius:10px;padding:9px 12px;background:#fff;color:#89536e;cursor:pointer;font-size:12px}
+.notionsubnav button.active{background:#cb2f75;color:#fff;border-color:#cb2f75}
+.guide-card{padding:17px 18px;border:1px solid #ebd5e0;background:#fff;border-radius:17px;margin:10px 0;display:flex;gap:15px;align-items:flex-start}
+.guide-card .number{display:grid;place-items:center;flex:none;height:31px;width:31px;border-radius:50%;background:#ffe8f2;color:#b62e70;font-size:13px;font-weight:750}
+.guide-card strong{display:block;font-size:14px;margin:0 0 6px}
+.guide-card p{margin:0;font-size:12px;line-height:1.65;color:#78616f}
+.notion-view .guide-tools{display:flex;gap:9px;flex-wrap:wrap;margin:17px 0}
+.notion-view .guide-tools a{color:#ad246d;text-decoration:underline;text-underline-offset:3px;font-size:12px;line-height:1.5}
+.notion-view .minor-line{color:#8a6f7e;line-height:1.7;font-size:12px;margin:10px 0}
+.demo-feature{display:grid;gap:14px;margin-top:14px}
+.demo-feature .demo-panel{border:1px solid #ebd4e0;border-radius:16px;padding:19px;background:#fff}
+.demo-feature pre{white-space:pre-wrap;word-break:break-word;font:inherit;font-size:13px;line-height:1.85;background:#fff7fb;border:1px solid #f3dde7;border-radius:11px;padding:12px;margin:12px 0}
+.demo-feature button{background:#c62f75;border:0;border-radius:10px;color:white;padding:10px 12px;cursor:pointer}
+.result-selected{background:#fff0f6!important;color:#a62468}
+@media(max-width:970px){.header-notion span{display:none}.header-notion{padding:7px!important}}
+@media(max-width:820px){.header-notion{display:inline-flex!important}.home h1{margin-bottom:22px}.cmd-pop{left:4px;right:4px}.compose .toolhint{font-size:10.5px}.toolchip.markup{padding:5px 7px}}
+@media(max-width:370px){.compose .tools .left,.compose .tools .right{gap:2px}.compose{padding:12px 11px}.toolchip{padding:6px}.header-notion{font-size:11px!important}}
+
+/* V9: controls only; preserve the V6 layout grid and proportions */
+.project-entry + .project-entry{margin-top:10px}
+.project-entry[data-act="settings"].active{border-color:#d94385;background:#fff2f8}
+.prompt-tip{margin:12px auto 0;text-align:left;width:min(700px,100%);border:1px solid #edd0df;background:#fffafc;border-radius:14px;padding:13px 15px;box-shadow:0 4px 12px #d57b9a12;font-size:13px;line-height:1.7}
+.prompt-tip h3{font-size:14px;color:#9f265f;margin:0 0 7px}
+.prompt-tip p{margin:0 0 10px;white-space:pre-wrap;overflow-wrap:anywhere}
+.prompt-tip .prompt-actions{display:flex;gap:8px;flex-wrap:wrap}
+.prompt-tip button{font:inherit;border:1px solid #e7bfd2;background:#fff;border-radius:10px;padding:7px 11px;cursor:pointer;color:#ab2869}
+.prompt-tip button:first-child{background:#ba326f;color:white;border-color:#ba326f}
+.settings-hint{font-size:12px;line-height:1.8;color:#795d6d;margin:12px 0}
+.settings-card{background:white;border:1px solid #ead4df;border-radius:16px;margin:12px 0;padding:14px 16px;text-align:left}
+.settings-card h3{font-size:15px;margin:0 0 8px}
+.settings-card p{font-size:12px;line-height:1.7;color:#806776;margin:0 0 10px}
+.settings-card .auth-button{margin-top:4px}
+.home .prompt-tip{max-width:700px}
+.cmd-pop{max-height:min(480px,68vh);overflow-y:auto}
+@media(max-width:820px){.cmd-pop{max-height:min(220px,35vh)}.prompt-tip{font-size:12px}.settings-card{padding:14px}.home .prompt-tip{margin-top:12px}}
+</style></head><body>
+<div class="app" id="app"><div class="menubg hidden" id="menubg"></div><aside class="sidebar" id="sidebar"><div class="side-top"><div class="brand"><span class="brandleft"><span class="round-logo">✳</span>ChatGPT</span><button class="plain-icon" data-act="collapse" aria-label="收合選單">☷</button></div></div><div class="sidegroup" id="navtop"></div><div class="side-scroll" id="navrest"></div><div class="profile"><button class="nav" data-act="profile" title="設定與個人化"><span class="avatar">⚙</span><span>學員示範 · 設定</span><small>⋯</small></button></div></aside><main class="main"><header class="top"><div class="top-left"><button data-act="menu" class="mobile-trigger" aria-label="開啟選單">☰</button><span class="top-label" id="top-title">ChatGPT</span><span style="color:#777">⌄</span></div><div class="toggle"><button data-act="chat" id="chatTab" class="selected">Chat</button><button data-act="work" id="workTab">Work</button></div><div class="top-right"><button class="mobile-project" data-act="openproject" aria-label="開啟右側專案入口" title="專案入口">▣</button><button class="header-notion" data-act="notion" title="綁定 Notion 教學">▣ <span>綁定 Notion</span></button><span class="teacher-label">教學模擬</span><button data-act="new" title="新增對話" aria-label="新增對話">✎</button></div></header><div class="main-body"><div class="center" id="content"></div><div class="right-dim hidden" id="right-dim" data-act="closeproject"></div><aside class="right-rail" id="right-rail" aria-label="專案入口"><div class="rail-header"><h3>專案入口</h3><button class="plain-icon mobile-trigger" data-act="closeproject" aria-label="關閉專案入口">✕</button></div><p class="rail-kicker">先看 Notion 連接教學，再進入模擬授權</p><button class="project-entry" id="notion-card" data-act="notion"><span class="project-icon">▣</span><strong>綁定 Notion｜教學＋練習</strong><span>按這裡看官方連接教學，再練習授權與讀取驗證</span></button><button class="project-entry" id="settings-card" data-act="settings"><span class="project-icon">⚙</span><strong>基礎設定｜記憶與個人化</strong><span>認識記憶、風格偏好、自訂指示、參考圖片及資料控制</span></button><div class="rail-note">此入口為 ViVi 教學加設的模擬專案，不是 ChatGPT 官方固定按鈕。</div></aside></div><div class="footer">ChatGPT 教學模擬 · 非官方服務 · 這裡的輸入不會送到 ChatGPT</div><div class="lesson-pill" id="lesson-count">已探索 0 / 9</div><div class="coach hidden" id="coach"><div class="coach-head"><span class="dot">✳</span>功能導覽老師 <button data-act="togglecoach" aria-label="展開或收合解說">說明</button><button data-act="closecoach" aria-label="關閉解說">×</button></div><div class="coach-body"><p class="coach-title" id="ctitle"></p><p class="coach-desc" id="cdesc"></p><div class="coach-example" id="cexample"></div><div class="coach-actions"><span class="count" id="ccount">已探索 0 個</span><div style="display:flex;gap:7px"><button data-act="speak">🔊 聽解說</button><button data-act="next">下一個 →</button></div></div></div></div></main><div class="shade hidden" id="searchOverlay"><div class="searchmodal"><div class="searchbar"><span>⌕</span><input id="searchInput" aria-label="搜尋示範對話" placeholder="搜尋聊天紀錄"><button data-act="closesearch" class="plain-icon">✕</button></div><div class="searchresults"><div>最近的對話（示範）</div><div id="results"></div></div></div></div></div>
+<script>
+(()=>{'use strict';
+const glyph={new:'✎',search:'⌕',images:'▧',mentions:'@',slash:'/',plugins:'▦',gpts:'◈',projects:'▤',library:'▤',codex:'⌘',history:'◷',profile:'⚙',chat:'◌',work:'✧',voice:'♬',notion:'▣'};
+const lessons={
+new:{title:'新增對話',desc:'開始全新的聊天。同一個主題也可以在原本對話繼續追問。',example:'試試輸入：「幫我安排明天的三件重要工作」。'},
+search:{title:'搜尋聊天紀錄',desc:'在以前的聊天中找資訊，不是搜尋網際網路。',example:'搜尋「日常進度」，打開之前的示範對話。'},
+images:{title:'圖片',desc:'可以使用支援的圖片功能生成或編輯圖片。GIF 運用與「我的魔法咒語」是本教室另外整理的示範教學，不代表 ChatGPT 一定有這兩個官方入口。',example:'示例：「製作一張 9:16 的粉色 AI 課程海報」。'},
+gif:{title:'GIF 運用',desc:'示範把靜態角色照片變成短時間循環動圖，例如自然揮手與眨眼。這裡不會真的生成 GIF。',example:'提示詞：「人物輕揮手、自然眨眼，做 3 秒無縫循環 GIF」。'},
+magic:{title:'我的魔法咒語',desc:'常用提示詞庫範例。可以把人物一致性、繁體中文、畫面比例與風格要求整理成可重複使用的指令。',example:'示例：「保留原人物五官，生成 9:16 奶油粉 AI 課程主視覺」。'},
+mentions:{title:'@ 提及功能',desc:'在支援的 ChatGPT 網頁介面，可以用 @ 提及可用的 GPT 或已連接應用程式。@ 不是一般網路搜尋，也不代表 Notion 已自動連線。',example:'輸入 @ 並在選單中選擇可用的 GPT 或應用程式（依帳號而異）。'},
+slash:{title:'/ 工具與指令',desc:'在輸入框輸入 /，顯示目前對話可用的工具與快捷指令，例如搜尋。可用指令依裝置、方案與環境不同。',example:'輸入 /，再選擇搜尋（如果你的帳號選單有顯示）。'},
+model:{title:'模型與設定示意',desc:'此處僅模擬模型選單位置，無法真正切換模型。不同方案的選項不同。',example:'選擇適合的對話模式，再交給 ChatGPT 任務。'},
+voice:{title:'語音功能',desc:'可用語音與 AI 對話，也能將語音內容整理成文字與重點。AI 可能依聲音特徵推測語氣或說話年齡感，但不是可靠的身分或年齡鑑定。此處僅模擬示範，沒有實際收音或判讀。',example:'在語音範例頁切換「大人／小孩」及語氣，看看回覆示例。'},
+plugins:{title:'Plugins／應用程式',desc:'外部工具與連線能力依帳號、權限及服務而異。',example:'本模擬教室在右側加入了「Notion 綁定」的練習入口。'},
+gpts:{title:'GPTs',desc:'探索針對特定任務設定的 GPT，與一般聊天不同。',example:'用於寫作、學習或教學任務。'},
+projects:{title:'專案',desc:'把同主題的聊天、檔案和指示放在一起管理。',example:'例如「日常進度安排」與「主管交代事項」。'},
+notion:{title:'綁定 Notion｜教學與模擬',desc:'獨立入口會先教你從 ChatGPT 設定打開 Plugins，選擇 Notion、連接、授權與確認已授權來源，再進入模擬練習。這裡不會真的登入或連線。',example:'先閱讀「官方操作步驟」，再按「開始互動練習」，最後完成模擬讀取驗證。'},
+library:{title:'檔案庫',desc:'查看或整理已保存的資料與素材；項目依帳號版本可能不同。',example:'找出之前使用的 PDF 或圖片。'},
+codex:{title:'Codex',desc:'協助開發、修改和測試程式。',example:'修正網站程式錯誤。'},
+history:{title:'歷史對話',desc:'找回之前的聊天並繼續討論。',example:'開啟「主管交代事項」示範對話。'},
+chat:{title:'Chat（對話）',desc:'適合快速問答、寫作、整理思路與逐步追問。',example:'把一則提醒改成適合 LINE 發送的訊息。'},
+work:{title:'Work（工作）',desc:'適合較長、多步驟的工作。是否可用依帳號方案而異。',example:'整理多份資料，產出一份可交付報告。'},
+profile:{title:'帳號與設定',desc:'這裡可以查看個人化和資料控制等帳號選項；名稱與位置依實際版本。',example:'讓 ChatGPT 預設使用繁體中文。'}
+};
+const order=['new','search','images','voice','mentions','slash','plugins','projects','gpts','library','codex','notion','work','profile'];
+const visited=new Set();let current='home', mode='chat', coachKey='chat', notionStep=0, notionMode='guide', voiceSample=0,voiceMood=0, notionPages=[true,false], commandMode=null, selectedChat='日常進度安排', selectedMagic=null, memoryDemo=false;
+const promptMap={
+ '整理學習筆記':'請把我貼上的內容整理成一份新手易讀的學習筆記，分成「主題、3個重點、操作範例、下次複習清單」，以繁體中文輸出。如果資料不足，請先問我。',
+ '日常進度安排':'請協助我整理今天的行程與待辦。我會貼上事情清單，請幫我按「優先處理、今天完成、可以延後」分類，排出合理順序；沒有提供時間的項目請先標示待確認，不要編造。',
+ 'ChatGPT 入門講義':'請把以下資料整理成 ChatGPT 新手講義，包含「這個功能是什麼、去哪裡點、跟著做3步驟、生活應用例子、完成檢查」。使用簡單的繁體中文，不要假設每個帳號都有相同功能。',
+ '主管交代事項':'請將我貼上的主管交辦事項整理成表格，包含「事項、負責人、截止日、優先順序、目前狀態、需要確認的問題」。沒有提供的資訊請標註待確認，最後列出今天必須先做的3件事。',
+ '課程招生文案':'請根據我提供的課程資料，寫一段繁體中文的招生文案，清楚說明對象、學習成果與報名方式。未提供日期、價格與網址時不要自行編造。',
+ '我的第一個 AI 網站':'請協助我規劃個人介紹網站，先詢問網站用途、想放的內容與風格，再產生首頁標題、關於我、服務介紹和聯絡方式的簡短草稿。'
+};
+function promptTip(title){const text=promptMap[title];return text?`<div class="prompt-tip"><h3>✨ ${esc(title)}｜簡單魔法咒語</h3><p>${esc(text)}</p><div class="prompt-actions"><button data-act="fillprompt" data-value="${esc(title)}">放入對話框</button><button data-act="copyprompt" data-value="${esc(title)}">複製咒語</button></div></div>`:'';}
+function historyItem(title){return `<button class="nav ${current==='history'&&selectedChat===title?'active':''}" data-act="history" data-value="${esc(title)}"><span class="sym">◷</span><span>${esc(title)}</span></button>`;}
+function projectItem(title){return `<button class="nav" data-act="projectprompt" data-value="${esc(title)}"><span class="sym">▤</span><span>${esc(title)}</span></button>`;}
+
+const el=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
+function item(key,title){return `<button class="nav ${current===key?'active':''}" data-act="${key}"><span class="sym">${glyph[key]||'•'}</span><span>${title}</span></button>`;}
+function drawNav(){
+  el('navtop').innerHTML=[item('new','新增對話'),item('search','搜尋聊天紀錄'),item('images','圖片'),item('voice','語音'),item('plugins','Plugins'),item('notion','綁定 Notion｜教學'),item('codex','Codex')].join('');
+  const n=el('navtop').querySelector('[data-act="notion"]');if(n)n.classList.add('special');
+  el('navrest').innerHTML=`<div class="groupname">專案 <span style="float:right">＋</span></div>${item('projects','新增專案')}${projectItem('日常進度安排')}${projectItem('主管交代事項')}<div class="groupname">GPTs</div>${item('gpts','探索 GPTs')}<div class="groupname">最近的對話</div>${historyItem('ChatGPT 入門講義')}${historyItem('日常進度安排')}${historyItem('主管交代事項')}<div class="groupname">更多功能</div>${item('library','檔案庫')}`;
+  el('notion-card').classList.toggle('active',current==='notion');el('settings-card').classList.toggle('active',current==='settings');
+}
+
+function compose(placeholder='詢問任何問題'){
+  return `<div class="compose">
+    <textarea id="prompt" rows="2" placeholder="${placeholder}" aria-label="模擬輸入框"></textarea>
+    <div class="tools"><div class="left">
+      <button class="mini-round" data-act="attach" aria-label="附加檔案">＋</button>
+      <button class="toolchip markup" data-act="mentionmenu" title="@ 提及 GPT／應用程式" aria-label="@ 功能選單">@</button>
+      <button class="toolchip markup" data-act="slashmenu" title="/ 開啟工具與指令" aria-label="斜線指令選單">/</button>
+      <button class="toolchip" data-act="images">▧ 圖片</button></div>
+      <div class="right"><button class="toolchip" data-act="model">GPT-6⌄</button><button class="mini-round" data-act="voice" aria-label="語音功能">🎙</button><button class="mini-round dark" data-act="send" aria-label="送出模擬訊息">↑</button></div>
+    </div>
+    <div class="toolhint">點 <b>@</b> 看提及與功能示例　·　點 <b>/</b> 看官方工具／ViVi 自訂快捷語法（教學模擬）</div>
+    <div class="cmd-pop hidden" id="command-pop" aria-label="輸入框功能選單"><div class="cmd-header"><strong id="command-title"></strong><button data-act="closecommand" aria-label="關閉功能選單">✕</button></div><div id="command-content"></div></div>
+  </div>`;
+}
+
+function closeCommand(){commandMode=null;const p=el('command-pop');if(p)p.classList.add('hidden')}
+function openCommand(kind){
+  const pop=el('command-pop');if(!pop)return;
+  const type=kind==='mention'?'mention':'slash'; commandMode=type;visited.add(type==='mention'?'mentions':'slash');el('lesson-count').textContent=`已探索 ${visited.size} / ${order.length}`;
+  el('coach').classList.add('hidden');
+  el('command-title').textContent=type==='mention'?'@｜提及、選擇功能與參考對象':'/｜工具選單與 ViVi 自訂快捷語法';
+  el('command-content').innerHTML=type==='mention'?`
+    <button class="cmd-row" data-act="commandselect" data-value="mention-image"><strong>@ 製作圖像｜課堂示範</strong><small>練習生成課程海報；正式使用時請從實際功能選單選擇製作圖片。</small></button>
+    <button class="cmd-row" data-act="commandselect" data-value="mention-research"><strong>@ 深入研究｜課堂示範</strong><small>練習資料比較；正式使用時請選擇帳號實際支援的研究工具。</small></button>
+    <button class="cmd-row" data-act="commandselect" data-value="mention-skill"><strong>@ 技能名稱｜自訂範例</strong><small>例：@小廢片導演。僅在該帳號或環境已建立、可用時才可能呼叫；打文字不會自動安裝技能。</small></button>
+    <button class="cmd-row" data-act="commandselect" data-value="mention-photo"><strong>@ 照片名稱｜參考圖範例</strong><small>例：@心心。需要帳號已有可用參考圖與正確引用方式，否則只是文字。</small></button>
+    <div class="cmd-foot">實際 ChatGPT 的 @ 選單依帳號而定，不能保證出現全部四項。這裡用教學例子區分「提及」與「執行工具」。</div>`:`
+    <button class="cmd-row" data-act="commandselect" data-value="slash-feedback"><strong>/ 意見回饋｜ViVi 示範</strong><small>練習寫一段錯誤回報；正式的意見回饋請使用介面中的回報功能。</small></button>
+    <button class="cmd-row" data-act="commandselect" data-value="slash-vivi"><strong>/ViVi｜自訂技能快捷語法</strong><small>ViVi 課堂自訂的工作流程提示範例，不是每個 ChatGPT 帳號內建指令。</small></button>
+    <button class="cmd-row" data-act="commandselect" data-value="slash-workflow"><strong>/自訂流程｜工作流程咒語</strong><small>例如先整理重點，再分類、產出待辦與驗收；需要事先設計規則或技能才會自動執行。</small></button>
+    <button class="cmd-row" data-act="commandselect" data-value="slash-search"><strong>/ 搜尋｜官方工具示例</strong><small>部分帳號可用斜線選擇內建工具；實際項目依帳號與版本。</small></button>
+    <div class="cmd-foot">/ 在正式介面可用於工具選擇；/ViVi 和 /自訂流程是課堂命名慣例，不能單靠鍵入保證執行。</div>`;
+  pop.classList.remove('hidden');
+}
+function prefill(text){current='home';mode='chat';render();const input=el('prompt');if(input){input.value=text;input.focus();input.setSelectionRange(text.length,text.length);} el('coach').classList.add('hidden');closeRail();closeMenu();}
+
+function landing(iswork=false){return `<section class="home"><h1>${iswork?'我們要完成什麼工作？':'你今天想做些什麼？'}</h1>${compose(iswork?'描述想完成的工作':'詢問任何問題')}<div class="subchips">${(iswork?['整理待辦','統整資料','製作報告']:['建立圖片','@／ 指令教學','整理學習筆記','日常進度安排']).map(x=>`<button data-act="chip" data-value="${esc(x)}">${esc(x)}</button>`).join('')}</div>${selectedMagic?promptTip(selectedMagic):''}</section>`;}
+function tiles(title,subtitle,items){return `<section class="view"><h2>${title}</h2><p class="subtitle">${subtitle}</p><div class="tiles">${items.map(x=>`<button class="tile" data-act="tile" data-key="${x[3]||current}"><span class="largeicon">${x[0]}</span><h3>${x[1]}</h3><p>${x[2]}</p></button>`).join('')}</div></section>`;}
+function renderVoice(){const s=voiceSample===0?{who:'大人（示範）',say:'今天下午兩點要開會，請幫我整理今天的進度。'}:{who:'小孩（示範）',say:'我想去坐透明纜車！可是又有一點點害怕。'};const mood=['平靜','開心','緊張'][voiceMood];return `<section class="view"><h2>語音</h2><p class="subtitle">使用語音對話、整理說話內容。下面是按鈕切換的預設範例，<strong>不是即時錄音或真的判別人聲</strong>。</p><div class="auth-card"><div class="auth-brand"><span class="auth-logo">🎙</span>語音功能示範</div><div class="auth-option"><span style="font-size:23px">◉</span><div><strong>示範文字稿</strong><div class="little">「${s.say}」</div></div></div><div class="auth-option"><span style="font-size:22px">◈</span><div><strong>可能的說話者：${s.who}</strong><div class="little">語氣範例：${mood}；這是預設標籤，不能作為身分判定</div></div></div><div class="auth-actions"><button class="auth-button" data-act="voiceperson">切換大人／小孩範例</button><button class="auth-button secondary" data-act="voicetone">切換語氣</button></div></div><p class="sim-label">提醒：現實使用時，AI 的聲音語氣推測可能出錯；不同裝置與版本支援情況可能不同。</p></section>`;}
+function notionFlow(){
+  const pageNames = ['我的 AI 學習筆記', 'AI 提示詞資產庫'];
+  const selectedPages = pageNames.filter((name, index) => notionPages[index]);
+  const steps=['設定／外掛程式','選擇 Notion','檢查頁面權限','確認授權','測試讀取']; const title=steps[Math.min(notionStep,4)];let body='';if(notionStep===0){body=`<p class="auth-desc">從 ChatGPT 設定進入 Plugins／Apps，選擇 Notion。這是教學用模擬視窗，不會要求帳號密碼。</p><div class="auth-option"><span class="auth-logo">N</span><div><strong>Notion</strong><div class="little">筆記、文件與資料庫</div></div><span style="margin-left:auto;color:#c92c75">✓</span></div>`;}else if(notionStep===1){body=`<p class="auth-desc">真實操作時，選擇「連接」或「安裝」，再前往 Notion 登入。接著閱讀授權內容；這裡不會要求帳號、密碼或存取代碼。</p><div class="auth-option"><span>✓</span><div>允許讀取你選定的 Notion 頁面與資料庫</div></div><div class="auth-option"><span>!</span><div>可否新增或修改內容須依實際連線功能確認</div></div>`;}else if(notionStep===2){body=`<p class="auth-desc">模擬 Notion 授權中的工作區與可存取頁面選擇（僅在本機，不是真正的 OAuth 畫面）。</p><label class="auth-option"><input type="checkbox" data-act="notionpage" data-index="0" ${notionPages[0]?'checked':''}><div><strong>${pageNames[0]}</strong><div class="little">示範工作區 · 個人頁面</div></div></label><label class="auth-option"><input type="checkbox" data-act="notionpage" data-index="1" ${notionPages[1]?'checked':''}><div><strong>${pageNames[1]}</strong><div class="little">示範工作區 · 資料庫</div></div></label>`;}else if(notionStep===3){body=`<p class="auth-desc">確認模擬授權項目。真實授權由 Notion 官方畫面處理，請確認登入的是正確帳號、工作區與權限。</p><div class="auth-option"><span>▣</span><div><strong>已選取 ${selectedPages.length} 個示範頁面</strong><div>${selectedPages.join('、')}</div><div class="little">此操作不會向任何服務傳送資料</div></div></div>`;}else if(notionStep===4){body=`<p class="auth-desc">已完成模擬授權，下一步試著搜尋已授權的頁面。按下測試後會顯示預設測試結果，不代表真的連線。</p><div class="auth-option"><span>⌕</span><div><strong>搜尋「${selectedPages[0]}」</strong><div class="little">此處使用模擬資料，不會讀取真實 Notion</div></div></div>`;}else{body=`<div class="auth-status"><strong>✓ 示範流程完成</strong><div>已模擬選取頁面與搜尋測試。沒有實際 Notion 連線，也沒有存取真實資料。</div></div><p class="auth-desc">正式連接時，請在支援的 ChatGPT 入口中開啟 Notion，完成真實授權，再檢查是否可以開啟對應來源。</p>`;}
+return `<section class="notion-view"><p class="eyebrow">專案入口 / NOTION 連線演練</p><h2>Notion 綁定（教學模擬）</h2><p class="subtitle">像操作授權視窗一樣一步步練習，但不會跳出真正的登入或授權頁面。</p><div class="notionsubnav"><button data-act="notionguide">① 官方操作說明</button><button class="active" data-act="notionpractice">② 模擬綁定練習</button></div><div class="stepper">${steps.map((s,i)=>`<div class="step-indicator ${notionStep>i?'done':''}" title="${s}"></div>`).join('')}</div><div class="auth-card"><div class="auth-brand"><span class="auth-logo">▣</span>ChatGPT × Notion <span style="margin-left:auto;font-size:11px;color:#af6085">模擬 ${Math.min(notionStep+1,5)} / 5</span></div><h3 class="auth-title">${notionStep>=5?'連線示範完成':esc(title)}</h3>${body}<div class="auth-actions"><button class="auth-button secondary" data-act="notionback" ${notionStep===0?'disabled':''}>上一步</button><button class="auth-button" data-act="notionnext" ${notionStep===2&&!notionPages.some(Boolean)?'disabled':''}>${notionStep>=5?'重新練習':notionStep===4?'測試並完成':'繼續'}</button></div></div><div class="auth-status">⚠️ 本教材專為課堂演示；Notion 綁定是模擬操作，沒有 OAuth、帳密蒐集或真的讀取／寫入資料。</div></section>`;}
+function renderFeature(key){
+  if(key==='gif')return `<section class="view"><h2>GIF 運用｜從照片變成動態</h2><p class="subtitle">例如讓角色自然眨眼、揮手，製作短循環 GIF。此處為提示詞操作示範，沒有連接生成引擎。</p><div class="demo-feature"><div class="demo-panel"><strong>🎬 學員範例｜3 秒循環動圖</strong><pre>請保留參考人物的真實臉型、五官、髮型與粉色西裝。產生約 3 秒的 GIF 動畫：自然揮手兩次、眨眼一次、維持微笑，鏡頭固定，9:16 構圖，動作流暢且可循環。</pre><button data-act="prefill" data-value="請保留參考人物的臉型、五官與髮型，產生3秒GIF：自然揮手兩次、眨眼一次、鏡頭固定、9:16，可循環。">放進示範對話框</button></div><div class="tipbox">⚠️ 圖片生成與 GIF 功能依模型和方案而異。此練習不會真的產生動圖。</div></div></section>`;
+  return `<section class="view"><h2>我的魔法咒語｜提示詞練習</h2><p class="subtitle">將常用生成要求整理成可重複套用的「魔法咒語」。這是老師示範範本，不等於 ChatGPT 自動保存的私人提示詞庫。</p><div class="demo-feature"><div class="demo-panel"><strong>✨ ViVi 魔法咒語｜人物一致性</strong><pre>以我提供的照片為唯一人物參考，保留真實臉型、五官比例、膚色、髮型及年齡感，不換臉、不幼化、不過度美化。請生成 9:16 奶油粉精品科技風形象照，繁體中文文字清楚。</pre><button data-act="prefill" data-value="以我提供的照片為唯一人物參考，保留五官、膚色、髮型與年齡感，不換臉不幼化。生成9:16奶油粉科技風形象照，文字使用繁體中文。">放進示範對話框</button></div><div class="tipbox">想長期保存咒語，可以整理到 Notion 提示詞資產庫；但需要先登入你自己的 Notion。</div></div></section>`;
+}
+function renderSettings(){return `<section class="notion-view"><p class="eyebrow">CHATGPT／學員帳號設定</p><h2>⚙ 設定與個人化｜新手必學</h2><p class="subtitle">跟著認識 4 個常見設定。這裡的開關只操作模擬頁，不會修改你的 ChatGPT 帳號。</p>
+ <div class="settings-card"><h3>01｜記憶 Memory</h3><p>如果希望 ChatGPT 在未來對話參考你的偏好，可到實際帳號「設定 → 個人化」查看記憶功能與控制。記憶並非保存每句話，也不保證跨對話保留每一份檔案。</p><button class="auth-button" data-act="memorydemo">教學模擬：記憶 ${memoryDemo?'開啟':'關閉'}</button><p class="settings-hint">目前顯示：${memoryDemo?'開啟（僅此模擬）':'關閉（僅此模擬）'}</p></div>
+ <div class="settings-card"><h3>02｜個人化：回覆風格</h3><p>可調整回答語氣、格式偏好及部分其他顯示選項；請以帳號實際提供的項目為準。</p><div class="prompt-actions"><button class="auth-button" data-act="settingprompt" data-key="style">帶入「繁體中文＋操作步驟」範例</button></div></div>
+ <div class="settings-card"><h3>03｜自訂指示</h3><p>例如「預設繁體中文、先給重點、講解時列步驟，不確定請說明」。這是要求 AI 如何回覆，與記憶、歷史對話不同。</p><button class="auth-button" data-act="settingprompt" data-key="custom">帶入自訂指示範例</button></div>
+ <div class="settings-card"><h3>04｜參考圖片與資料安全</h3><p>如帳號提供參考圖片保存功能，需先儲存並確認可引用的名稱，輸入 @照片名稱不一定會自動載入圖像。上傳照片前注意他人肖像與個資；設定中的「資料控制」可查看相關隱私選項。</p><button class="auth-button" data-act="settingprompt" data-key="photo">帶入參考圖片提示詞</button></div>
+ <p class="minor-line">左下角「學員示範 · 設定」與右側「基礎設定」都會開啟此頁；右側卡片是 ViVi 課堂加設入口，並非官方固定按鈕。</p>
+ </section>`;}
+
+function renderNotionGuide(){
+ const steps=[
+  ['在 ChatGPT 打開「設定」','開啟帳號選單 → 設定（Settings），尋找「外掛程式 Plugins」。若介面顯示 Apps，請依實際入口操作。'],
+  ['找到 Notion','在可用的 Plugins／Apps 中找到 Notion，按「連接 Connect」，或先按「安裝外掛程式」。'],
+  ['登入你要用的 Notion 帳號','使用自己的 Notion 帳號登入；確認不是其他人或其他工作區。'],
+  ['檢查授權範圍','核對欲使用的工作區、頁面及權限。不要直接對所有不熟悉的權限按允許。'],
+  ['返回 ChatGPT 驗證讀取','在對話中要求找出一個已授權的 Notion 頁面，核對頁面標題與來源連結。'],
+  ['查不到時排除問題','確認 ChatGPT 方案、插件開放狀態、帳號和工作區、Notion 頁面權限，再視需要重新連線。']
+ ];
+ return `<section class="notion-view"><p class="eyebrow">VIVI 教學／NOTION 連接</p><h2>綁定 Notion｜一步一步教學</h2><p class="subtitle">先看真實操作流程，再進入課堂模擬練習。<strong>這個遊戲的入口是教學加設，不是 ChatGPT 官方固定選單。</strong></p>
+  <div class="notionsubnav"><button class="active" data-act="notionguide">① 官方操作說明</button><button data-act="notionpractice">② 模擬綁定練習</button></div>
+  ${steps.map((s,i)=>`<div class="guide-card"><div class="number">${i+1}</div><div><strong>${s[0]}</strong><p>${s[1]}</p></div></div>`).join('')}
+  <div class="guide-tools"><a href="https://help.openai.com/zh-hant/articles/12532955-notion-app-and-setup-in-chatgpt" target="_blank" rel="noopener noreferrer">查看 OpenAI 官方 Notion 連接說明</a><button class="auth-button" data-act="notionpractice">開始模擬綁定 →</button></div>
+  <div class="auth-status"><strong>✅ 成功標準：</strong>能確認 ChatGPT 找到的是已授權的 Notion 頁面，並檢視對應來源。<br><strong>注意：</strong>讀取成功不代表每個帳號都能編輯或新增 Notion 頁面；能力依插件、權限與工作區而異。</div>
+  <p class="minor-line">如果沒有可用的 Notion 連線功能，也能先用「複製 ChatGPT 內容 → 貼到自己的 Notion 筆記」完成學習。</p>
+ </section>`;
+}
+
+function renderHistory(){const intro=selectedChat==='主管交代事項'?'依緊急程度整理交辦事項、待回報與待確認項目。':selectedChat==='ChatGPT 入門講義'?'從第一則提問、功能搜尋到資料安全，練習做成學員看得懂的講義。':selectedChat==='日常進度安排'?'先列今日三大優先事項、預計時間與尚待確認的資訊。':selectedChat==='課程招生文案'?'先確認對象與課程成果，再整理可發佈文案。':'把資料分成目標、重點、執行步驟與檢查清單。';return `<div class="mock-chat"><div class="bubble-user">${esc(selectedChat)}</div><div class="bubble-assistant"><strong>ChatGPT（模擬）</strong><h3>${esc(selectedChat)}｜示範回覆</h3><p>${esc(intro)}</p><div class="tipbox">以下是可複製的教學提示詞；這段是示範，不是真實聊天紀錄。</div>${promptTip(selectedChat)}</div>${compose('繼續這段示範對話')}</div>`;}
+function render(){drawNav();el('content').classList.toggle('tall-view',['notion','settings','images','gif','magic','voice','projects','plugins','gpts','library','codex'].includes(current));el('top-title').textContent=current==='codex'?'Codex':'ChatGPT';el('chatTab').classList.toggle('selected',mode==='chat');el('workTab').classList.toggle('selected',mode==='work');let html='';switch(current){case 'home':case 'new':html=landing(mode==='work');break;case 'images':html=tiles('圖片','在 ChatGPT 中探索圖片創作、GIF 運用和常用魔法咒語。這裡只模擬功能入口。',[['▧','建立圖片','把文字描述變成圖片','images'],['◇','編輯圖片','針對上傳圖片提出修改需求','images'],['▤','我的圖片','查看圖片創作紀錄','images'],['GIF','GIF 運用','用短動畫呈現人物動作和表情','gif'],['✦','我的魔法咒語','保存常用提示詞與人物一致性要求','magic']]);break;case 'voice':html=renderVoice();break;case 'gif':case 'magic':html=renderFeature(current);break;case 'notion':html=notionMode==='guide'?renderNotionGuide():notionFlow();break;case 'settings':html=renderSettings();break;case 'plugins':html=tiles('Plugins','外部工具可用性依方案和權限而異。',[['▣','雲端檔案','整理與搜尋文件','plugins'],['▦','工作應用','連接適合的工作工具','plugins'],['▣','Notion 示範','前往右側專案入口練習綁定','notion']]);break;case 'gpts':html=tiles('探索 GPTs','找到針對特定任務設計的 GPT 助手。',[['✦','寫作助手','協助整理與潤飾文字','gpts'],['▤','學習助手','幫助理解新知識','gpts'],['◇','創作助手','輔助產出創意內容','gpts']]);break;case 'projects':html=`<section class="view"><h2>專案</h2><p class="subtitle">把同主題的對話、檔案與任務集中管理。點下面卡片試試對應的魔法咒語；右側仍保留 Notion 綁定教學入口。</p><div class="tiles"><button class="tile" data-act="new"><span class="largeicon">＋</span><h3>新增專案</h3><p>建立長期主題</p></button><button class="tile" data-act="projectprompt" data-value="日常進度安排"><span class="largeicon">▤</span><h3>日常進度安排</h3><p>保存每日任務與進度</p></button><button class="tile" data-act="projectprompt" data-value="主管交代事項"><span class="largeicon">▤</span><h3>主管交代事項</h3><p>追蹤交辦與完成狀態</p></button></div></section>`;break;case 'library':html=tiles('檔案庫','查看已保存或可使用的檔案。',[['▤','圖片','搜尋圖片資料','library'],['▤','文件','尋找先前的文件','library'],['▤','最近使用','開啟之前的素材','library']]);break;case 'codex':html=tiles('Codex','程式開發專用工作空間，這裡是操作示範。',[['⌘','新增開發任務','寫程式或修正既有程式','codex'],['▤','專案與程式碼','集中管理開發工作','codex'],['✓','檢查與測試','檢查錯誤並驗證結果','codex']]);break;case 'history':html=renderHistory();break;default:html=landing(false);}el('content').innerHTML=html;}
+function closeMenu(){el('sidebar').classList.remove('open');el('menubg').classList.add('hidden');}
+function closeRail(){el('right-rail').classList.remove('open');el('right-dim').classList.add('hidden');}
+function showRail(){el('right-rail').classList.add('open');el('right-dim').classList.remove('hidden');}
+function showCoach(key){if(!lessons[key])return;coachKey=key;visited.add(key);el('ctitle').textContent=lessons[key].title;el('cdesc').textContent=lessons[key].desc;el('cexample').textContent=lessons[key].example;el('ccount').textContent=`已探索 ${visited.size} 個入口`;el('lesson-count').textContent=`已探索 ${visited.size} / ${order.length}`;el('coach').classList.toggle('compact',window.innerWidth<=820);el('coach').classList.remove('hidden');}
+function choose(key){if(key==='search'){showCoach('search');el('searchOverlay').classList.remove('hidden');el('searchInput').value='';search('');setTimeout(()=>el('searchInput').focus(),60);closeMenu();closeRail();return;}if(key==='new'){mode='chat';current='new';}else if(key==='work'){mode='work';current='home';}else if(key==='chat'){mode='chat';current='home';}else if(key==='profile'||key==='settings'){current='settings';}else{current=key;if(key==='notion')notionMode='guide';}render();if(key==='notion'||key==='settings'||key==='profile'||key==='history'){visited.add(key==='profile'?'profile':key);el('coach').classList.add('hidden');el('lesson-count').textContent=`已探索 ${visited.size} / ${order.length}`;}else showCoach(key==='new'?'new':key);closeMenu();closeRail();}
+function search(q){const data=['ChatGPT 入門講義','我的第一個 AI 網站','日常進度安排','主管交代事項','課程招生文案'];const arr=data.filter(s=>s.toLowerCase().includes(q.toLowerCase()));el('results').innerHTML=arr.length?arr.map(x=>`<button data-act="searchresult" data-value="${esc(x)}">${esc(x)}</button>`).join(''):'<p style="padding:13px;color:#987f8a;font-size:12px">沒有符合的示範紀錄</p>';}
+function action(a,btn){
+ if(a==='settings'){choose('settings');return;}
+ if(a==='mentionmenu'){openCommand('mention');return;}
+ if(a==='slashmenu'){openCommand('slash');return;}
+ if(a==='closecommand'){closeCommand();return;}
+ if(a==='commandselect'){
+   const val=btn.dataset.value;
+   const samples={
+    'mention-image':'請使用圖片創作功能製作一張 9:16 的奶油粉招生海報，文字用繁體中文。（請在真實帳號選擇實際可用的圖片功能）',
+    'mention-research':'請深入研究 Chat、Work、Codex 的差異，列出適用情境與官方來源。（請先選擇可用的研究工具）',
+    'mention-skill':'@小廢片導演 請幫我安排三段 10 秒短片。※ 需要技能已存在且帳號支援引用。',
+    'mention-photo':'@心心 以已保存的參考照片為人物依據生成直式形象圖。※ 需帳號真正能引用該圖片。',
+    'slash-feedback':'意見回饋：我在哪個頁面、點哪個按鈕、預期結果與實際結果是什麼？請幫我整理成回報內容。',
+    'slash-vivi':'/ViVi 請按我的課堂規則，把這段內容整理成學員可跟做的步驟。※ 此為自訂語法示範。',
+    'slash-workflow':'/自訂流程 請先整理內容，再依主題分類，最後列出下一步與檢查清單。※ 此為自訂語法示範。',
+    'slash-search':'請使用可用的網路搜尋工具查詢 Notion 官方說明，提供來源與更新日期。'
+   };
+   if(samples[val])prefill(samples[val]);return;
+ }
+ if(a==='fillprompt'){const k=btn.dataset.value||'';if(promptMap[k])prefill(promptMap[k]);return;}
+ if(a==='copyprompt'){const k=btn.dataset.value||'';if(promptMap[k]){const text=promptMap[k];if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(()=>{btn.textContent='✓ 已複製';}).catch(()=>{btn.textContent='請長按文字複製';});}else{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();btn.textContent=ok?'✓ 已複製':'請長按文字複製';}}return;}
+ if(a==='projectprompt'){selectedChat=btn.dataset.value||'日常進度安排';choose('history');return;}
+ if(a==='memorydemo'){memoryDemo=!memoryDemo;render();return;}
+ if(a==='settingprompt'){const key=btn.dataset.key;const t=key==='style'?'請預設使用繁體中文回答，優先給重點與清楚步驟。':key==='custom'?'我的自訂指示：用繁體中文、回答前先確認需求，不確定的地方請說明；操作教學請拆成可照做的步驟。':'請依我已授權可使用的參考相片生成 9:16 形象照，保留真實五官與年齡感。';prefill(t);return;}
+ if(a==='prefill'){prefill(btn.dataset.value||'');return;}
+ if(a==='notionpractice'){notionMode='practice';notionStep=0;current='notion';render();el('coach').classList.add('hidden');return;}
+ if(a==='notionguide'){notionMode='guide';current='notion';render();return;}
+ if(a==='model'){showCoach('model');return;}
+ if(a==='menu'||a==='collapse'){const open=!el('sidebar').classList.contains('open');el('sidebar').classList.toggle('open',open);el('menubg').classList.toggle('hidden',!open);return;}if(a==='openproject'){showRail();return;}if(a==='closeproject'){closeRail();return;}if(a==='closecoach'){el('coach').classList.add('hidden');return;}if(a==='togglecoach'){el('coach').classList.toggle('compact');return;}if(a==='closesearch'){el('searchOverlay').classList.add('hidden');return;}if(a==='speak'){if(!('speechSynthesis' in window)||!lessons[coachKey])return;try{speechSynthesis.cancel();const l=lessons[coachKey];const u=new SpeechSynthesisUtterance(l.title+'。'+l.desc+'。'+l.example);u.lang='zh-TW';u.rate=.95;speechSynthesis.speak(u)}catch(e){}return;}if(a==='next'){const i=order.indexOf(coachKey);choose(order[(i+1)%order.length]);return;}if(a==='notionnext'){notionStep=notionStep>=5?0:Math.min(5,notionStep+1);render();return;}if(a==='notionback'){notionStep=Math.max(0,notionStep-1);render();return;}if(a==='notionpage'){return;}if(a==='voiceperson'){voiceSample=1-voiceSample;render();return;}if(a==='voicetone'){voiceMood=(voiceMood+1)%3;render();return;}if(a==='chip'){const key=btn.dataset.value;if(key==='@／ 指令教學'){openCommand('mention');return;}if(promptMap[key]){selectedMagic=key;render();el('coach').classList.add('hidden');return;}if(key==='建立圖片'){choose('images');return;}const input=el('prompt');if(input)input.value=key;return;}if(a==='tile'){const key=btn.dataset.key||current;if(['notion','gif','magic'].includes(key))choose(key);else showCoach(key);return;}if(a==='searchresult'){selectedChat=btn.dataset.value||'日常進度安排';el('searchOverlay').classList.add('hidden');choose('history');return;}if(a==='history'){selectedChat=btn.dataset.value||'日常進度安排';choose('history');return;}if(a==='send'){const input=el('prompt');if(input&&input.value.trim()){el('content').innerHTML=`<div class="mock-chat"><div class="bubble-user">${esc(input.value.trim())}</div><div class="bubble-assistant"><strong>ChatGPT · 教學模擬</strong><p>這裡沒有連接真正的 AI，所以只顯示教學用回覆。正式 ChatGPT 會依實際問題回答。</p><div class="tipbox">可繼續點左側功能，或按右側的 Notion 綁定專案入口。</div></div>${compose('這是教學模擬，不會真的發送訊息')}</div>`}else showCoach('chat');return;}if(a==='attach'){showCoach('chat');return;}if(lessons[a])choose(a);}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.compose')) closeCommand();
+  const button = e.target.closest('[data-act]');
+  if (button) action(button.dataset.act, button);
+  if (e.target === el('searchOverlay')) el('searchOverlay').classList.add('hidden');
+  if (e.target === el('menubg')) closeMenu();
+});
+el('searchInput').addEventListener('input', e => search(e.target.value));
+document.addEventListener('input',e=>{
+  if(e.target.id!=='prompt')return;
+  const m=e.target.value.match(/(?:^|\s)([@\/])[^\s]*$/);
+  if(m)openCommand(m[1]==='@'?'mention':'slash'); else closeCommand();
+});
+document.addEventListener('change',e=>{
+  if(e.target.matches('input[data-act="notionpage"]')){notionPages[Number(e.target.dataset.index)]=e.target.checked;render();}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){el('searchOverlay').classList.add('hidden');closeMenu();closeRail();closeCommand();}if(e.key==='Enter'&&e.target.id==='prompt'&&!e.shiftKey){e.preventDefault();action('send');}});render();
+})();
+</script></body></html>
