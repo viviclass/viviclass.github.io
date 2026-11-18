@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>今天的能量抽卡｜薇光 AI 課堂・AI 造物局免費體驗</title>
+<meta name="description" content="免費體驗 ViVi 老師的 AI 造物局互動小程式：選張卡片，收下今天的一句能量提醒。零基礎也能學會自己製作。">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://viviclass.github.io/ai-card/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:title" content="今天的能量抽卡｜薇光 AI 課堂">
+<meta property="og:description" content="抽一張今天的能量卡！由 ViVi 老師《AI 造物局》展示的小程式，免費玩。">
+<meta property="og:url" content="https://viviclass.github.io/ai-card/">
+<meta name="theme-color" content="#110c1d">
+<style>
+:root{--pink:#f309c6;--dark:#0b0913;--white:#fff;--gold:#ffe36d}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0%,#4c1a57 0%,#171027 43%,#0b0913 100%);font-family:system-ui,-apple-system,"Microsoft JhengHei",sans-serif;color:var(--white);display:grid;place-items:center;padding:24px 16px}
+.app{width:min(100%,690px);text-align:center}
+header small{color:var(--gold);letter-spacing:.12em;font-weight:700}
+h1{font-size:clamp(29px,7vw,50px);margin:12px 0;line-height:1.2}
+p{color:#e1d6e9;line-height:1.8}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin:30px 0}
+.card{aspect-ratio:3/4.2;border:2px solid #d16bbf;border-radius:18px;background:linear-gradient(145deg,#742c71,#241536);color:white;font-size:54px;box-shadow:0 15px 24px #05030b85;cursor:pointer;transition:transform .2s,outline .2s;min-width:0}
+.card:hover,.card:focus-visible{transform:translateY(-7px);outline:3px solid var(--gold)}
+.card:disabled{opacity:.52;cursor:default;transform:none}
+.card span{display:block;font-size:14px;margin-top:8px;color:#f4d7ee}
+.result{display:none;background:#fff;border-radius:20px;padding:24px;color:#25142c;box-shadow:0 15px 34px #0005}
+.result.show{display:block}.result h2{color:#a50885;font-size:30px}.result p{color:#40314b}
+.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+button.action,a.action{display:inline-block;background:var(--pink);color:#fff;border:0;border-radius:30px;padding:13px 22px;font:700 15px system-ui,sans-serif;cursor:pointer;text-decoration:none}
+button.secondary{background:#eee4ee;color:#422448}
+.promo{margin:28px auto 0;padding:20px;border:1px solid #a65c99;border-radius:19px;background:#ffffff0c}
+.promo strong{font-size:20px}.promo p{margin:10px 0 18px;font-size:14px}
+footer{font-size:12px;color:#bcb1c7;margin-top:24px;line-height:1.8}
+footer a{color:#f6ceef}
+@media(max-width:460px){.cards{gap:8px}.card{font-size:42px}.result{padding:20px}.promo{padding:17px 12px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="app">
+<header><small>薇光 AI 課堂 ✦ AI 造物局｜免費體驗</small><h1>✨ 今天的能量抽卡 ✨</h1><p>憑直覺選一張卡，送自己一句今天需要的話。</p></header>
+<section class="cards" aria-label="抽卡選擇">
+<button class="card" type="button" aria-label="選第一張卡" onclick="draw(0)">✦<span>01</span></button>
+<button class="card" type="button" aria-label="選第二張卡" onclick="draw(1)">✧<span>02</span></button>
+<button class="card" type="button" aria-label="選第三張卡" onclick="draw(2)">✦<span>03</span></button>
+</section>
+<section id="result" class="result" role="status" aria-live="polite">
+<div id="symbol" style="font-size:48px">🌟</div>
+<h2 id="resultTitle"></h2><p id="resultText"></p>
+<div class="actions"><button class="action" type="button" onclick="resetCards()">再抽一次</button><button class="action secondary" type="button" onclick="shareResult()">分享抽卡結果</button></div>
+</section>
+<section class="promo" aria-label="課程介紹">
+<strong>你也想做出自己的互動小程式嗎？</strong>
+<p>這是《AI 造物局》399 元實作課的免費成品示範。學會的不只是抽卡，而是如何用 AI 改成你自己的主題、風格與功能。</p>
+<a class="action" href="https://lin.ee/w8FuJSl" target="_blank" rel="noopener noreferrer">認識薇光 AI 課堂</a>
+</section>
+<footer>本工具僅供娛樂與自我鼓勵，非心理或醫療建議。<br>此頁不要求登入、不蒐集姓名或抽卡結果。<br>© 薇光 AI 課堂・ViVi 老師　<a href="https://viviclass.github.io/">返回官方網站</a></footer>
+</main>
+<script>
+"use strict";
+// 公開體驗版：不呼叫第三方 API，不保存或傳送抽卡結果。
+const messages=[
+{symbol:"🌟",title:"勇氣之光",text:"你不必一次完成全部。今天只要跨出第一步，就值得為自己鼓掌。"},
+{symbol:"🌷",title:"溫柔之心",text:"慢一點也沒有關係。把自己照顧好，也是一種穩定前進的力量。"},
+{symbol:"🦋",title:"轉變之翼",text:"不必害怕新開始。你正在學會用不一樣的方式，創造更多可能。"},
+{symbol:"☀️",title:"明亮之日",text:"你已經擁有一些重要的能力，今天試著讓它們被看見。"},
+{symbol:"🌙",title:"安靜之夜",text:"當你感到疲倦，休息不是退步。明天依然可以重新選擇。"},
+{symbol:"💎",title:"獨特之美",text:"不需要和別人一模一樣。你自己的節奏，就是你的特色。"}
+];
+let current=null;
+function draw(index){
+let next=Math.floor(Math.random()*messages.length);
+if(messages.length>1&&current!==null&&next===current)next=(next+1)%messages.length;
+current=next;
+const item=messages[next];
+document.getElementById("symbol").textContent=item.symbol;
+document.getElementById("resultTitle").textContent=item.title;
+document.getElementById("resultText").textContent=item.text;
+document.getElementById("result").classList.add("show");
+document.querySelectorAll(".card").forEach((b,i)=>{b.disabled=true;b.setAttribute("aria-pressed",String(i===index))});
+document.getElementById("result").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function resetCards(){document.getElementById("result").classList.remove("show");document.querySelectorAll(".card").forEach(b=>{b.disabled=false;b.setAttribute("aria-pressed","false"})}
+async function shareResult(){
+if(current===null)return;
+const x=messages[current],copy="我抽到「"+x.title+"」："+x.text+"\n"+location.href;
+try{
+if(navigator.share){await navigator.share({title:"今天的能量抽卡",text:"我抽到「"+x.title+"」："+x.text,url:location.href})}
+else if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(copy);alert("抽卡結果已複製！")}
+else{window.prompt("複製這段結果分享給朋友：",copy)}
+}catch(err){if(err.name!=="AbortError")window.prompt("分享未完成，你可以複製：",copy)}
+}
+</script></body></html>
